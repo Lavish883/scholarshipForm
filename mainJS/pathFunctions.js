@@ -6,12 +6,11 @@ function signUp(req, res){
     return res.render('index')
 }
 
-function generateLink(req, res){
-    console.log(req.body);
-    
+function generateLink(req, res){    
     const email = req.body.email;
     const token = crypto.randomBytes(8).toString('hex');
-    console.log(token);
+    
+    console.log(token, email);
 
     return res.send('Done!! Email sent');
 }
