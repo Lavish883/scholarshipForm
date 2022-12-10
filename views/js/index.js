@@ -9,7 +9,7 @@ async function postEmailLink(){
             "email": document.getElementById('email').value
         })
     }
-    const request = await fetch('/createNewLink', options);
+    const request = await fetch('/createVerifyLink', options);
     const data = await request.text();
     alert(data);
 }
