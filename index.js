@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.get('/', pathFunctions.signUp);
 app.post('/createNewLink', pathFunctions.generateLink);
-
+app.get('/form/:id', pathFunctions.formPage);
 
 app.listen(PORT, () => {
     console.log("It's up bois!!")
