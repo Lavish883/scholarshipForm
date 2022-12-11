@@ -19,6 +19,13 @@ async function generateVerficationLink(req, res){
     var token = crypto.randomBytes(16).toString('hex');
     // verify email
     if (!testIfValidEmail(email)) return res.send('not valid email');
+    // check if the verfiy link already exists or not
+    var doesItExist = await schemas.users.findOne({'verifyLink': token});
+    
+    while (doesItExist != null){
+        token = crypto.randomBytes(16).toString('hex');
+        doesItExist = await schemas.users.findOne({'verifyLink': token});
+    }
 
     // add the user to the database if it doesnt exist
     var user = await schemas.users.findOne({"email": email});
@@ -30,7 +37,6 @@ async function generateVerficationLink(req, res){
             "verifyLink": token,
             form: {'formId': ''}
         });
-
     } else if (user.verfied == false) {  // update verify link if not verfied
         user.verifyLink = token;
     } else if (user.verfied == true) { 
@@ -45,19 +51,31 @@ async function generateVerficationLink(req, res){
 }
 
 // genreate link from email provided
-function generateLink(email, token){    
+async function generateLink(email, token){    
     token = token == '' ? crypto.randomBytes(8).toString('hex') : token;
     // verify email, if something wrong happens return false
     if (!testIfValidEmail(email)) return false;
+    // check if that formId already exists or not
+    var doesItExist = await schemas.users.findOne({'form.formId': token});
     
+    while (doesItExist != null){
+        token = crypto.randomBytes(8).toString('hex');
+        doesItExist = await schemas.users.findOne({'form.formId': token});
+    }
+
+    //console.log(token);
     // send link email to the email provided
     mailFunctions.mailLink(email, process.env.WEBSITELINK + 'form/' + token);
 
     return token;
 }
 
-function formPage(req, res){
-    return res.send(req.params.id)
+async function formPage(req, res){
+    var user = await schemas.users.findOne({'form.formId': req.params.id});
+    // check if user exits with that formId
+    if (user == null || user == undefined) return res.send('Form Id is not found');
+
+    return res.send(user.email)
 }
 
 // verify email
@@ -74,8 +92,8 @@ async function verifyUserEmail(req, res){
     }
     // if there is a form already created for the user
     // send the link to the form  
-
-    var formId = generateLink(user.email, user.form.formId);
+    
+    var formId = await generateLink(user.email, user.form.formId);
 
     user.form.formId = formId;
     user.markModified('form');
