@@ -94,7 +94,8 @@ async function verifyUserEmail(req, res){
     // send the link to the form  
     
     var formId = await generateLink(user.email, user.form.formId);
-
+    // type object must be marked as modified to be saved in mongoDB
+    
     user.form.formId = formId;
     user.markModified('form');
 

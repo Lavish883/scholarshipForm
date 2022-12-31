@@ -1,8 +1,12 @@
 html 
-    head 
     body 
+        script (src="https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.1.1/compressor.min.js" integrity="sha512-VaRptAfSxXFAv+vx33XixtIVT9A/9unb1Q8fp63y1ljF+Sbka+eMJWoDAArdm7jOYuLQHVx5v60TQ+t3EA8weA==")
         input#email(type="email")
         p
-        button(onClick="postEmailLink()") Submit
-        script 
+        button(id="submitForm") Submit
+        p
+        input(type="file" id="personImage" accept="image/*")
+        p 
+        img#preview(src="", alt="", height = "800", style="max-width:500px;")
+        script(defer="true") 
             include js/index.js
