@@ -3,11 +3,9 @@ const Schema = mongoose.Schema;
 
 /* Don't touch scheams as it is very important 
     And wrong step can cause a lot of issues
-    Overall databses are scary so pease be careful while usign them
+    Overall databses are scary so pease be careful while using them
 */
 
-// contins all the verified users 
-// only one documnet that contains all user info
 /*
     {
       "email": "l@spyponderscom",
