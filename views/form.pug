@@ -1,0 +1,22 @@
+html 
+    head 
+        link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" integrity="sha512-cyzxRvewl+FOKTtpBzYjW6x6IAYUCZy3sGP40hn+DQkqeluGRCax7qztK2ImL64SA+C7kVWdLI6wvdlStawhyw==" crossorigin="anonymous" referrerpolicy="no-referrer")
+        style 
+            include css/style.css
+    body 
+        p Uplaod Image that you want others see
+        input(type="file" id="personImage" accept="image/*")
+        p 
+        div(id="error" style="color:red;")
+        div(style="width:300px;height:300px;overflow:hidden;position:relative;")
+            div#imagePreview(style="width: 100%; height: 100%; overflow: hidden;")
+
+        div.imgContainer 
+            img#profileImage(src="", alt="", style="display:block; max-width:100%;")
+        p 
+        button(id="doneWithImage", onclick="saveFormToServer()") Done
+
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" integrity="sha512-6lplKUSl86rUVprDIjiW8DuOniNX8UDoRATqZSds/7t6zCQZfaCe3e5zcGaQwxa8Kpn5RTM9Fvl3X2lLV4grPQ==" crossorigin="anonymous" referrerpolicy="no-referrer") 
+        
+        script
+            include js/form.js
