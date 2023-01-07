@@ -1,3 +1,308 @@
+// basically contains all the questions for the form and the options for each question
+const formOptions = [
+    {
+        "question": "Upload an Image of Yourself",
+        "type": "file",
+        "required": true
+    },
+    {
+        "question": "6 Digit Student ID",
+        "type": "text",
+        "required": true
+    },
+    {
+        "question": "Last Name",
+        "type": "text",
+        "required": true
+    }, 
+    {
+        "question": "First Name",
+        "type": "text",
+        "required": true
+    }, 
+    {
+        "question": "Gender",
+        "type": "options",
+        "required": true,
+        "options": [
+            "Female",
+            "Male",
+            "Non-Binary",
+            "Other",
+        ]
+    },
+    {
+        "question": "Are you a first generation college student? (Neither parent graduated from college.)",
+        "type": "options",
+        "options": [
+            "Yes",
+            "No",
+        ],
+        "required": true
+    },
+    {
+        "question": "How many siblings (not including yourself) will be in college next year?",
+        "type": "options",
+        "options": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "Other",
+        ],
+        "required": true
+    },
+    {
+        "question": "Please list any special/unusual circumstances, hardships, personal challenges, financial difficulties/circumstances, illness, etc.  (ex: loss of parent, difficulty paying for college, etc.)",
+        "type": "text",
+        "required": false
+    },
+    {
+        "question": "Which elementary school did you attend?",
+        "type": "checkBoxesGrid",
+        "options": {
+            "rows"  : [
+                "Bishop",
+                "Brackett",
+                "Dallin",
+                "Hardy",
+                "Peirce",
+                "Stratton",
+                "Thompson",					
+                "Other:"
+            ],
+            "columns" : [
+                "Kindergarten",
+                "Grade 1",
+                "Grade 2",
+                "Grade 3",
+                "Grade 4",
+                "Grade 5",
+            ]
+        },
+        "required": true
+    },
+    {
+        "question": "Did you participate in Pop Warner Football or Cheerleading?",
+        "type": "options",
+        "options": [
+            "Yes",
+            "No",
+        ],
+        "required": true
+    },
+    {
+        "question": "How many years did you participate in Pop Warner Football or Cheerleading?",
+        "type": "options",
+        "options": [
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "Other"
+        ],
+        "required": true
+    },
+    {
+        "question": "Total number of community service hours completed in grades 9-12? This may be more than the 40 required hours for graduation requirement.",
+        "type": "text",
+        "required": true
+    },
+    {
+        "question": "List where you have completed your community service.  (ex: CIT summer of 2019)",
+        "type": "text",
+        "required": true
+    },
+    {
+        "question": "Did you receive any of the listed honors/leadership awards? (Check all that apply)",
+        "type": "checkBoxes",
+        "options": allAwardsList
+    }, 
+    {
+        "question": "List any other honors/awards you have received that are not listed above: (ex: Youth Banner Project Award)",
+        "type": "text",
+        "required": false
+    }, 
+    {
+        "question": "Click all sports (in and outside of school) that apply to you:",
+        "type": "checkBoxesGrid",
+        "options": {
+            "rows"  : allSportsList,
+            "columns" : [
+                "9th Grade",
+                "10th Grade",
+                "11th Grade",
+                "12th Grade",
+            ]
+        },
+        "required": false
+    },
+    {
+        "question": "Please list any additional sports not included above.",
+        "type": "text",
+        "required": false
+    },
+    {
+        "question": "Sports-Related Leadership/Awards - (ex: team captain)",
+        "type": "text",
+        "required": false
+    },
+    {
+        "question": "Click all extracurriculars (in and outside of school) that apply to you:",
+        "type": "checkBoxesGrid",
+        "options": {
+            "rows"  : allExtracurricularsList,
+            "columns" : [
+                "9th Grade",
+                "10th Grade",
+                "11th Grade",
+                "12th Grade",
+            ]
+        },
+        "required": false
+    },
+    {
+        "question": "Please list additional extracurriculars not listed above.",
+        "type": "text",
+        "required": false
+    },
+    {
+        "question": "Extra Curricular Leadership/Awards - (ex: officer in a club)",
+        "type": "text",
+        "required": false
+    },
+    {
+        "question": "Please list other activities that you participate in: (only list if not in your application elsewhere)",
+        "type": "text",
+        "required": false
+    },
+    {
+        "question": "Employment Experience - Have you ever been employed?",
+        "type": "checkBoxesGrid",
+        "options": {
+            "rows"  : [
+                "Yes",
+                "No",
+            ],
+            "columns" : [
+                "9th Grade",
+                "10th Grade",
+                "11th Grade",
+                "12th Grade",
+            ]
+        },
+        "required": true
+    },
+    {
+        "question": "Where have you been employed?",
+        "type": "text",
+        "required": false
+    },
+    {
+        "question": "What is your intended career? (Check up to 3)",
+        "type": "checkBoxes",
+        "options": allIntendedCareerList,
+        "required": true
+    },
+    {
+        "question": "If your intended career is not listed, please write it here.",
+        "type": "text",
+        "required": false
+    },
+    {
+        "question": "What is your intended major? (Check up to 3)",
+        "type": "checkBoxes",
+        "options": allIntendedMajorList,
+        "required": true
+    },
+    {
+        "question": "If your intended major is not listed, please write it here.",
+        "type": "text",
+        "required": false
+    },
+    {
+        "question": "What are your post-graduate plans?",
+        "type": "checkBoxes",
+        "options": postGradPlansList,
+        "required": true
+    },
+    {
+        "question": "If you are taking a Gap Year, what are your plans?",
+        "type": "text",
+        "required": false
+    },
+    {
+        "question": "Do you plan to attend a 4 year UMASS or MA State University?",
+        "type": "checkBoxes",
+        "options": [
+            "Yes",
+            "No",
+            "Unsure"
+        ],
+        "required": true
+    },
+    {
+        "question": "If you have already committed to a school, where will you be attending? If you are undecided, please leave blank.",
+        "type": "options",
+        "options": allSchoolsList,
+        "required": false
+    },
+    {
+        "question": "What is your first choice school?",
+        "type": "options",
+        "options": allSchoolsList,
+        "required": true
+    },
+    {
+        "question": "Do you plan on commuting to college?",
+        "type": "checkBoxes",
+        "options": [
+            "Yes",
+            "No",
+            "Unsure"
+        ],
+        "required": true
+    },
+    {
+        "question": "List any private/outside scholarships you have already received for college.",
+        "type": "text",
+        "required": true
+    },
+    {
+        "question": "Have you or do you plan to file the FAFSA?",
+        "type": "checkBoxes",
+        "options": [
+            "Yes",
+            "No",
+            "Unsure"
+        ],
+        "required": true
+    },
+    {
+        "question": "OPTIONAL: If so, what is your expected family contribution (EFC) as reported on your Student Aid Report (SAR)?",
+        "type": "text",
+        "required": false,
+        "img": "https://lh5.googleusercontent.com/YKkJXlwF3Wz05TaLh9rHfZtCqe1SxT3G9VjwSOsSaYvRbPwUhnTFA7i2_fe0vNi7-28kpkCyoka-absCWd-OdJJVdwCDwrR7MLjr8lxQsFjnXN1xl2InFLrbQmpEA4K-_g=w580"
+    },
+    {
+        "question": "In 250 words or less, please share your future aspirations and goals.",
+        "type": "text",
+        "required": true
+    },
+    {
+        "question": "Is there any other information that you would like to share?",
+        "type": "text",
+        "required": false
+    },
+    {
+        "question": "Student Signature (Your signature indicates that all information is truthful and accurate to the best of your knowledge.)",
+        "type": "text",
+        "required": true
+    }
+
+]
+
 const allAwardsList = [
     'AHS Citizen/Student of the Month',
     'AHS Citizenship Award in English',
@@ -319,4 +624,261 @@ const postGradPlansList = [
     "Gap Year",
     "Undecided",
     "Other",
+]
+
+const allCollegesList = [
+    "Alaska Pacific University",
+    "Alverina University",
+    "American University",
+    "Arizona State University",
+    "Anna Maria College",
+    "Assumption University",
+    "Babson College",
+    "Bard College",
+    "Barnard College",
+    "Barry University",
+    "Bates College",
+    "Bay Path University",
+    "Bay State College",
+    "Beacon College",
+    "Becker College",
+    "Beloit College",
+    "Benington College",
+    "Bentley University",
+    "Berklee College of Music",
+    "Boston College",
+    "Boston Conservatory at Berklee",
+    "Boston University",
+    "Bowdoin College",
+    "Brandeis University",
+    "Bridgewater State University",
+    "Brown University",
+    "Bryant University",
+    "Bryn Mawr College",
+    "Bucknell University",
+    "Carnegie Mellon University",
+    "Catholic University of America",
+    "Champlain College",
+    "Clark University",
+    "Clemson University",
+    "Coastal Carolina University",
+    "Codarts Hogeschool voor de Kunsten",
+    "Colby College",
+    "Colby-Sawyer College",
+    "Colgate University",
+    "College of Arts & Sciences",
+    "College of Atlantic",
+    "College of the Holy Cross",
+    "Colorado College",
+    "Columbia College Chicago",
+    "Columbia University in the City of New York",
+    "Connecticut College",
+    "Cornell University",
+    "Curry College",
+    "Dalhousie University",
+    "Dartmouth College",
+    "Dean College",
+    "Dickinson College",
+    "Drexel University",
+    "Dublin City University",
+    "Duke University",
+    "Duquesne University",
+    "Eckerd College",
+    "Ecole de Cirque de Quebec",
+    "Ecole Nationale de Cirque",
+    "Elms College (College of Our Lady of the Elms)",
+    "Elon University",
+    "Embry-Riddle Aeronautical University-Daytona Beach",
+    "Emerson College",
+    "Emmanuel College",
+    "Endicott College",
+    "Fairfield University",
+    "Fairleigh Dickinson University-Florham Campus",
+    "Fisher College",
+    "Fitchburg State University",
+    "Framingham State University",
+    "Franklin Pierce University",
+    "George Washington University",
+    "Gettysburg College",
+    "Hamilton College",
+    "Hampshire College",
+    "Harvard University",
+    "Haverford College",
+    "High Point University",
+    "Hobart William Smith Colleges",
+    "Hofstra University",
+    "Hult International Business School",
+    "Husson University",
+    "Ithaca College",
+    "John Hopkins University",
+    "Johnson & Wales University-Providence",
+    "Keane University",
+    "Keene State College",
+    "Kenyon College",
+    "Kettering University",
+    "Lasell College",
+    "Lawrence University",
+    "Le Moyne College",
+    "Lehigh University",
+    "Leiden University College The Hague",
+    "Lesley University",
+    "Lousiana State University",
+    "Loyola University Chicago",
+    "Lynn University",
+    "Macalester College",
+    "Macromedia University of Applied Sciences",
+    "Maine Maritime Academy",
+    "Manhattan College",
+    "Manhattanville College",
+    "Marist College",
+    "Massachusssets Bay Community College",
+    "Massachusssets College of Liberal Arts",
+    "Massachusssets College of Pharmacy and Health Sciences",
+    "Massachusssets Institute of Technology (MIT)",
+    "Massachusssets Maritime Academy",
+    "McGill University",
+    "Merrimack College",
+    "Middlebury College",
+    "Middlesex Community College",
+    "Millsaps College",
+    "Moravian University",
+    "Mount Holyoke College",
+    "Mount Saint Mary College",
+    "New England College",
+    "New England Institute of Technology",
+    "New England School of Photography",
+    "New York Film Academy- New York City",
+    "New York University",
+    "Niagara University",
+    "Nichols College",
+    "North Carolina State University at Raleigh",
+    "Northeastern University",
+    "Northern Vermont University-Johnson",
+    "Northwestern University",
+    "Nova Southeastern University",
+    "Oberlin College",
+    "Occidental College",
+    "Ohio State University-Main Campus",
+    "Otis College of Art and Design",
+    "Oxford University",
+    "Pace University-Westchester Campus",
+    "Pennslvania College of Technology", 
+    "Pennsylvania State University",
+    "Pine Manor College",
+    "Plymouth State University",
+    "Pratt Institute-Main",
+    "Princeton University",
+    "Providence College",
+    "Purdue University-Main Campus",
+    "Quincy College",
+    "Quinnipiac University",
+    "Regis College",
+    "Rensselaer Polytechnic Institute",
+    "Rhode Island College",
+    "Ringling College of Art and Design",
+    "Rivier University",
+    "Rochester Institute of Technology",
+    "Roger Williams University",
+    "Rutgers University-New Brunswick",
+    "Sacred Heart University",
+    "Saint Anselm College",
+    "Saint John's University",
+    "Saint Joseph's College of Maine",
+    "Saint Michael's College",
+    "Salem State University",
+    "Salve Regina University",
+    "Sarah Lawrence College",
+    "Savannah College of Art and Design- SCAD",
+    "School of Art Institute of Chicago",
+    "Simmons University",
+    "Skidmore College",
+    "Smith College",
+    "Southern New Hampshire University",
+    "Springfield College",
+    "St. Bonaventure University",
+    "St. Olaf College",
+    "St. Francis Xavier University",
+    "St. John's University-New York",
+    "St. Lawrence University",
+    "Stanford University",
+    "Stephen F. Austin State University",
+    "Stonehill College",
+    "Stony Brook University",
+    "Suffolk University",
+    "SUNY at Albany",
+    "SUNY ar Purchase College",
+    "SUNY College at Oswego",
+    "SUNY College at Potsdam",
+    "Syracuse University",
+    "Technische Universiteit Delft",
+    "Temple University",
+    "The American University of Paris",
+    "The American University of Rome",
+    "The College of New Jersey",
+    "The College of Wooster",
+    "The New School",
+    "The Univesity of Alabama",
+    "The University of Tampa",
+    "The Univesity of Tennessee-Knoxville",
+    "Thomas College",
+    "Trinity College Dublin",
+    "Tufts University",
+    "U.S Air Force",
+    "U.S. Coast Guard",
+    "U.S. Marine Corps",
+    "U.S. National Guard",
+    "U.S. Navy",
+    "Union College",
+    "Universita Bocconi",
+    "Universiteit Maastricht",
+    "Universiteit Twente",
+    "University College Dublin",
+    "University of Alabama at Birmingham",
+    "University of Bridgeport",
+    "University of British Columbia",
+    "University of California-Berkeley",
+    "University of California-Santa Barbara",
+    "University of Chicago",
+    "University of Connecticut",
+    "University of Delaware",
+    "University of Hartford",
+    "University of Maine",
+    "University of Maine at Farmington",
+    "University of Mary Washington",
+    "University of Maryland-College Park",
+    "University of Massachusetts-Amherst",
+    "University of Massachusetts-Boston",
+    "University of Massachusetts-Dartmouth",
+    "University of Massachusetts-Lowell",
+    "University of Michigan-Ann Arbor",
+    "University of New England",
+    "University of New Hampshire-Main Campus",
+    "University of New Haven",
+    "University of Pennsylvania",
+    "University of Pittsburgh-Pittsburgh Campus",
+    "University of Rhode Island",
+    "University of Richmond",
+    "University of Rochester",
+    "University of Saint Joseph",
+    "University of Southern Maine",
+    "University of Toronto",
+    "University of Vermont",
+    "Universityof Wisconsin-Green Bay",
+    "Ursinus College",
+    "Vanderbilt University",
+    "Vassar College",
+    "Villanova University",
+    "Virginia Polytechnic Institute and State University",
+    "Wagner College",
+    "Washington University in St. Louis",
+    "Wellesley College",
+    "Wentworth Institute of Technology",
+    "Wesleyan University",
+    "Western Connecticut State University",
+    "Western New England University",
+    "Westfield State University",
+    "Wheaton College- Massachusetts",
+    "Worcester Polytechnic Institute",
+    "Worcester State University",
+    "Yale University",
 ]
