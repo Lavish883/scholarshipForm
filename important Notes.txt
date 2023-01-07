@@ -1,0 +1,8 @@
+// type object must be marked as modified to be saved in mongoDB
+
+user.form.formId = formId;
+user.markModified('form');
+await user.save();
+
+// Be careful with databases
+// Do not touch the schemas file at all, it is finished

@@ -19,7 +19,7 @@ async function generateVerficationLink(req, res){
     var token = crypto.randomBytes(16).toString('hex');
     // verify email
     if (!testIfValidEmail(email)) return res.send('not valid email');
-    // check if the verfiy link already exists or not
+    // check if the verify link already exists or not
     var doesItExist = await schemas.users.findOne({'verifyLink': token});
     
     while (doesItExist != null){
@@ -75,7 +75,7 @@ async function formPage(req, res){
     // check if user exits with that formId
     if (user == null || user == undefined) return res.send('Form Id is not found');
 
-    return res.send(user.email)
+    return res.render('form', {'user': user});
 }
 
 // verify email
@@ -95,7 +95,7 @@ async function verifyUserEmail(req, res){
     
     var formId = await generateLink(user.email, user.form.formId);
     // type object must be marked as modified to be saved in mongoDB
-    
+
     user.form.formId = formId;
     user.markModified('form');
 
@@ -105,10 +105,24 @@ async function verifyUserEmail(req, res){
     return res.send('Form Link is sent to your email');
 }
 
+// serve images from the database
+async function serveImage(req, res){
+    const formId = req.params.id;
+    var user = await schemas.users.findOne({'form.formId': formId});
+    // check if user exits with that formId
+    if (user == null || user == undefined) return res.send('Image is not found');
+
+    res.set('Content-Type', 'image/jpeg');
+    var imageBuffer = Buffer.from(user.form.image.replace('data:image/jpeg;base64,', ''), 'base64');
+    
+    return res.send(imageBuffer);
+}
+
 module.exports = {
     signUp,
     generateLink,
     formPage,
     verifyUserEmail,
-    generateVerficationLink
+    generateVerficationLink,
+    serveImage
 }
