@@ -7,6 +7,11 @@ function intializeCropper(event) {
     const file = event.target.files[0];
     const reader = new FileReader();
 
+    // unhide the modal for cropping
+    document.getElementById('modal').style.visibility = 'visible';
+    document.getElementById('form').style.display = 'none';
+    document.body.style.overflow = 'hidden';
+
     reader.addEventListener("load", () => {
         // convert image file to base64 string
         profileImage.setAttribute('src', reader.result);
@@ -20,7 +25,7 @@ function intializeCropper(event) {
         cropper = new Cropper(profileImage, {
             preview: '#imagePreview',
             viewMode: 3,
-            aspectRatio:1/1.5
+            aspectRatio:1/1.5,
         });
         
         cropper.setDragMode("move");
@@ -30,6 +35,24 @@ function intializeCropper(event) {
     if (file) {
         reader.readAsDataURL(file);
     }
+}
+
+async function closeCropper(){
+    await saveFormToServer();
+    // hide the modal for cropping
+    document.getElementById('modal').style.visibility = 'hidden';
+    document.getElementById('form').style.display = 'flex';
+    document.body.style.overflowY = 'scroll';
+    // fix the image preview
+    document.getElementById('imagePreview').innerHTML = '';
+    document.getElementById('imagePreview').style = '';
+
+    // create a new image element
+    const image = document.createElement('img');
+    image.src = cropper.getCroppedCanvas().toDataURL('image/jpeg');
+    image.width = 200;
+
+    document.getElementById('imagePreview').appendChild(image);
 }
 
 async function saveFormToServer(){
@@ -55,7 +78,7 @@ function getImageAsBuffer(){
     try {
         const canvas = cropper.getCroppedCanvas();
         const image = canvas.toDataURL('image/jpeg');
-        document.getElementById('error').innerText = image;
+        //document.getElementById('error').innerText = image;
         return image;
     } catch (error) {
         return null;
@@ -64,4 +87,4 @@ function getImageAsBuffer(){
 
 // add event listeners
 document.getElementById('personImage').addEventListener('change', intializeCropper);
-document.getElementById('doneWithImage').addEventListener('click', saveFormToServer);
+document.getElementById('doneWithImage').addEventListener('click', closeCropper);

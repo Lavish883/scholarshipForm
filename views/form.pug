@@ -1,20 +1,38 @@
 html 
     head 
         link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" integrity="sha512-cyzxRvewl+FOKTtpBzYjW6x6IAYUCZy3sGP40hn+DQkqeluGRCax7qztK2ImL64SA+C7kVWdLI6wvdlStawhyw==" crossorigin="anonymous" referrerpolicy="no-referrer")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        style 
+            include css/form.css
         style 
             include css/style.css
     body 
-        p Uplaod Image that you want others see
-        input(type="file" id="personImage" accept="image/*")
-        p 
         div(id="error" style="color:red;")
-        div(style="width:300px;height:300px;overflow:hidden;position:relative;")
-            div#imagePreview(style="width: 100%; height: 100%; overflow: hidden;")
+    
 
-        div.imgContainer 
-            img#profileImage(src="", alt="", style="display:block; max-width:100%;")
-        p 
-        button(id="doneWithImage", onclick="saveFormToServer()") Done
+        div.modal#modal
+            div.modal-content
+                h2 Crop Image
+                div.imgContainer 
+                    img#profileImage(src="", alt="")
+                input(type="submit" id="doneWithImage", onclick="saveFormToServer()" value="Done") 
+
+        form#form 
+            h1 Arlington High School Community Scholarship Application for the Class of 2023
+            p This AHS Community Scholarship Application is one application for eligibility for many local and individual scholarships. 
+            p Submissions are due electronically FEBRUARY 28th, 2022.
+            p Requests received after this deadline will not be considered for scholarship eligibility.
+            p Anti-Discrimination Statement:  Arlington High School reaffirms its policy against discrimination related to race, religion, sex, national origin or handicap in the admission, instruction, counseling or dismissal of students regarding any course or programs offered by the public schools an indicates its desire that each student be provided educational opportunities consistent with the student's aspirations and abilities.  The high school further indicates its acceptance of all federal and state laws regulations dealing with the civil rights of parents, students, and employees of the School Department.
+
+            div.profilePictureContainer
+                div#imagePreview
+                    img(src="/image/" + user.form.formId  width="200")
+                div.infoContainer
+                    p Please Upload a Image of you, so the committee can get to know you better. It also helps us add a image to your pdf genereated. It also helps the sponsors.
+                    input(style="border:none;padding:0px;" type="file" id="personImage" accept="image/*")
+
+            div !{formHTML}
+            input(type="submit" value="Submit")
 
         script(src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" integrity="sha512-6lplKUSl86rUVprDIjiW8DuOniNX8UDoRATqZSds/7t6zCQZfaCe3e5zcGaQwxa8Kpn5RTM9Fvl3X2lLV4grPQ==" crossorigin="anonymous" referrerpolicy="no-referrer") 
         

@@ -1,3 +1,10 @@
-.imgContainer {
-    max-width: 500px;
+
+*{
+    box-sizing: border-box !important;
+}
+
+body {
+    margin: 0px;
+    background-color:#000000d6;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
