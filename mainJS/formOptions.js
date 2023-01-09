@@ -586,23 +586,25 @@ const formOptions = [
         "question": "6 Digit Student ID",
         "type": "text",
         "required": true,
-        "minLength": 6,
-        "maxLength": 6, 
+        "name": "id"
     },
     {
         "question": "Last Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "name": "lastName"
     }, 
     {
         "question": "First Name",
         "type": "text",
-        "required": true
+        "required": true,
+        "name": "firstName"
     }, 
     {
         "question": "Gender",
         "type": "options",
         "required": true,
+        "name": "gender",
         "options": [
             "Female",
             "Male",
@@ -617,6 +619,7 @@ const formOptions = [
             "Yes",
             "No",
         ],
+        "name": "firstGen",
         "required": true
     },
     {
@@ -629,12 +632,14 @@ const formOptions = [
             "3",
             "Other:",
         ],
-        "required": true
+        "required": true,
+        "name": "siblingsInCollege"
     },
     {
         "question": "Please list any special/unusual circumstances, hardships, personal challenges, financial difficulties/circumstances, illness, etc.  (ex: loss of parent, difficulty paying for college, etc.)",
         "type": "text",
-        "required": false
+        "required": false,
+        "name": "specialCircumstances"
     },
     {
         "question": "Which elementary school did you attend?",
@@ -659,7 +664,8 @@ const formOptions = [
                 "Grade 5",
             ]
         },
-        "required": true
+        "required": true,
+        "name": "elementarySchools"
     },
     {
         "question": "Did you participate in Pop Warner Football or Cheerleading?",
@@ -668,7 +674,8 @@ const formOptions = [
             "Yes",
             "No",
         ],
-        "required": true
+        "required": true,
+        "name": "popWarner"
     },
     {
         "question": "How many years did you participate in Pop Warner Football or Cheerleading?",
@@ -681,27 +688,33 @@ const formOptions = [
             "4",
             "Other:"
         ],
-        "required": true
+        "required": true,
+        "name": "popWarnerYears"
     },
     {
         "question": "Total number of community service hours completed in grades 9-12? This may be more than the 40 required hours for graduation requirement.",
         "type": "text",
-        "required": true
+        "required": true,
+        "name": "communityServiceHours"
     },
     {
         "question": "List where you have completed your community service.  (ex: CIT summer of 2019)",
         "type": "text",
-        "required": true
+        "required": true,
+        "name": "communityServiceList"
     },
     {
         "question": "Did you receive any of the listed honors/leadership awards? (Check all that apply)",
         "type": "checkBoxes",
-        "options": allAwardsList
+        "options": allAwardsList,
+        "required": false,
+        "name": "awardsList"
     }, 
     {
         "question": "List any other honors/awards you have received that are not listed above: (ex: Youth Banner Project Award)",
         "type": "text",
-        "required": false
+        "required": false,
+        "name": "otherAwards"
     }, 
     {
         "question": "Click all sports (in and outside of school) that apply to you:",
@@ -715,17 +728,20 @@ const formOptions = [
                 "12th Grade",
             ]
         },
-        "required": false
+        "required": false,
+        "name": "sportsList"
     },
     {
         "question": "Please list any additional sports not included above.",
         "type": "text",
-        "required": false
+        "required": false,
+        "name": "otherSports"
     },
     {
         "question": "Sports-Related Leadership/Awards - (ex: team captain)",
         "type": "text",
-        "required": false
+        "required": false,
+        "name": "sportsAwards"
     },
     {
         "question": "Click all extracurriculars (in and outside of school) that apply to you:",
@@ -739,22 +755,26 @@ const formOptions = [
                 "12th Grade",
             ]
         },
-        "required": false
+        "required": false,
+        "name": "clubsList"
     },
     {
         "question": "Please list additional extracurriculars not listed above.",
         "type": "text",
-        "required": false
+        "required": false,
+        "name": "otherClubs"
     },
     {
         "question": "Extra Curricular Leadership/Awards - (ex: officer in a club)",
         "type": "text",
-        "required": false
+        "required": false,
+        "name": "clubsAwards"
     },
     {
         "question": "Please list other activities that you participate in: (only list if not in your application elsewhere)",
         "type": "text",
-        "required": false
+        "required": false,
+        "name": "otherActivities"
     },
     {
         "question": "Employment Experience - Have you ever been employed?",
@@ -771,45 +791,55 @@ const formOptions = [
                 "12th Grade",
             ]
         },
-        "required": true
+        "required": true,
+        "name": "employmentExperience"
     },
     {
         "question": "Where have you been employed?",
         "type": "text",
-        "required": false
+        "required": false,
+        "name": "employmentList"
     },
     {
         "question": "What is your intended career? (Check up to 3)",
         "type": "checkBoxes",
         "options": allIntendedCareerList,
-        "required": true
+        "required": true,
+        "name": "intendedCareer",
+        "maxSelections": 3,
     },
     {
         "question": "If your intended career is not listed, please write it here.",
         "type": "text",
-        "required": false
+        "required": false,
+        "name": "otherIntendedCareer"
     },
     {
         "question": "What is your intended major? (Check up to 3)",
         "type": "checkBoxes",
         "options": allMajorsList,
-        "required": true
+        "required": true,
+        "name": "intendedMajor",
+        "maxSelections": 3,
     },
     {
         "question": "If your intended major is not listed, please write it here.",
         "type": "text",
-        "required": false
+        "required": false,
+        "name": "otherIntendedMajor"
     },
     {
         "question": "What are your post-graduate plans?",
         "type": "checkBoxes",
         "options": postGradPlansList,
-        "required": true
+        "required": true,
+        "name": "postGradPlans"
     },
     {
         "question": "If you are taking a Gap Year, what are your plans?",
         "type": "text",
-        "required": false
+        "required": false,
+        "name": "gapYearPlans"
     },
     {
         "question": "Do you plan to attend a 4 year UMASS or MA State University?",
@@ -819,19 +849,22 @@ const formOptions = [
             "No",
             "Unsure"
         ],
-        "required": true
+        "required": true,
+        "name": "umassStateUniversity"
     },
     {
         "question": "If you have already committed to a school, where will you be attending? If you are undecided, please leave blank.",
         "type": "options",
         "options": allCollegesList,
-        "required": false
+        "required": false,
+        "name": "committedCollege"
     },
     {
         "question": "What is your first choice school?",
         "type": "options",
         "options": allCollegesList,
-        "required": true
+        "required": true,
+        "name": "firstChoiceCollege"
     },
     {
         "question": "Do you plan on commuting to college?",
@@ -841,12 +874,14 @@ const formOptions = [
             "No",
             "Unsure"
         ],
-        "required": true
+        "required": true,
+        "name": "commuteCollege"
     },
     {
         "question": "List any private/outside scholarships you have already received for college.",
         "type": "text",
-        "required": true
+        "required": true,
+        "name": "privateScholarships"
     },
     {
         "question": "Have you or do you plan to file the FAFSA?",
@@ -856,28 +891,33 @@ const formOptions = [
             "No",
             "Unsure"
         ],
-        "required": true
+        "required": true,
+        "name": "fafsa"
     },
     {
         "question": "OPTIONAL: If so, what is your expected family contribution (EFC) as reported on your Student Aid Report (SAR)?",
         "type": "text",
         "required": false,
+        "name": "expectedFamilyContribution",
         "img": "https://lh5.googleusercontent.com/YKkJXlwF3Wz05TaLh9rHfZtCqe1SxT3G9VjwSOsSaYvRbPwUhnTFA7i2_fe0vNi7-28kpkCyoka-absCWd-OdJJVdwCDwrR7MLjr8lxQsFjnXN1xl2InFLrbQmpEA4K-_g=w580"
     },
     {
         "question": "In 250 words or less, please share your future aspirations and goals.",
         "type": "text",
-        "required": true
+        "required": true,
+        "name": "futureAspirations"
     },
     {
         "question": "Is there any other information that you would like to share?",
         "type": "text",
-        "required": false
+        "required": false,
+        "name": "otherInformation"
     },
     {
         "question": "Student Signature (Your signature indicates that all information is truthful and accurate to the best of your knowledge.)",
         "type": "text",
-        "required": true
+        "required": true,
+        "name": "studentSignature"
     }
 
 ]

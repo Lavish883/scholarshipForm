@@ -62,7 +62,10 @@ form img:hover {
 form .formQuestion {
     display: flex;
     flex-direction: column;
-    margin: 8px 0px;
+    margin: 40px 0px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgb(75, 74, 77);
 }
 
 @media (max-width: 600px) {
@@ -86,7 +89,7 @@ select {
     width: 100%;
 }
 
-input[type="submit"] {
+input[type="submit"], .showMoreBtn {
     font-size: 18px;
     background-color: #4caf50;
     color: white;
@@ -97,8 +100,48 @@ input[type="submit"] {
     margin-top: 24px;
 }
 
-input[type="submit"]:hover {
+input[type="submit"]:hover, .showMoreBtn:hover {
     background-color: #45a049;
+}
+
+.showMoreBtn {
+    margin-top: 0px;
+}
+
+.noBottomBorder {
+    border-bottom: none;
+}
+
+
+.showMoreBtnCont {
+    padding: 0px 15px 10px 15px;
+    border: groove 2px rgb(192, 192, 192);
+    border-top: none;
+    margin-inline-start: 2px;
+    margin-inline-end: 2px;
+}
+
+.requiredDisplay {
+    color: #ff0000;
+    margin: 0px;
+    font-size: 30px;
+    float: right;
+}
+
+h4 {
+    font-size: 15px;
+    margin: 10px 0px;
+}
+
+.speficSearch {
+    width: 50%;
+    margin-bottom: 20px;
+    padding: 8px;
+}
+
+.noBorderNeeded {
+    border: none;
+    margin-top: 10px;
 }
 
 #profileImage {
@@ -169,6 +212,20 @@ th {
 
 input:focus {
     outline: none;
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
 
 @media (max-width: 600px) {
