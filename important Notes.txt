@@ -6,3 +6,5 @@ await user.save();
 
 // Be careful with databases
 // Do not touch the schemas file at all, it is finished
+
+// in a fieldset the name for all the input type raido has to be same

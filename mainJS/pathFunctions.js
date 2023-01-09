@@ -2,44 +2,47 @@ const crypto = require('crypto');
 const mailFunctions = require('../mainJS/mailFunctions.js')
 const schemas = require('../schemas/schemas'); // schemas
 
-function signUp(req, res){
+const formOptions = require('../mainJS/formOptions.js');
+const makeFormHTML = require('../mainJS/makeFormHTML.js');
+
+function signUp(req, res) {
     return res.render('index')
 }
 
 // sees if its a valid spyponders email
-function testIfValidEmail(email){
+function testIfValidEmail(email) {
     let regex = /\@spyponders\.com/;
 
     return regex.test(email);
 }
 
 // genreate email verifaction link
-async function generateVerficationLink(req, res){
+async function generateVerficationLink(req, res) {
     const email = req.body.email;
     var token = crypto.randomBytes(16).toString('hex');
     // verify email
     if (!testIfValidEmail(email)) return res.send('not valid email');
     // check if the verify link already exists or not
-    var doesItExist = await schemas.users.findOne({'verifyLink': token});
-    
-    while (doesItExist != null){
+    var doesItExist = await schemas.users.findOne({ 'verifyLink': token });
+
+    while (doesItExist != null) {
         token = crypto.randomBytes(16).toString('hex');
-        doesItExist = await schemas.users.findOne({'verifyLink': token});
+        doesItExist = await schemas.users.findOne({ 'verifyLink': token });
     }
 
     // add the user to the database if it doesnt exist
-    var user = await schemas.users.findOne({"email": email});
-    
-    if (user == null || user == undefined){
+    var user = await schemas.users.findOne({ "email": email });
+
+    if (user == null || user == undefined) {
         user = new schemas.users({
             "email": email,
             "verfied": false,
             "verifyLink": token,
-            form: {'formId': ''}
+            form: { 'formId': '' }
         });
     } else if (user.verfied == false) {  // update verify link if not verfied
         user.verifyLink = token;
-    } else if (user.verfied == true) { 
+    } else if (user.verfied == true) {
         return res.send('Email already verfied');
     }
 
@@ -51,16 +54,16 @@ async function generateVerficationLink(req, res){
 }
 
 // genreate link from email provided
-async function generateLink(email, token){    
+async function generateLink(email, token) {
     token = token == '' ? crypto.randomBytes(8).toString('hex') : token;
     // verify email, if something wrong happens return false
     if (!testIfValidEmail(email)) return false;
     // check if that formId already exists or not
-    var doesItExist = await schemas.users.findOne({'form.formId': token});
-    
-    while (doesItExist != null){
+    var doesItExist = await schemas.users.findOne({ 'form.formId': token });
+
+    while (doesItExist != null) {
         token = crypto.randomBytes(8).toString('hex');
-        doesItExist = await schemas.users.findOne({'form.formId': token});
+        doesItExist = await schemas.users.findOne({ 'form.formId': token });
     }
 
     //console.log(token);
@@ -70,29 +73,31 @@ async function generateLink(email, token){
     return token;
 }
 
-async function formPage(req, res){
-    var user = await schemas.users.findOne({'form.formId': req.params.id});
+async function formPage(req, res) {
+    var user = await schemas.users.findOne({ 'form.formId': req.params.id });
     // check if user exits with that formId
     if (user == null || user == undefined) return res.send('Form Id is not found');
+    // form HTML
+    var formHTML = makeFormHTML(formOptions, req.params.id);
 
-    return res.render('form', {'user': user});
+    return res.render('form', { 'user': user, 'formHTML': formHTML });
 }
 
 // verify email
-async function verifyUserEmail(req, res){
+async function verifyUserEmail(req, res) {
     var verifyLink = req.params.verifyLink;
-    var user = await schemas.users.findOne({"verifyLink": verifyLink});
-    
+    var user = await schemas.users.findOne({ "verifyLink": verifyLink });
+
     // if there are no user we dont need to do anything
     if (user == null || user == undefined) return res.send('Verify Link not found');
 
     // update the user to be verfied
-    if (user.verfied == false){
+    if (user.verfied == false) {
         user.verfied = true;
     }
     // if there is a form already created for the user
     // send the link to the form  
-    
+
     var formId = await generateLink(user.email, user.form.formId);
     // type object must be marked as modified to be saved in mongoDB
 
@@ -106,15 +111,15 @@ async function verifyUserEmail(req, res){
 }
 
 // serve images from the database
-async function serveImage(req, res){
+async function serveImage(req, res) {
     const formId = req.params.id;
-    var user = await schemas.users.findOne({'form.formId': formId});
+    var user = await schemas.users.findOne({ 'form.formId': formId });
     // check if user exits with that formId
     if (user == null || user == undefined) return res.send('Image is not found');
 
     res.set('Content-Type', 'image/jpeg');
     var imageBuffer = Buffer.from(user.form.image.replace('data:image/jpeg;base64,', ''), 'base64');
-    
+
     return res.send(imageBuffer);
 }
 
