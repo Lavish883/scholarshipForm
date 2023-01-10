@@ -55,6 +55,39 @@ async function closeCropper() {
     document.getElementById('imagePreview').appendChild(image);
 }
 
+function getAllFormValues(){
+    const allFormElements = document.querySelectorAll('.answerHere');
+    var formValues = {};
+
+    for (var elm of allFormElements){
+        let type = elm.getAttribute('whatType');
+        
+        if (type == 'text' || type == 'textArea'){
+            // there can only be one of these
+            var childElm = elm.querySelector(`[type=${type}]`);
+
+            formValues[childElm.getAttribute('name')] = childElm.value;
+        }
+
+        if (type == 'options'){
+            // get the value of the one that is checked
+            console.log(type, elm.querySelectorAll(`[type=radio]`))
+            for (var childElm of elm.querySelectorAll(`[type=radio]`)){
+                if (childElm.checked){
+                    if (childElm.value == 'Other:'){
+                        formValues[childElm.getAttribute('name')] = elm.querySelector('.withOther').value;
+                    } else {
+                        formValues[childElm.getAttribute('name')] = childElm.value;
+                    }
+                    continue;
+                }
+            }
+        }
+    }
+
+    return formValues;
+}
+
 async function saveFormToServer() {
     if (autoSaveDisabled) return setTimeout(() => autoSaveDisabled = false, 1000);
     autoSaveDisabled = true;
@@ -66,8 +99,9 @@ async function saveFormToServer() {
         body: JSON.stringify({
             "formId": window.location.href.split('/form/')[1],
             "form": {
-                "image": getImageAsBuffer()
-            }
+                "image": getImageAsBuffer(),
+                "values": getAllFormValues()
+            },
         })
     }
     const request = await fetch('/saveForm', options);
@@ -164,9 +198,42 @@ function validateTextInput(obj) {
 
 function validateFieldSets(obj) {
     var maxSelections = obj.getAttribute('maxselections');
-    console.log(maxSelections);
-}
 
+    if (maxSelections == null || maxSelections == undefined) {
+        maxSelections = 1;
+    }
+
+    // get all children of the fieldset
+    const children = obj.querySelectorAll('input');
+    var selected = 0;
+
+    for (var child of children) {
+        // if child is none of above we don't care about it
+        if (child.getAttribute('type') == 'checkbox') {
+            if (child.value == 'None of the above' || child.value == 'Undecided' || child.value == "Haven't yet"){
+                return false;
+            }
+        }
+
+        if (child.checked) {
+            selected++;
+        }
+    }
+
+    if (maxSelections != 'none' && selected != maxSelections) {
+        // shake the input if it is not valid
+        return true;
+    }
+
+    // or Other is selcted but nothing is written its invalid
+    if (obj.querySelector("[value='Other:']") != null){
+        if (obj.querySelector("[value='Other:']").checked == true && obj.querySelector('.withOther').value.replaceAll(' ', '') == ''){
+            return true;
+        }
+    }
+
+    return false;
+}
 // validate the form before sending
 function validateForm(event) {
     event.preventDefault();
@@ -175,23 +242,39 @@ function validateForm(event) {
 
     for (var requiredField of requiredFields) {
 
-        if (requiredField.nodeName == 'INPUT' && false) {
+        if (requiredField.nodeName == 'INPUT' && validateTextInput(requiredField)) { //
             requiredField.parentElement.parentElement.scrollIntoView();
             return;
         }
 
-        if (requiredField.nodeName == 'FIELDSET' && validateFieldSets(requiredField)) {
-            requiredField.parentElement.parentElement.scrollIntoView();
+        if (requiredField.nodeName != 'INPUT' && validateFieldSets(requiredField)) {
+            // give an animation of shake if its wrong
+            requiredField.style.animation = 'shake 0.8s';
+            requiredField.style.color = 'white';
+            requiredField.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
+
+            setTimeout(() => {
+                requiredField.style = '';
+            }, 900);
+
+            requiredField.parentElement.scrollIntoView();
             return;
         }
-
-        console.log(requiredField.nodeName);
-        console.log(requiredField.value);
     }
-    console.log(requiredFields);
+    saveFormToServer();
 }
+
+// auto save
+function autoSave(){
+    saveFormToServer();
+    alert('auto saving')
+    setTimeout(autoSave, 10000);
+}
+
 
 // add event listeners
 document.getElementById('personImage').addEventListener('change', intializeCropper);
 document.getElementById('doneWithImage').addEventListener('click', closeCropper);
 document.getElementById('sumbitFormBtn').addEventListener('click', validateForm);
+
+//setTimeout(autoSave, 10000);

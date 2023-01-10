@@ -21,10 +21,18 @@ async function saveForm(req, res){
     }
     
     // create a new buffer from the image
-    const imageBuffer = Buffer.from(bodyForm.image, 'base64');
-    console.log(imageBuffer);
+    //const imageBuffer = Buffer.from(bodyForm.image, 'base64');
+    //console.log(imageBuffer);
     
-    user.form.image = bodyForm.image;
+    console.log(bodyForm.values)
+
+    for (var key in bodyForm.values){
+        user.form[key] = bodyForm.values[key];
+    }
+
+    if (bodyForm.image != null) {
+        user.form.image = bodyForm.image;
+    }
     user.markModified('form');
     await user.save();  
 
