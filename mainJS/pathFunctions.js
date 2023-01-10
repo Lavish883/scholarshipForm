@@ -38,7 +38,7 @@ async function generateVerficationLink(req, res) {
             "email": email,
             "verfied": false,
             "verifyLink": token,
-            form: { 'formId': '' }
+            form: { 'formId': '', 'image': '' }
         });
     } else if (user.verfied == false) {  // update verify link if not verfied
         user.verifyLink = token;
@@ -118,6 +118,10 @@ async function serveImage(req, res) {
     if (user == null || user == undefined) return res.send('Image is not found');
 
     res.set('Content-Type', 'image/jpeg');
+
+    if (user.form.image == undefined || user.form.image == null){
+        return res.send('');
+    }
     var imageBuffer = Buffer.from(user.form.image.replace('data:image/jpeg;base64,', ''), 'base64');
 
     return res.send(imageBuffer);

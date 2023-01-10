@@ -665,7 +665,8 @@ const formOptions = [
             ]
         },
         "required": true,
-        "name": "elementarySchools"
+        "name": "elementarySchools",
+        "maxSelections": 6
     },
     {
         "question": "Did you participate in Pop Warner Football or Cheerleading?",
@@ -792,7 +793,8 @@ const formOptions = [
             ]
         },
         "required": true,
-        "name": "employmentExperience"
+        "name": "employmentExperience",
+        "maxSelections": 4
     },
     {
         "question": "Where have you been employed?",
@@ -843,7 +845,7 @@ const formOptions = [
     },
     {
         "question": "Do you plan to attend a 4 year UMASS or MA State University?",
-        "type": "checkBoxes",
+        "type": "options",
         "options": [
             "Yes",
             "No",
@@ -892,7 +894,7 @@ const formOptions = [
             "Unsure"
         ],
         "required": true,
-        "name": "fafsa"
+        "name": "fafsa",
     },
     {
         "question": "OPTIONAL: If so, what is your expected family contribution (EFC) as reported on your Student Aid Report (SAR)?",

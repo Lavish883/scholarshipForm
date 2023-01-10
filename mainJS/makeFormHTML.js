@@ -22,7 +22,7 @@ function makeTextQuestions(questionDetails) {
     <div class="formQuestion">
         <label for="${questionDetails.question}" class="questionPart">${questionDetails.question}<span class="requiredDisplay">${questionDetails.required == true ? '*': ''}</span></label>
         ${imageHTML}
-        <div class="answerHere">
+        <div whatType=${questionDetails.type} class="answerHere">
             <input ${questionDetails.required ? "required": ''} type="text" ${minLength} ${maxLength} name="${questionDetails.name}" />
         </div>    
     </div>
@@ -53,7 +53,7 @@ function makeMultipleChoiceQuestions(questionDetails) {
         ${optionsHTML.length > 9 ? `<h4>Search for a specific option</h4>` : ''}
         ${optionsHTML.length > 9 ? `<input class="speficSearch" type="text" onKeyUp="filterOptions(this)" />` : '' }
 
-        <fieldset required=${questionDetails.required} class="answerHere ${optionsHTML.length > 9 ? 'noBottomBorder' : ''}">
+        <fieldset ${questionDetails.required ? "required": ''} whatType=${questionDetails.type} class="answerHere ${optionsHTML.length > 9 ? 'noBottomBorder' : ''}">
             ${optionsHTML.join('')}
         </fieldset>    
         ${optionsHTML.length > 9 ? `<div class="showMoreBtnCont" ><button type="button" class="showMoreBtn" shownMore="true" onclick="showMoreOptions(this)">Show All</button></div>`: '' }
@@ -85,7 +85,7 @@ function makeCheckboxQuestions(questionDetails) {
         ${optionsHTML.length > 9 ? `<h4>Search for a specific option</h4>` : ''}
         ${optionsHTML.length > 9 ? `<input class="speficSearch" type="text" onKeyUp="filterOptions(this)" />` : '' }
 
-        <fieldset maxSelections=${questionDetails.maxSelections} required=${questionDetails.required} class="answerHere ${optionsHTML.length > 9 ? 'noBottomBorder' : ''}">
+        <fieldset whatType=${questionDetails.type} ${questionDetails.maxSelections != undefined ? "maxselections=" + questionDetails.maxSelections: ''} ${questionDetails.required ? "required": ''} class="answerHere ${optionsHTML.length > 9 ? 'noBottomBorder' : ''}">
             ${optionsHTML.join('')}
         </fieldset>
         ${optionsHTML.length > 9 ? `<div class="showMoreBtnCont" ><button type="button" class="showMoreBtn" shownMore="true" onclick="showMoreOptions(this)">Show All</button></div>`: '' }
@@ -131,7 +131,7 @@ function makeCheckboxGridQuestions(questionDetails) {
         ${tableHTML.length > 9 ? `<h4>Search for a specific option</h4>` : ''}
         ${tableHTML.length > 9 ? `<input class="speficSearch" type="text" onKeyUp="filterOptions(this)" />` : '' }
         
-        <table class="answerHere">
+        <table whatType=${questionDetails.type} ${questionDetails.required ? "required": ''} ${questionDetails.maxSelections != undefined ? "maxselections=" + questionDetails.maxSelections: ''} class="answerHere">
             ${tableHTML.join('')}
         </table>
 
