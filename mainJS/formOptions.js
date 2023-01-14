@@ -318,7 +318,7 @@ const postGradPlansList = [
     "Employment",
     "Gap Year",
     "Undecided",
-    "Other",
+    "Other:",
 ]
 
 const allCollegesList = [
@@ -583,6 +583,15 @@ const allCollegesList = [
 // basically contains all the questions for the form and the options for each question
 const formOptions = [
     {
+        "question": "You live in a blue house?",
+        "type": "options",
+        "options": [
+            "Yes",
+            "No"
+        ],
+        "required": true
+    },
+    {
         "question": "6 Digit Student ID",
         "type": "text",
         "required": true,
@@ -832,7 +841,7 @@ const formOptions = [
     },
     {
         "question": "What are your post-graduate plans?",
-        "type": "checkBoxes",
+        "type": "options",
         "options": postGradPlansList,
         "required": true,
         "name": "postGradPlans"
@@ -904,10 +913,22 @@ const formOptions = [
         "img": "https://lh5.googleusercontent.com/YKkJXlwF3Wz05TaLh9rHfZtCqe1SxT3G9VjwSOsSaYvRbPwUhnTFA7i2_fe0vNi7-28kpkCyoka-absCWd-OdJJVdwCDwrR7MLjr8lxQsFjnXN1xl2InFLrbQmpEA4K-_g=w580"
     },
     {
+        "question": "What is your GPA?",
+        "type": "text",
+        "required": true,
+        "name": "gpa"
+    },
+    {
         "question": "In 250 words or less, please share your future aspirations and goals.",
         "type": "text",
         "required": true,
         "name": "futureAspirations"
+    },
+    {
+        "question": "What is your greatest weakness? And how did you overcome it?",
+        "type": "text",
+        "required": true,
+        "name": "greatestWeakness"
     },
     {
         "question": "Is there any other information that you would like to share?",
