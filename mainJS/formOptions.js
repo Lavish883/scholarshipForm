@@ -170,6 +170,8 @@ const allClubsList = [
 ]
 
 const allIntendedCareerList = [
+    "Undecided",
+    "None of the Below",
     "Accounting",
     "Anthropology",
     "Architecture",
@@ -233,9 +235,7 @@ const allIntendedCareerList = [
     "Statistics/Data Science",
     "Studio Art",
     "Theatre",
-    "Urban Planning",
-    "Undecided",
-    "None of the Above",
+    "Urban Planning"
 ]
 
 const allMajorsList = [
@@ -583,15 +583,6 @@ const allCollegesList = [
 // basically contains all the questions for the form and the options for each question
 const formOptions = [
     {
-        "question": "You live in a blue house?",
-        "type": "options",
-        "options": [
-            "Yes",
-            "No"
-        ],
-        "required": true
-    },
-    {
         "question": "6 Digit Student ID",
         "type": "text",
         "required": true,
@@ -920,19 +911,19 @@ const formOptions = [
     },
     {
         "question": "In 250 words or less, please share your future aspirations and goals.",
-        "type": "text",
+        "type": "textArea",
         "required": true,
         "name": "futureAspirations"
     },
     {
         "question": "What is your greatest weakness? And how did you overcome it?",
-        "type": "text",
+        "type": "textArea",
         "required": true,
         "name": "greatestWeakness"
     },
     {
         "question": "Is there any other information that you would like to share?",
-        "type": "text",
+        "type": "textArea",
         "required": false,
         "name": "otherInformation"
     },

@@ -3,6 +3,7 @@ function makeTextQuestions(questionDetails) {
     var minLength = '';
     var maxLength = '';
     var imageHTML = '';
+    var htmlTag = 'input';
     // check if it has max length or minlength attributes or not or image for refrence
     if (questionDetails.minLength != undefined) {
         minLength = `minlength=${questionDetails.minLength}`
@@ -16,6 +17,9 @@ function makeTextQuestions(questionDetails) {
         imageHTML = `<img src="${questionDetails.img}" />`
     }
 
+    if (questionDetails.type == 'textArea') {
+        htmlTag = 'textarea';
+    }
 
     // return the HTML for the question
     return `
@@ -23,7 +27,7 @@ function makeTextQuestions(questionDetails) {
         <label for="${questionDetails.question}" class="questionPart">${questionDetails.question}<span class="requiredDisplay">${questionDetails.required == true ? '*': ''}</span></label>
         ${imageHTML}
         <div whatType=${questionDetails.type} class="answerHere">
-            <input ${questionDetails.required ? "required": ''} type="text" ${minLength} ${maxLength} name="${questionDetails.name}" />
+            <${htmlTag} ${questionDetails.required ? "required": ''} type="${questionDetails.type}" ${minLength} ${maxLength} name="${questionDetails.name}"></${htmlTag}>
         </div>    
     </div>
     `
@@ -116,7 +120,7 @@ function makeCheckboxGridQuestions(questionDetails) {
                 continue;
             }
             
-            rowHTML.push(`<th><input type="checkbox" name="${questionDetails.name}" id="${questionDetails.options.columns[j - 1] + ' ' + questionDetails.options.rows[i - 1]}" /></th>`);
+            rowHTML.push(`<th><input type="checkbox" name="${questionDetails.name}" id="${questionDetails.options.columns[j - 1] + ' !@#$% ' + questionDetails.options.rows[i - 1]}" /></th>`);
             
         }
         rowHTML.push(`</tr>`);
@@ -143,7 +147,7 @@ function makeFormHTML(formJSON, formId) {
     var htmlArry = [];
 
     for (var i = 0; i < formJSON.length; i++) {
-        if (formJSON[i].type == 'text') {
+        if (formJSON[i].type == 'text' || formJSON[i].type == 'textArea') {
             htmlArry.push(makeTextQuestions(formJSON[i]));
             continue;
         }
