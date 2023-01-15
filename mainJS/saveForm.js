@@ -6,7 +6,6 @@ async function getUser(formId){
     return await schemas.users.findOne({'form.formId': formId});
 }
 
-
 // save form to the database
 async function saveForm(req, res){
     console.log('got here')

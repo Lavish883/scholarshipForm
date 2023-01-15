@@ -170,6 +170,8 @@ const allClubsList = [
 ]
 
 const allIntendedCareerList = [
+    "Undecided",
+    "None of the Below",
     "Accounting",
     "Anthropology",
     "Architecture",
@@ -233,9 +235,7 @@ const allIntendedCareerList = [
     "Statistics/Data Science",
     "Studio Art",
     "Theatre",
-    "Urban Planning",
-    "Undecided",
-    "None of the Above",
+    "Urban Planning"
 ]
 
 const allMajorsList = [
@@ -318,7 +318,7 @@ const postGradPlansList = [
     "Employment",
     "Gap Year",
     "Undecided",
-    "Other",
+    "Other:",
 ]
 
 const allCollegesList = [
@@ -832,7 +832,7 @@ const formOptions = [
     },
     {
         "question": "What are your post-graduate plans?",
-        "type": "checkBoxes",
+        "type": "options",
         "options": postGradPlansList,
         "required": true,
         "name": "postGradPlans"
@@ -904,14 +904,26 @@ const formOptions = [
         "img": "https://lh5.googleusercontent.com/YKkJXlwF3Wz05TaLh9rHfZtCqe1SxT3G9VjwSOsSaYvRbPwUhnTFA7i2_fe0vNi7-28kpkCyoka-absCWd-OdJJVdwCDwrR7MLjr8lxQsFjnXN1xl2InFLrbQmpEA4K-_g=w580"
     },
     {
-        "question": "In 250 words or less, please share your future aspirations and goals.",
+        "question": "What is your GPA?",
         "type": "text",
+        "required": true,
+        "name": "gpa"
+    },
+    {
+        "question": "In 250 words or less, please share your future aspirations and goals.",
+        "type": "textArea",
         "required": true,
         "name": "futureAspirations"
     },
     {
+        "question": "What is your greatest weakness? And how did you overcome it?",
+        "type": "textArea",
+        "required": true,
+        "name": "greatestWeakness"
+    },
+    {
         "question": "Is there any other information that you would like to share?",
-        "type": "text",
+        "type": "textArea",
         "required": false,
         "name": "otherInformation"
     },

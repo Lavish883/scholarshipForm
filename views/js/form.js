@@ -1,6 +1,7 @@
 var profileImage = document.getElementById('profileImage');
 var cropper;
 var autoSaveDisabled = false;
+var finishedGoingOver = false;
 
 
 function intializeCropper(event) {
@@ -37,8 +38,25 @@ function intializeCropper(event) {
     }
 }
 
+async function saveImageToServer() {
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            "formId": window.location.href.split('/form/')[1],
+            "form": {
+                "image": cropper.getCroppedCanvas().toDataURL('image/jpeg'),
+            },
+        })
+    }
+    const request = await fetch('/saveForm', options);
+    const data = await request.text();
+}
+
 async function closeCropper() {
-    await saveFormToServer();
+    await saveImageToServer();
     // hide the modal for cropping
     document.getElementById('modal').style.visibility = 'hidden';
     document.getElementById('form').style.display = 'flex';
@@ -55,27 +73,27 @@ async function closeCropper() {
     document.getElementById('imagePreview').appendChild(image);
 }
 
-function getAllFormValues(){
+function getAllFormValues() {
     const allFormElements = document.querySelectorAll('.answerHere');
     var formValues = {};
 
-    for (var elm of allFormElements){
+    for (var elm of allFormElements) {
         let type = elm.getAttribute('whatType');
-        
-        if (type == 'text' || type == 'textArea'){
+
+        if (type == 'text' || type == 'textArea') {
             // there can only be one of these
             var childElm = elm.querySelector(`[type=${type}]`);
 
             formValues[childElm.getAttribute('name')] = childElm.value;
         }
 
-        if (type == 'options'){
+        if (type == 'options') {
             // get the value of the one that is checked
-            console.log(type, elm.querySelectorAll(`[type=radio]`))
-            for (var childElm of elm.querySelectorAll(`[type=radio]`)){
-                if (childElm.checked){
-                    if (childElm.value == 'Other:'){
-                        formValues[childElm.getAttribute('name')] = elm.querySelector('.withOther').value;
+            //console.log(type, elm.querySelectorAll(`[type=radio]`))
+            for (var childElm of elm.querySelectorAll(`[type=radio]`)) {
+                if (childElm.checked) {
+                    if (childElm.value == 'Other:') {
+                        formValues[childElm.getAttribute('name')] = " !@#$ " + elm.querySelector('.withOther').value;
                     } else {
                         formValues[childElm.getAttribute('name')] = childElm.value;
                     }
@@ -83,13 +101,37 @@ function getAllFormValues(){
                 }
             }
         }
+
+        if (type == 'checkBoxes') {
+            // get the value of the one that is checked
+            var checked = [];
+            for (var childElm of elm.querySelectorAll(`[type=checkbox]`)) {
+                if (childElm.checked) {
+                    checked.push(childElm.value);
+                }
+            }
+            formValues[childElm.getAttribute('name')] = checked;
+            console.log(checked);
+        }
+
+        if (type == 'checkBoxesGrid') {
+            var grid = [];
+            for (var childElm of elm.querySelectorAll(`[type=checkbox]`)) {
+                if (childElm.checked) {
+                    var splitId = childElm.getAttribute('id').split(' !@#$% ');
+                    grid.push({ 'columnValue': splitId[0], 'rowValue': splitId[1] });
+                }
+            }
+            formValues[childElm.getAttribute('name')] = grid;
+            console.log(grid);
+        }
     }
 
     return formValues;
 }
 
 async function saveFormToServer() {
-    if (autoSaveDisabled) return setTimeout(() => autoSaveDisabled = false, 1000);
+    console.log('Saving.......')
     autoSaveDisabled = true;
     const options = {
         method: 'POST',
@@ -99,13 +141,13 @@ async function saveFormToServer() {
         body: JSON.stringify({
             "formId": window.location.href.split('/form/')[1],
             "form": {
-                "image": getImageAsBuffer(),
                 "values": getAllFormValues()
             },
         })
     }
     const request = await fetch('/saveForm', options);
     const data = await request.text();
+    console.log('Saveddddd')
 }
 
 function getImageAsBuffer() {
@@ -180,6 +222,8 @@ function filterOptions(object) {
     //console.log(options);
 }
 
+// Don't touch validate form functions at all they are very important and work perfectly if bugs are found then only touch them
+
 function validateTextInput(obj) {
     if (obj.value.replaceAll(' ', '') == '') {
         // shake the input if it is not valid
@@ -208,9 +252,9 @@ function validateFieldSets(obj) {
     var selected = 0;
 
     for (var child of children) {
-        // if child is none of above we don't care about it
-        if (child.getAttribute('type') == 'checkbox') {
-            if (child.value == 'None of the above' || child.value == 'Undecided' || child.value == "Haven't yet"){
+        // if child is none of above we don't care about it  
+        if (child.getAttribute('type') == 'checkbox' && child.checked) {
+            if (child.value == 'None of the above' || child.value == 'Undecided' || child.value == "Haven't yet") {
                 return false;
             }
         }
@@ -222,12 +266,15 @@ function validateFieldSets(obj) {
 
     if (maxSelections != 'none' && selected != maxSelections) {
         // shake the input if it is not valid
+        console.log(obj);
         return true;
     }
 
     // or Other is selcted but nothing is written its invalid
-    if (obj.querySelector("[value='Other:']") != null){
-        if (obj.querySelector("[value='Other:']").checked == true && obj.querySelector('.withOther').value.replaceAll(' ', '') == ''){
+    if (obj.querySelector("[value='Other:']") != null) {
+
+        if (obj.querySelector("[value='Other:']").checked == true && obj.querySelector('.withOther').value.replaceAll(' ', '') == '') {
+            console.log(obj);
             return true;
         }
     }
@@ -235,11 +282,11 @@ function validateFieldSets(obj) {
     return false;
 }
 // validate the form before sending
-function validateForm(event) {
+async function validateForm(event) {
     event.preventDefault();
     // check if all the required fields are filled
     const requiredFields = document.querySelectorAll('[required]');
-
+    console.log(requiredFields);
     for (var requiredField of requiredFields) {
 
         if (requiredField.nodeName == 'INPUT' && validateTextInput(requiredField)) { //
@@ -247,34 +294,67 @@ function validateForm(event) {
             return;
         }
 
-        if (requiredField.nodeName != 'INPUT' && validateFieldSets(requiredField)) {
-            // give an animation of shake if its wrong
-            requiredField.style.animation = 'shake 0.8s';
-            requiredField.style.color = 'white';
-            requiredField.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
-
-            setTimeout(() => {
-                requiredField.style = '';
-            }, 900);
-
-            requiredField.parentElement.scrollIntoView();
+        if (requiredField.nodeName == 'TEXTAREA' && validateTextInput(requiredField)) { //
+            requiredField.parentElement.parentElement.scrollIntoView();
             return;
         }
+
+        if (requiredField.nodeName != 'INPUT' && requiredField.nodeName != 'TEXTAREA' && validateFieldSets(requiredField)) {
+                console.log(requiredField)
+                // give an animation of shake if its wrong
+                requiredField.style.animation = 'shake 0.8s';
+                requiredField.style.color = 'white';
+                requiredField.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
+
+                setTimeout(() => {
+                    requiredField.style = '';
+                }, 900);
+
+                requiredField.parentElement.scrollIntoView();
+                return;
+        }
     }
-    saveFormToServer();
+    if (finishedGoingOver){
+        await saveFormToServer();
+        document.body.innerHTML = '<h1 style="text-align: center; margin-top: 30vh;color:white;">Thank you for filling out the form. You can always come back and edit it before deadline.</h1>';
+    } else {
+        alert('Please go over the form again and make sure everything is correct');
+        finishedGoingOver = true;
+        document.getElementById('form').scrollIntoView();
+        document.getElementById('form').style.opacity = '0.65';
+    }
 }
 
 // auto save
-function autoSave(){
-    saveFormToServer();
-    alert('auto saving')
-    setTimeout(autoSave, 10000);
-}
+async function autoSave() {
+    // check if auto save is disabled or not
+    if (autoSaveDisabled) {
+        return setTimeout(() => {
+            autoSaveDisabled = false;
+            autoSave();
+        }, 10 * 1000);
+    }
 
+    autoSaveDisabled = true;
+
+    console.log('auto saving');
+    document.querySelector('.autoSaveIndicator').style.display = 'flex';
+    await saveFormToServer();
+
+    // hide the auto save indicator, at least one second so they can see it
+    setTimeout(() => {
+        document.querySelector('.autoSaveIndicator').style.display = 'none';
+    }, 1000);
+
+
+    setTimeout(() => {
+        autoSave();
+    }, 10 * 1000);
+}
 
 // add event listeners
 document.getElementById('personImage').addEventListener('change', intializeCropper);
 document.getElementById('doneWithImage').addEventListener('click', closeCropper);
 document.getElementById('sumbitFormBtn').addEventListener('click', validateForm);
 
-//setTimeout(autoSave, 10000);
+//setTimeout(autoSave, 10 * 1000);

@@ -12,6 +12,7 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 // set up the server 
 app.set('view engine', 'pug');
+app.use(express.static('public'))
 // max size of the file is 5mb
 // so we can get json data over 5mb
 app.use(express.json({ extended: true, limit: "5mb" }));
