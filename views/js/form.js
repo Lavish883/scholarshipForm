@@ -357,4 +357,4 @@ document.getElementById('personImage').addEventListener('change', intializeCropp
 document.getElementById('doneWithImage').addEventListener('click', closeCropper);
 document.getElementById('sumbitFormBtn').addEventListener('click', validateForm);
 
-//setTimeout(autoSave, 10 * 1000);
+setTimeout(autoSave, 10 * 1000);
