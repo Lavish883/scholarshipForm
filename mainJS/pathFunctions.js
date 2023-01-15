@@ -78,7 +78,7 @@ async function formPage(req, res) {
     // check if user exits with that formId
     if (user == null || user == undefined) return res.send('Form Id is not found');
     // form HTML
-    var formHTML = makeFormHTML(formOptions, req.params.id);
+    var formHTML = makeFormHTML(formOptions, user);
 
     return res.render('form', { 'user': user, 'formHTML': formHTML });
 }

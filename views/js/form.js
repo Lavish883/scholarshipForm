@@ -1,6 +1,7 @@
 var profileImage = document.getElementById('profileImage');
 var cropper;
 var autoSaveDisabled = false;
+var finishedGoingOver = false;
 
 
 function intializeCropper(event) {
@@ -37,8 +38,25 @@ function intializeCropper(event) {
     }
 }
 
+async function saveImageToServer() {
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            "formId": window.location.href.split('/form/')[1],
+            "form": {
+                "image": cropper.getCroppedCanvas().toDataURL('image/jpeg'),
+            },
+        })
+    }
+    const request = await fetch('/saveForm', options);
+    const data = await request.text();
+}
+
 async function closeCropper() {
-    await saveFormToServer();
+    await saveImageToServer();
     // hide the modal for cropping
     document.getElementById('modal').style.visibility = 'hidden';
     document.getElementById('form').style.display = 'flex';
@@ -75,7 +93,7 @@ function getAllFormValues() {
             for (var childElm of elm.querySelectorAll(`[type=radio]`)) {
                 if (childElm.checked) {
                     if (childElm.value == 'Other:') {
-                        formValues[childElm.getAttribute('name')] = elm.querySelector('.withOther').value;
+                        formValues[childElm.getAttribute('name')] = " !@#$ " + elm.querySelector('.withOther').value;
                     } else {
                         formValues[childElm.getAttribute('name')] = childElm.value;
                     }
@@ -96,12 +114,12 @@ function getAllFormValues() {
             console.log(checked);
         }
 
-        if (type == 'checkBoxesGrid'){
+        if (type == 'checkBoxesGrid') {
             var grid = [];
             for (var childElm of elm.querySelectorAll(`[type=checkbox]`)) {
                 if (childElm.checked) {
-                    var splitId = childElm.getAttribute('id').split(' !@#$% ' );
-                    grid.push({'columnValue': splitId[0], 'rowValue': splitId[1]});
+                    var splitId = childElm.getAttribute('id').split(' !@#$% ');
+                    grid.push({ 'columnValue': splitId[0], 'rowValue': splitId[1] });
                 }
             }
             formValues[childElm.getAttribute('name')] = grid;
@@ -234,8 +252,8 @@ function validateFieldSets(obj) {
     var selected = 0;
 
     for (var child of children) {
-        // if child is none of above we don't care about it
-        if (child.getAttribute('type') == 'checkbox') {
+        // if child is none of above we don't care about it  
+        if (child.getAttribute('type') == 'checkbox' && child.checked) {
             if (child.value == 'None of the above' || child.value == 'Undecided' || child.value == "Haven't yet") {
                 return false;
             }
@@ -248,12 +266,15 @@ function validateFieldSets(obj) {
 
     if (maxSelections != 'none' && selected != maxSelections) {
         // shake the input if it is not valid
+        console.log(obj);
         return true;
     }
 
     // or Other is selcted but nothing is written its invalid
     if (obj.querySelector("[value='Other:']") != null) {
+
         if (obj.querySelector("[value='Other:']").checked == true && obj.querySelector('.withOther').value.replaceAll(' ', '') == '') {
+            console.log(obj);
             return true;
         }
     }
@@ -261,11 +282,11 @@ function validateFieldSets(obj) {
     return false;
 }
 // validate the form before sending
-function validateForm(event) {
+async function validateForm(event) {
     event.preventDefault();
     // check if all the required fields are filled
     const requiredFields = document.querySelectorAll('[required]');
-
+    console.log(requiredFields);
     for (var requiredField of requiredFields) {
 
         if (requiredField.nodeName == 'INPUT' && validateTextInput(requiredField)) { //
@@ -273,21 +294,35 @@ function validateForm(event) {
             return;
         }
 
-        if (requiredField.nodeName != 'INPUT' && validateFieldSets(requiredField)) {
-            // give an animation of shake if its wrong
-            requiredField.style.animation = 'shake 0.8s';
-            requiredField.style.color = 'white';
-            requiredField.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
-
-            setTimeout(() => {
-                requiredField.style = '';
-            }, 900);
-
-            requiredField.parentElement.scrollIntoView();
+        if (requiredField.nodeName == 'TEXTAREA' && validateTextInput(requiredField)) { //
+            requiredField.parentElement.parentElement.scrollIntoView();
             return;
         }
+
+        if (requiredField.nodeName != 'INPUT' && requiredField.nodeName != 'TEXTAREA' && validateFieldSets(requiredField)) {
+                console.log(requiredField)
+                // give an animation of shake if its wrong
+                requiredField.style.animation = 'shake 0.8s';
+                requiredField.style.color = 'white';
+                requiredField.style.backgroundColor = 'rgba(255, 0, 0, 0.1)';
+
+                setTimeout(() => {
+                    requiredField.style = '';
+                }, 900);
+
+                requiredField.parentElement.scrollIntoView();
+                return;
+        }
     }
-    saveFormToServer();
+    if (finishedGoingOver){
+        await saveFormToServer();
+        document.body.innerHTML = '<h1 style="text-align: center; margin-top: 30vh;color:white;">Thank you for filling out the form. You can always come back and edit it before deadline.</h1>';
+    } else {
+        alert('Please go over the form again and make sure everything is correct');
+        finishedGoingOver = true;
+        document.getElementById('form').scrollIntoView();
+        document.getElementById('form').style.opacity = '0.65';
+    }
 }
 
 // auto save
@@ -322,4 +357,4 @@ document.getElementById('personImage').addEventListener('change', intializeCropp
 document.getElementById('doneWithImage').addEventListener('click', closeCropper);
 document.getElementById('sumbitFormBtn').addEventListener('click', validateForm);
 
-setTimeout(autoSave, 10 * 1000);
+//setTimeout(autoSave, 10 * 1000);
