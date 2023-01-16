@@ -7,27 +7,9 @@
     width: 50%;
     height: 100%;
     box-sizing: border-box;
-    border: 5px dashed red;
     overflow-y: scroll;
     color: white;
     padding: 20px;
-}
-
-.dividePage #results {
-    border: 5px dashed green;
-}
-
-#results .result {
-    background-color: #ffffff8a;
-    padding: 5px 10px;
-    margin: 15px;
-    border-radius: 5px;
-    max-width: 80%;
-}
-
-#results .result .imgContainer img {
-    max-width: 150px;
-    border-radius: 5px;
 }
 
 .dividePage #applyFilters {
@@ -49,10 +31,59 @@
 }
 
 .containFilter {
-    background-color: #ffffff8a;
+    background-color:rgb(75, 74, 77);
     padding: 5px 10px;
     margin: 15px;
     border-radius: 5px;
     width: 40%;
+    color: #ffffffbf;
+}
+
+
+/** Card results css **/
+#results .card {
+    width: 90%;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 20px auto;
+    padding: 10px;
+    border: 1px solid black;
+    box-shadow: 2px 2px 5px black;
+    border-radius: 5px;
+    background-color:#ededed;
+}
+
+#results .card img {
+    width: 25%;
+    height: auto;
+    margin-right: 10px;
+}
+
+#results .card h2 {
+    width: 60%;
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+#results .card p {
+    width: 60%;
+    font-size: 1em;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    #results .card {
+        flex-direction: column;
+    }
+    #results .card img {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    #results .card h2, .card p {
+        width: 100%;
+    }
 }
 

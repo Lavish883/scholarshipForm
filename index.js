@@ -46,6 +46,7 @@ app.get('/filterData/:password', pathFunctions.filterDataPage);
 // filter data
 app.post('/search/:password', filterData);
 
+
 app.listen(PORT, () => {
     console.log("It's up bois!!")
 });

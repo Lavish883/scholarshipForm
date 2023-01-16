@@ -33,10 +33,8 @@ async function saveForm(req, res){
         user.form[key] = bodyForm.values[key];
     }
 
-    if (bodyForm.image != null || bodyForm.image != undefined) {
-        // clear the image, have to since if image is too big before it wont change
-        user.form.image = ''; 
-
+    //console.log(bodyForm.image)
+    if (bodyForm.image !== undefined) {
         user.form.image = bodyForm.image;
         user.form.imageHeight = bodyForm.imageHeight;
         user.form.imageWidth = bodyForm.imageWidth;

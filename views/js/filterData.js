@@ -41,7 +41,7 @@ function generateUsersHTML(users) {
     for (var user of users) {
         htmLArry.push(
             `
-            <div class="result">
+            <div class="card">
                 <div class="imgContainer">
                     <img src="/image/${user.form.formId}" alt="Photo of ${user.form.firstName + ' ' + user.form.lastName}">
                 </div>

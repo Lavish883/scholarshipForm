@@ -51,6 +51,7 @@ async function saveImageToServer() {
                 "imageHeight": cropper.getCroppedCanvas().height,
                 "imageWidth": cropper.getCroppedCanvas().width,
             },
+            "finishedWithForm": false
         })
     }
     const request = await fetch('/saveForm', options);
