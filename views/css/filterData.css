@@ -1,0 +1,58 @@
+.dividePage {
+    display: flex;
+    height: 100%;
+}
+
+.dividePage #applyFilters, .dividePage #results {
+    width: 50%;
+    height: 100%;
+    box-sizing: border-box;
+    border: 5px dashed red;
+    overflow-y: scroll;
+    color: white;
+    padding: 20px;
+}
+
+.dividePage #results {
+    border: 5px dashed green;
+}
+
+#results .result {
+    background-color: #ffffff8a;
+    padding: 5px 10px;
+    margin: 15px;
+    border-radius: 5px;
+    max-width: 80%;
+}
+
+#results .result .imgContainer img {
+    max-width: 150px;
+    border-radius: 5px;
+}
+
+.dividePage #applyFilters {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 5px;
+}
+
+.dividePage #applyFilters .filterInput {
+    padding: 10px;
+    margin: 10px 0px;
+    border: none;
+    border-radius: 5px;
+}
+
+.dividePage #applyFilters .filterInput:focus {
+    outline: none;
+}
+
+.containFilter {
+    background-color: #ffffff8a;
+    padding: 5px 10px;
+    margin: 15px;
+    border-radius: 5px;
+    width: 40%;
+}
+

@@ -9,15 +9,6 @@ const transporter = nodeMailer.createTransport({
   }
 });
 
-function mailVerifyLink(emailToSend){
-  let mailOptions = {
-    from: process.env.EMAIL,
-    to: emailToSend,
-    subject: 'Please verify Link....',
-    text: ''
-  }
-}
-
 function mailLink(emailToSend, linkMade) {
   let mailOptions = {
     from: process.env.EMAIL,

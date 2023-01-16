@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const filterData = require('./mainJS/filterThroughData');
 const app =  express();
 const PORT = process.env.PORT || 3030;
 const pathFunctions = require('./mainJS/pathFunctions');
@@ -38,6 +39,12 @@ app.get('/image/:id', pathFunctions.serveImage);
 
 // save the form to the database
 app.post('/saveForm', saveForm);
+
+// filter data page
+app.get('/filterData/:password', pathFunctions.filterDataPage);
+
+// filter data
+app.post('/search/:password', filterData);
 
 app.listen(PORT, () => {
     console.log("It's up bois!!")
