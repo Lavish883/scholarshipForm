@@ -48,7 +48,10 @@ async function saveImageToServer() {
             "formId": window.location.href.split('/form/')[1],
             "form": {
                 "image": cropper.getCroppedCanvas().toDataURL('image/jpeg'),
+                "imageHeight": cropper.getCroppedCanvas().height,
+                "imageWidth": cropper.getCroppedCanvas().width,
             },
+            "finishedWithForm": false
         })
     }
     const request = await fetch('/saveForm', options);
@@ -130,7 +133,7 @@ function getAllFormValues() {
     return formValues;
 }
 
-async function saveFormToServer() {
+async function saveFormToServer(finishedWithForm = false) {
     console.log('Saving.......')
     autoSaveDisabled = true;
     const options = {
@@ -143,6 +146,7 @@ async function saveFormToServer() {
             "form": {
                 "values": getAllFormValues()
             },
+            "finishedWithForm": finishedWithForm,
         })
     }
     const request = await fetch('/saveForm', options);
@@ -315,7 +319,7 @@ async function validateForm(event) {
         }
     }
     if (finishedGoingOver){
-        await saveFormToServer();
+        await saveFormToServer(true);
         document.body.innerHTML = '<h1 style="text-align: center; margin-top: 30vh;color:white;">Thank you for filling out the form. You can always come back and edit it before deadline.</h1>';
     } else {
         alert('Please go over the form again and make sure everything is correct');
@@ -332,14 +336,14 @@ async function autoSave() {
         return setTimeout(() => {
             autoSaveDisabled = false;
             autoSave();
-        }, 10 * 1000);
+        }, 20 * 1000);
     }
 
     autoSaveDisabled = true;
 
     console.log('auto saving');
     document.querySelector('.autoSaveIndicator').style.display = 'flex';
-    await saveFormToServer();
+    await saveFormToServer(false);
 
     // hide the auto save indicator, at least one second so they can see it
     setTimeout(() => {
@@ -349,7 +353,7 @@ async function autoSave() {
 
     setTimeout(() => {
         autoSave();
-    }, 10 * 1000);
+    }, 20 * 1000);
 }
 
 // add event listeners
@@ -357,4 +361,4 @@ document.getElementById('personImage').addEventListener('change', intializeCropp
 document.getElementById('doneWithImage').addEventListener('click', closeCropper);
 document.getElementById('sumbitFormBtn').addEventListener('click', validateForm);
 
-//setTimeout(autoSave, 10 * 1000);
+setTimeout(autoSave, 20 * 1000);

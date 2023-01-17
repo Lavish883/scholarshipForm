@@ -1,0 +1,149 @@
+.dividePage {
+    display: flex;
+    height: 100%;
+}
+
+.dividePage #applyFilters, .dividePage #results {
+    width: 50%;
+    height: 100%;
+    box-sizing: border-box;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    color: white;
+    padding: 20px;
+    background-color: black;
+}
+
+.dividePage #applyFilters {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 5px;
+    background-color: black;
+    justify-content: space-around;
+}
+
+.dividePage #applyFilters .filterInput {
+    padding: 10px;
+    margin: 10px 0px;
+    border: none;
+    border-radius: 5px;
+}
+
+.dividePage #applyFilters .filterInput:focus {
+    outline: none;
+}
+
+.containFilter {
+    background-color:#2F3C7E;
+    padding: 5px 10px;
+    margin: 15px;
+    border-radius: 5px;
+    width: 40%;
+    transition: cubic-bezier(0.165, 0.84, 0.44, 1) 0.5s;
+}
+
+.containFilter .filterName {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.containFilter:hover {
+    background-color:#1E274C;
+    transform: scale(1.15);
+}
+
+.searchForText {
+    width: 100%;
+    margin: 10px 0px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+}
+
+.searchForText:focus {
+    outline: none;
+}
+
+
+/** Card results css **/
+#results .card {
+    width: 90%;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 20px auto;
+    padding: 10px;
+    border: 1px solid black;
+    box-shadow: 2px 2px 5px black;
+    border-radius: 5px;
+    background-color:#ededed;
+}
+
+#results .card img {
+    width: auto;
+    height: 200px;
+    margin-right: 10px;
+}
+
+#results .card h2 {
+    width: 60%;
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+#results .card p {
+    width: 60%;
+    font-size: 1em;
+    line-height: 1.5;
+}
+
+.question {
+    max-width: 100%;
+    white-space: nowrap;
+    text-overflow: hidden;
+}
+
+@media (max-width: 768px) {
+    #results .card {
+        flex-direction: column;
+    }
+    #results .card img {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+    #results .card h2, .card p {
+        width: 100%;
+    }
+}
+
+/* Add the following to the parent container of the scrollable element*/
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+/* The scrollbar thumb */
+::-webkit-scrollbar-thumb {
+    background-color: white;
+    border-radius: 4px;
+}
+
+/* The scrollbar thumb on hover */
+::-webkit-scrollbar-thumb:hover {
+    background-color: whitesmoke;
+}
+
+/* The scrollbar buttons */
+::-webkit-scrollbar-button {
+    display: none;
+}
+
+/* The scrollbar tracks */
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}

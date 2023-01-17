@@ -21,7 +21,7 @@ async function generateVerficationLink(req, res) {
     const email = req.body.email;
     var token = crypto.randomBytes(16).toString('hex');
     // verify email
-    if (!testIfValidEmail(email)) return res.send('not valid email');
+    if (!testIfValidEmail(email)) return res.status(400).send('not valid email');
     // check if the verify link already exists or not
     var doesItExist = await schemas.users.findOne({ 'verifyLink': token });
 
@@ -43,7 +43,8 @@ async function generateVerficationLink(req, res) {
     } else if (user.verfied == false) {  // update verify link if not verfied
         user.verifyLink = token;
     } else if (user.verfied == true) {
-        return res.send('Email already verfied');
+        mailFunctions.mailLink(email, process.env.WEBSITELINK + 'form/' + user.form.formId);
+        return res.status(200).send('Email already verfied! Form Link Sent to Mail');
     }
 
     await user.save();
@@ -90,6 +91,12 @@ async function verifyUserEmail(req, res) {
 
     // if there are no user we dont need to do anything
     if (user == null || user == undefined) return res.send('Verify Link not found');
+    // if a form id already exists for the user
+    // send the link to the form
+    if (user.form.formId != '') {
+        mailFunctions.mailLink(user.email, process.env.WEBSITELINK + 'form/' + user.form.formId);
+        return res.send('Form Link is sent to your email');
+    }
 
     // update the user to be verfied
     if (user.verfied == false) {
@@ -127,11 +134,20 @@ async function serveImage(req, res) {
     return res.send(imageBuffer);
 }
 
+async function filterDataPage(req, res) {
+    // check if the user is authorized or not
+    if (req.params.password != process.env.ACCESS_KEY) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
+
+    return res.render('filterData', { 'formOptions': formOptions });
+}
+
+
 module.exports = {
     signUp,
     generateLink,
     formPage,
     verifyUserEmail,
     generateVerficationLink,
-    serveImage
+    serveImage,
+    filterDataPage,
 }

@@ -1,13 +1,20 @@
 html 
     head 
-        link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" integrity="sha512-cyzxRvewl+FOKTtpBzYjW6x6IAYUCZy3sGP40hn+DQkqeluGRCax7qztK2ImL64SA+C7kVWdLI6wvdlStawhyw==" crossorigin="anonymous" referrerpolicy="no-referrer")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
         style 
             include css/style.css
+        style
+            include css/form.css
     body 
-        input#email(type="email")
-        p
-        button(id="submitForm") Submit
-        p
-
+        main
+            div.containEmailForm
+                div.centerIt
+                    div.backgroundForEmail
+                        p Please put your email, so we can verify you are human and also generate you a form link.
+                        div#isSuccess
+                        input#email(type="email")
+                        input(type="submit" id="submitForm")
+                        p
+        
         script
             include js/index.js

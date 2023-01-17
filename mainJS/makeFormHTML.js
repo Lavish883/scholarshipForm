@@ -1,7 +1,7 @@
 // fill info that user already filled in
 function fillTextInfo(user, formAtrribute, type) {
     const filledInInfo = user.form[formAtrribute];
-
+    
     if (type == 'textArea' || type == 'text') {
         if (filledInInfo != undefined) {
             return filledInInfo;
@@ -13,6 +13,8 @@ function fillTextInfo(user, formAtrribute, type) {
 
 function fillMultipleChoiceInfo(user, formAtrribute, option) {
     const filledInInfo = user.form[formAtrribute];
+
+    if (filledInInfo === undefined) return '';
 
     if (filledInInfo == option)  {
         return 'checked="true"';

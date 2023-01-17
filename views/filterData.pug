@@ -1,0 +1,18 @@
+html 
+    head 
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        style 
+            include css/style.css
+        style 
+            include css/filterData.css
+    body 
+        main
+            div.dividePage
+                div#applyFilters
+                div#results
+        script 
+            include js/filterData.js
+        script(src="https://kit.fontawesome.com/9c2fbbf0d7.js")
+        script. 
+            var formOptions = !{JSON.stringify(formOptions).replace(/<\//g, '<\\/')}
+            generateFiltersHTML(formOptions, '#applyFilters') 
