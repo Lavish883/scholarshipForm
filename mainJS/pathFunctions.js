@@ -91,6 +91,12 @@ async function verifyUserEmail(req, res) {
 
     // if there are no user we dont need to do anything
     if (user == null || user == undefined) return res.send('Verify Link not found');
+    // if a form id already exists for the user
+    // send the link to the form
+    if (user.form.formId != '') {
+        mailFunctions.mailLink(user.email, process.env.WEBSITELINK + 'form/' + user.form.formId);
+        return res.send('Form Link is sent to your email');
+    }
 
     // update the user to be verfied
     if (user.verfied == false) {

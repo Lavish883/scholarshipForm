@@ -22,8 +22,7 @@ async function saveForm(req, res){
 
     // if user is not found
     if (user == null) {
-        res.setStatusCode(403);
-        return res.send('User not found');
+        return res.status(403).send('User not found');
     }
     
     // console.log(bodyForm.values)
