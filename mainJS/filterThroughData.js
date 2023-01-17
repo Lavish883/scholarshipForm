@@ -16,13 +16,19 @@ async function filterData(req, res) {
         for (var i = remUsers.length - 1; i >= 0; i--) {
             user = remUsers[i];
             // if input was text or textarea
+            // if the user does not have the key then remove the user
+            if (user.form[key] == undefined){
+                remUsers.splice(i, 1);
+                continue;
+            }
+            // compare numbers if the input was number
+            if (item.isNumber == true && user.form[key] < item.value) {
+                remUsers.splice(i, 1);
+                continue;
+            }
+
             if (item.type == 'text' || item.type == 'textarea') {
-                if (user.form[key] == undefined){
-                    remUsers.splice(i, 1);
-                    continue;
-                }
-                
-                if (user.form[key].toLowerCase().includes(item.value.toLowerCase()) == false) {
+                if (user.form[key].toLowerCase().includes(item.value.toLowerCase()) == false && item.isNumber != true) {
                     remUsers.splice(i, 1);
                     continue;
                 }

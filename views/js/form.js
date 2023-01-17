@@ -1,7 +1,7 @@
 var profileImage = document.getElementById('profileImage');
 var cropper;
 var autoSaveDisabled = false;
-var finishedGoingOver = true;
+var finishedGoingOver = false;
 
 
 function intializeCropper(event) {

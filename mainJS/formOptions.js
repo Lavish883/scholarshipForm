@@ -696,7 +696,8 @@ const formOptions = [
         "question": "Total number of community service hours completed in grades 9-12? This may be more than the 40 required hours for graduation requirement.",
         "type": "text",
         "required": true,
-        "name": "communityServiceHours"
+        "name": "communityServiceHours",
+        "isNumber": true
     },
     {
         "question": "List where you have completed your community service.  (ex: CIT summer of 2019)",
@@ -907,7 +908,8 @@ const formOptions = [
         "question": "What is your GPA?",
         "type": "text",
         "required": true,
-        "name": "gpa"
+        "name": "gpa",
+        "isNumber": true,
     },
     {
         "question": "In 250 words or less, please share your future aspirations and goals.",
