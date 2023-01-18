@@ -41,12 +41,21 @@ function getAllFilterValues() {
 
 function generateUsersHTML(users) {
     var htmLArry = [];
+    // use "/image/${user.form.formId}" to get the image but now use base 64 image/url image
+    var image;
+
     for (var user of users) {
+        if (user.email.includes('test')){
+            image = user.form.image;
+        } else{
+            image = `/image/${user.form.formId}`;
+        }
+        
         htmLArry.push(
             `
             <div class="card">
                 <div class="imgContainer">
-                    <img src="/image/${user.form.formId}" alt="Photo of ${user.form.firstName + ' ' + user.form.lastName}">
+                    <img src=${image} alt="Photo of ${user.form.firstName + ' ' + user.form.lastName}">
                 </div>
             </div>
             `
