@@ -8,26 +8,19 @@ const fetch = require('node-fetch');
 require('dotenv').config();
 
 const imageArry = [
-    "waifu",
-    "neko",
-    "shinobu",
     "cry",
     "pat",
-    "smug",
     "highfive",
     "nom",
-    "bite",
-    "slap",
-    "wink",
     "poke",
-    "dance",
-    "cringe",
-    "blush",
-    "random"
 ]
 
 async function getRandomImage(){
     const request = await fetch(`https://api.waifu.pics/sfw/${imageArry[Math.floor(Math.random() * imageArry.length)]}`);
+    if (request.status !== 200) {
+        var newImage = await getRandomImage();
+        return newImage;
+    }
     const data = await request.json();
     return data.url;
 }
@@ -59,8 +52,7 @@ async function makeSampleData(amntOfUsers) {
             "email": 'test' + i + '@spyponders.com',
             "verfied": true,
             "verifyLink": verifyLink,
-            form: { 'formId': formToken, 'image': '' },
-            "bot": true
+            form: { 'formId': formToken, 'image': '', "bot": true },
         });
         
         user.form['image'] = await getRandomImage();
@@ -120,5 +112,12 @@ async function makeSampleData(amntOfUsers) {
         await user.save();
     }
 }
+
+async function removeSampleData() {
+    await schemas.users.deleteMany({ 'form.id': 'test' });
+    return;
+}
+
+//removeSampleData();
 
 makeSampleData(50);
