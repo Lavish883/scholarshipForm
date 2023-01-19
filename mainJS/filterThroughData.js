@@ -1,5 +1,24 @@
 const schemas = require('../schemas/schemas'); // schemas
 
+function reduceJSONSize(users){
+    for (var i = 0; i < users.length; i++) {
+        if (users[i].form.bot != true){
+            users[i].form.image = '';
+        }
+    }
+    return users;
+}
+
+function compareNumbers(userNumber, value){
+    if (parseInt(userNumber) < parseInt(value)) return false;
+    return true;
+}
+
+function isTextInString(userText, string){
+    console.log(userText, string);
+    if (userText.toLowerCase().includes(string.toLowerCase())) return true;
+    return false;
+}
 
 async function filterData(req, res) {
     // check if the user is authorized or not
@@ -14,21 +33,20 @@ async function filterData(req, res) {
         var item = req.body.filterValues[key];
 
         for (var i = remUsers.length - 1; i >= 0; i--) {
-            user = remUsers[i];
-            // if input was text or textarea
+            var userForm = remUsers[i].form;
             // if the user does not have the key then remove the user
-            if (user.form[key] == undefined){
+            if (userForm[key] == undefined){
                 remUsers.splice(i, 1);
                 continue;
             }
             // compare numbers if the input was number
-            if (item.isNumber == true && user.form[key] < item.value) {
+            if (item.isNumber == true && compareNumbers(userForm[key], item.value) == false){
                 remUsers.splice(i, 1);
                 continue;
             }
-
+            // compare text if the input was text
             if (item.type == 'text' || item.type == 'textarea') {
-                if (user.form[key].toLowerCase().includes(item.value.toLowerCase()) == false && item.isNumber != true) {
+                if (isTextInString(userForm[key], item.value) == false && item.isNumber != true) {
                     remUsers.splice(i, 1);
                     continue;
                 }
@@ -36,7 +54,7 @@ async function filterData(req, res) {
         }
     }
 
-    
+    remUsers = reduceJSONSize(remUsers);
 
     return res.json(remUsers);
 }

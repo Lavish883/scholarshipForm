@@ -141,6 +141,16 @@ async function filterDataPage(req, res) {
     return res.render('filterData', { 'formOptions': formOptions });
 }
 
+async function userPage(req, res) {
+    // check if the user is authorized or not
+    if (req.params.password != process.env.ACCESS_KEY) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
+
+    var user = await schemas.users.findOne({'form.formId': req.params.formId });
+
+    user.form.image = '';
+
+    return res.json(user);
+}
 
 module.exports = {
     signUp,
@@ -150,4 +160,5 @@ module.exports = {
     generateVerficationLink,
     serveImage,
     filterDataPage,
+    userPage
 }
