@@ -46,6 +46,8 @@ app.get('/filterData/:password', pathFunctions.filterDataPage);
 // filter data
 app.post('/search/:password', filterData);
 
+// user page for teachers to see more info about them
+app.get('/admin/:password/:formId', pathFunctions.userPage);
 
 app.listen(PORT, () => {
     console.log("It's up bois!!")

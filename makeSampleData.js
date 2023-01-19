@@ -7,22 +7,14 @@ const fetch = require('node-fetch');
 
 require('dotenv').config();
 
-const imageArry = [
-    "cry",
-    "pat",
-    "highfive",
-    "nom",
-    "poke",
-]
-
 async function getRandomImage(){
-    const request = await fetch(`https://api.waifu.pics/sfw/${imageArry[Math.floor(Math.random() * imageArry.length)]}`);
+    const request = await fetch(`https://dog.ceo/api/breeds/image/random`);
     if (request.status !== 200) {
         var newImage = await getRandomImage();
         return newImage;
     }
     const data = await request.json();
-    return data.url;
+    return data.message;
 }
 
 // conenct to the database
@@ -60,7 +52,7 @@ async function makeSampleData(amntOfUsers) {
         for (var j = 0; j < formOptions.length; j++) {
 
             if (formOptions[j].isNumber) {
-                user.form[formOptions[j].name] = Math.floor(Math.random() * 100);
+                user.form[formOptions[j].name] = Math.floor(Math.random() * 100).toString();
                 continue;
             }
 
@@ -120,4 +112,4 @@ async function removeSampleData() {
 
 //removeSampleData();
 
-makeSampleData(50);
+makeSampleData(25);

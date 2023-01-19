@@ -1,6 +1,8 @@
+const adminPassword = window.location.href.split("/filterData/")[1];
+
 function genreateTextFilterHTML(question) {
     return `
-        <div class="containFilter">
+        <div title="${question.question}" class="containFilter">
             <div class="filterName">
                 <span class="question">${question.question}</span>
                 <span>${question.isNumber ? ' (Higher will show)' : ''}</span>
@@ -28,6 +30,12 @@ function generateFiltersHTML(data, selector) {
     document.querySelector(selector).innerHTML = htmlArry.join('');
 }
 
+function generateOptionsHTML(){
+    var htmLArry = [];
+
+    return htmLArry.join('');
+}
+
 function getAllFilterValues() {
     var filterValues = {};
     var inputs = document.querySelectorAll('.filterInput');
@@ -53,11 +61,19 @@ function generateUsersHTML(users) {
         
         htmLArry.push(
             `
-            <div class="card">
-                <div class="imgContainer">
-                    <img src=${image} alt="Photo of ${user.form.firstName + ' ' + user.form.lastName}">
+            <a title="Click on for more Info" target="_blank" href="/admin/${adminPassword}/${user.form.formId}">
+                <div class="card">
+                    <div class="imgContainer">
+                        <img src=${image} alt="Photo of ${user.form.firstName + ' ' + user.form.lastName}">
+                    </div>
+                    <div class="textContainer">
+                        <div><span class="bold">Name:</span> ${user.form.firstName + ' ' + user.form.lastName}</div>
+                        <div><span class="bold">Email:</span> ${user.email}</div>
+                        <div><span class="bold">GPA:</span> ${user.form.gpa}</div>
+                        <div><span class="bold">Major:</span> ${user.form.intendedMajor}</div>
+                    </div>
                 </div>
-            </div>
+            </a>
             `
         );
     }
@@ -71,6 +87,8 @@ async function applyFilters(){
         document.getElementById('results').innerHTML = '';
         return;
     }
+
+    document.getElementById('results').innerHTML = `<img width="75" src="/publicImages/saving.svg" alt="loading" class="loading" />`
 
     const options = {
         method: 'POST',

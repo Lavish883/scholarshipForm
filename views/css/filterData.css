@@ -12,6 +12,7 @@
     color: white;
     padding: 20px;
     background-color: black;
+    position: relative;
 }
 
 .dividePage #applyFilters {
@@ -81,6 +82,11 @@
     box-shadow: 2px 2px 5px black;
     border-radius: 5px;
     background-color:#ededed;
+    color: black;
+}
+
+a {
+    text-decoration: none;
 }
 
 #results .card img {
@@ -106,6 +112,14 @@
     white-space: nowrap;
     text-overflow: hidden;
 }
+
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 
 @media (max-width: 768px) {
     #results .card {
