@@ -9,8 +9,9 @@ function reduceJSONSize(users){
     return users;
 }
 
+// when input is 4.33, 4 shows up
 function compareNumbers(userNumber, value){
-    if (parseInt(userNumber) < parseInt(value)) return false;
+    if (parseFloat(userNumber) < parseFloat(value)) return false;
     return true;
 }
 

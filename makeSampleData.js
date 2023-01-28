@@ -57,7 +57,7 @@ async function makeSampleData(amntOfUsers) {
             }
 
             if (formOptions[j].type == 'text') {
-                user.form[formOptions[j].name] = 'test';
+                user.form[formOptions[j].name] = 'test' + i.toString();
                 continue;
             } 
             
