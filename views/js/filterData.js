@@ -1,5 +1,6 @@
 const adminPassword = window.location.href.split("/filterData/")[1];
 
+// genreate HTML for the filtering data
 function genreateTextFilterHTML(question) {
     return `
         <div title="${question.question}" class="containFilter">
@@ -13,12 +14,66 @@ function genreateTextFilterHTML(question) {
     `
 }
 
+function generateOptionsHTML(question){
+    var htmLArry = [];
+    var optionsArry = [];
+    var totalOptionsDone = 0;
+    // go through all the options and add create the html for it 
+    for (var option of question.options){
+        optionsArry.push(
+            `
+            <div style="display:${totalOptionsDone > 5 ? 'none': 'flex'}" onclick="changeOptionValue(this)" class="filterItem">
+                ${option == 'Other:' ? `<span>Other:&nbsp;&nbsp;</span><input onKeyUp="applyFilters()" whatType=${question.type} whatName=${question.name} type="text" class="filterInput" placeholder="Search" class=" class="searchForText" />` : `<input whatType=${question.type} whatName=${question.name} name=${question.name} type="radio" value="${option}" class="" /> <span>${option}</span>`}
+            </div>
+            `
+        );
+        totalOptionsDone++;
+    }
+
+    if (optionsArry.length > 6){
+        optionsArry.push(
+            `
+            <div onclick="changeOptionValue(this)" class="filterItem">
+                ${`<span>Other:&nbsp;&nbsp;</span><input onKeyUp="applyFilters()" whatType=${question.type} whatName=${question.name} type="text" class="filterInput" placeholder="Search" class=" class="searchForText" />`}
+            </div>
+            <div onclick="showMoreOptions(this)" class="filterItem openMoreOptions">
+                <div style="display:inline-block;margin:auto;">Show more</div>
+            </div>
+            `
+        );
+    }
+
+
+    // add the parent conatiner
+    htmLArry.push(
+        `
+        <div title="${question.question}" class="containFilter">
+            <div class="filterName">
+                <span class="question">${question.question}</span>
+                <span></span>
+                <i class="fas fa-caret-down" aria-hidden="true"></i>
+            </div>
+            <fieldset class="filterItems">
+                ${optionsArry.join('')}
+            </fieldset>
+        </div>
+        `
+    );
+
+    return htmLArry.join('');
+}
+
 function generateFiltersHTML(data, selector) {
     var htmlArry = [];
     for (var question of data) {
 
         if (question.type == 'text' || question.type == 'textarea') {
             htmlArry.push(genreateTextFilterHTML(question));
+            continue;
+        }
+
+        if (question.type == 'options'){
+            htmlArry.push(generateOptionsHTML(question));
             continue;
         }
         /*
@@ -30,10 +85,21 @@ function generateFiltersHTML(data, selector) {
     document.querySelector(selector).innerHTML = htmlArry.join('');
 }
 
-function generateOptionsHTML(){
-    var htmLArry = [];
+function showMoreOptions(obj){
+    var filterItems = obj.parentElement.parentElement.querySelectorAll('.filterItem');
+    var searchInputs = obj.parentElement.querySelectorAll('.filterInput');
 
-    return htmLArry.join('');
+    // if there are two search bars then remove the second one
+    if (searchInputs.length > 1){
+        for (var i = 1; i < searchInputs.length; i++){
+            searchInputs[i].parentElement.remove();
+        }
+    }
+
+    for (var filterItem of filterItems){
+        filterItem.style.display = 'flex';
+    }
+    
 }
 
 function getAllFilterValues() {
@@ -45,6 +111,17 @@ function getAllFilterValues() {
         if (input.getAttribute('isNumber') == 'true') filterValues[input.getAttribute('whatName')].isNumber = true;
     }
     return filterValues;
+}
+
+function changeOptionValue(obj){
+    var fieldset = obj.parentElement;
+    var inputs = fieldset.querySelectorAll('input');
+    
+    for (var input of inputs){
+        input.checked = false;
+    }
+
+    obj.querySelector('input').checked = true;
 }
 
 function generateUsersHTML(users) {

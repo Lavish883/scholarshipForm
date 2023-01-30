@@ -54,6 +54,7 @@
 .containFilter:hover {
     background-color:#1E274C;
     transform: scale(1.15);
+    z-index: 100;
 }
 
 .searchForText {
@@ -68,6 +69,47 @@
     outline: none;
 }
 
+.filterItems {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%;
+    padding: 5px;
+    border: 0px;
+}
+
+.filterItems .filterItem {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    padding: 5px 8px;
+    border: 1px solid rgba(0,0,0, .5);
+    border-top: 0px;
+    transition: cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.5s;
+    cursor: pointer;
+}
+
+.filterItems  input[type="radio"] {
+    margin: 10px 10px 10px 0px;
+    transform: scale(1.5);
+
+}
+
+.filterItems .filterItem:first-child {
+    border-top: 1px solid rgba(0,0,0, .5);
+}
+
+.filterItems .filterItem:hover {
+    background-color: rgba(0,0,0, .5);
+}
+
+.openMoreOptions {
+    background-color: #45a049;
+    
+}
 
 /** Card results css **/
 #results .card {
