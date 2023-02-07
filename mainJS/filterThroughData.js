@@ -35,8 +35,11 @@ async function filterData(req, res) {
 
         for (var i = remUsers.length - 1; i >= 0; i--) {
             var userForm = remUsers[i].form;
+            // if error with incoming datat then just move on
+            if (item.value == undefined || item.value == null) continue;
+            
             // if the user does not have the key then remove the user
-            if (userForm[key] == undefined){
+            if (userForm[key] == undefined || userForm[key] == null){
                 remUsers.splice(i, 1);
                 continue;
             }
@@ -48,6 +51,13 @@ async function filterData(req, res) {
             // compare text if the input was text
             if (item.type == 'text' || item.type == 'textarea') {
                 if (isTextInString(userForm[key], item.value) == false && item.isNumber != true) {
+                    remUsers.splice(i, 1);
+                    continue;
+                }
+            }
+            // compare options if the input was options
+            if (item.type == 'options') {
+                if (userForm[key].toLowerCase().includes(item.value.toLowerCase()) == false) {
                     remUsers.splice(i, 1);
                     continue;
                 }

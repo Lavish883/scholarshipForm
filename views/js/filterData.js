@@ -23,7 +23,7 @@ function generateOptionsHTML(question){
         optionsArry.push(
             `
             <div style="display:${totalOptionsDone > 5 ? 'none': 'flex'}" onclick="changeOptionValue(this)" class="filterItem">
-                ${option == 'Other:' ? `<span>Other:&nbsp;&nbsp;</span><input onKeyUp="applyFilters()" whatType=${question.type} whatName=${question.name} type="text" class="filterInput" placeholder="Search" class=" class="searchForText" />` : `<input whatType=${question.type} whatName=${question.name} name=${question.name} type="radio" value="${option}" class="" /> <span>${option}</span>`}
+                ${option == 'Other:' ? `<span>Search:&nbsp;&nbsp;</span><input onKeyUp="applyFilters()" whatType=${question.type} whatName=${question.name} type="text" class="filterInput" class=" class="searchForText" />` : `<input whatType=${question.type} whatName=${question.name} name=${question.name} type="radio" value="${option}" class="" /> <span>${option}</span>`}
             </div>
             `
         );
@@ -34,7 +34,7 @@ function generateOptionsHTML(question){
         optionsArry.push(
             `
             <div onclick="changeOptionValue(this)" class="filterItem">
-                ${`<span>Other:&nbsp;&nbsp;</span><input onKeyUp="applyFilters()" whatType=${question.type} whatName=${question.name} type="text" class="filterInput" placeholder="Search" class=" class="searchForText" />`}
+                ${`<span>Search:&nbsp;&nbsp;</span><input onKeyUp="applyFilters()" whatType=${question.type} whatName=${question.name} type="text" class="filterInput" class=" class="searchForText" />`}
             </div>
             <div onclick="showMoreOptions(this)" class="filterItem openMoreOptions">
                 <div style="display:inline-block;margin:auto;">Show more</div>
@@ -53,7 +53,7 @@ function generateOptionsHTML(question){
                 <span></span>
                 <i class="fas fa-caret-down" aria-hidden="true"></i>
             </div>
-            <fieldset class="filterItems">
+            <fieldset whatType=${question.type} whatName=${question.name} class="filterItems">
                 ${optionsArry.join('')}
             </fieldset>
         </div>
@@ -105,11 +105,29 @@ function showMoreOptions(obj){
 function getAllFilterValues() {
     var filterValues = {};
     var inputs = document.querySelectorAll('.filterInput');
+    // gets all the written inputs one
     for (var input of inputs) {
         if (input.value == '') continue;
         filterValues[input.getAttribute('whatName')] = {'value': input.value, 'type': input.getAttribute('whatType')};
         if (input.getAttribute('isNumber') == 'true') filterValues[input.getAttribute('whatName')].isNumber = true;
     }
+
+    // gets all the selected options
+    var fieldsets = document.querySelectorAll('.filterItems');
+    for (var fieldset of fieldsets) {
+        var inputs = fieldset.querySelectorAll('input');
+        // gets all the selected options for the options
+        if (fieldset.getAttribute('whatType') == 'options'){
+            for (var input of inputs){
+                if (input.checked){
+                    console.log(input.getAttribute('value'));
+                    filterValues[fieldset.getAttribute('whatName')] = {'value': input.getAttribute('value'), 'type': fieldset.getAttribute('whatType')};
+                }
+            }
+        }
+        
+    }
+    console.log(filterValues);
     return filterValues;
 }
 
@@ -120,8 +138,9 @@ function changeOptionValue(obj){
     for (var input of inputs){
         input.checked = false;
     }
-
     obj.querySelector('input').checked = true;
+    applyFilters();
+
 }
 
 function generateUsersHTML(users) {
