@@ -17,7 +17,7 @@ const allAwardsList = [
     'Math Fair/Expo Award',
     'National Honors Society',
     'National Language Exams (all languages/levels)',
-    'National Merit Commended Scholar/Semifinalist/Finalist/Winner',
+    'National Merit Commended Scholar/ Semifinalist/ Finalist/ Winner',
     'National World Language Honors Society',
     'Relay for Life Captain',
     'Rotary Youth Leadership Award (RYLA)',

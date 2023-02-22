@@ -35,6 +35,29 @@
     outline: none;
 }
 
+.filterInputOptions {
+    padding: 10px;
+    margin: 10px 0px;
+    border: none;
+    border-radius: 5px;
+}
+
+.filterInputOptions:focus {
+    outline: none;
+}
+
+.clearButton {
+    background-color: #e74c3c;
+    color: white;
+    padding: 5px;
+    margin: 10px 0px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+    display: none;
+}
+
 .containFilter {
     background-color:#2F3C7E;
     padding: 5px 10px;
@@ -53,7 +76,6 @@
 
 .containFilter:hover {
     background-color:#1E274C;
-    transform: scale(1.15);
     z-index: 100;
 }
 
@@ -72,7 +94,6 @@
 .filterItems {
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
     justify-content: space-around;
     width: 100%;
     padding: 5px;
@@ -82,7 +103,6 @@
 .filterItems .filterItem {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
     align-items: center;
     width: 100%;
     padding: 5px 8px;
@@ -90,6 +110,7 @@
     border-top: 0px;
     transition: cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.5s;
     cursor: pointer;
+    user-select: none;
 }
 
 .filterItems  input[type="radio"] {
@@ -109,6 +130,53 @@
 .openMoreOptions {
     background-color: #45a049;
     
+}
+
+.formQuestion{
+    background-color: #2F3C7E;
+    padding: 5px 10px;
+    margin: 15px;
+    border-radius: 5px;
+}
+
+.formQuestion:hover {
+    background-color:#1E274C;
+    z-index: 100;
+}
+
+.specificSearch .text {
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    color: #ffffffbf;
+    margin: 10px 0px;
+}
+
+.specificSearch input:focus {
+    outline: none;
+}
+
+.specificSearch input {
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.specificSearch {
+    padding: 10px;
+}
+
+.fa-check {
+    color: #45a049;
+    font-size: 16px;
+    margin-left: 10px;
+}
+
+.fa-times {
+    color: #e74c3c;
+    font-size: 16px;
+    margin-left: 10px;
 }
 
 /** Card results css **/
