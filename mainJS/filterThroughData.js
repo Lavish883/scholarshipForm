@@ -72,7 +72,7 @@ function filterCheckBoxesPositive(filterValues, remUsers) {
     }
 }
 
-function filterCheckBoxesNegative(filterValues, remUsers){
+function filterCheckBoxesNegative(filterValues, remUsers) {
     for (var key in filterValues) {
         var filter = filterValues[key];
         // only need to see chekcboxe as they are the only ones that can be positive or negative
@@ -104,6 +104,49 @@ function filterCheckBoxesNegative(filterValues, remUsers){
                     }
                 }
 
+            }
+        }
+    }
+}
+
+function filterCheckBoxesGrid(filterValues, remUsers) {
+    // make a new arry of filters that have checkboxesGrid and also make it a more optmitzed data structure
+    // [key, [{col row}]]
+    var newFilterValues = [];
+
+    for (var key in filterValues) {
+        var filter = filterValues[key];
+
+        if (filter.type == 'checkBoxesGrid') {
+            newFilterValues.push([key, filter.value]);
+        }
+    }
+
+    for (var filter of newFilterValues) {
+        var key = filter[0];
+        var filterValues = filter[1];
+        // if user doens't have the key then remove the user
+        for (var i = remUsers.length - 1; i >= 0; i--) {
+            var user = remUsers[i];
+            // go through all the filters if it doesn't pass all of them remove
+            if (user.form[key] == undefined || user.form[key] == null) {
+                remUsers.splice(i, 1);
+                continue;
+            }
+            var userValues = user.form[key];
+            // make user values string
+            var userArryCompare = [];
+            for (var userValue of userValues) {
+                userArryCompare.push(userValue.columnValue + userValue.rowValue);
+            }
+
+            for (var actualFilters of filterValues) {
+                // make a filter string and then compare it to the user values string
+                let filterString = actualFilters.columnValue + actualFilters.rowValue;
+                if (userArryCompare.indexOf(filterString) == -1) {
+                    remUsers.splice(i, 1);
+                    break;
+                }
             }
         }
     }
@@ -157,7 +200,10 @@ async function filterData(req, res) {
     // so positive should get all the ones that do include even if they don't include all thats fine
     filterCheckBoxesPositive(req.body.filterValues, remUsers);
     filterCheckBoxesNegative(req.body.filterValues, remUsers);
-    // negative if even they hae one of them kick them out
+    // negative if even they have one of them kick them out
+
+    // filter the users based on the grid checkboxes
+    filterCheckBoxesGrid(req.body.filterValues, remUsers);
 
     // gets rid of the image data reducing the size of the json    
     remUsers = reduceJSONSize(remUsers);
