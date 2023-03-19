@@ -1,5 +1,41 @@
 const adminPassword = window.location.href.split("/filterData/")[1];
 
+// run once in the beginng to generate the HTML for all the filters
+function generateFiltersHTML(data, selector) {
+    var htmlArry = [];
+    for (var question of data) {
+
+        if (question.type == 'text' || question.type == 'textarea') {
+            htmlArry.push(genreateTextFilterHTML(question));
+            continue;
+        }
+
+        if (question.type == 'options') {
+            htmlArry.push(generateOptionsHTML(question));
+            continue;
+        }
+
+        if (question.type == 'checkBoxes') {
+            htmlArry.push(generateCheckBoxesOptionsHTML(question));
+            continue;
+        }
+
+        if (question.type == 'checkBoxesGrid') {
+            htmlArry.push(makeCheckboxGridQuestions(question));
+            continue;
+        }
+        /*
+        htmlArry.push(
+          `<div>${question.name}</div>`
+       );
+       */
+    }
+    document.querySelector(selector).innerHTML = htmlArry.join('');
+}
+
+
+
+
 // genreate HTML for the filtering data
 function genreateTextFilterHTML(question) {
     return `
@@ -167,6 +203,12 @@ function makeCheckboxGridQuestions(questionDetails) {
         ${tableHTML.length > 9 ? `<div class="showMoreBtnCont noBorderNeeded"><button type="button" class="showMoreBtn" shownMore="true" onclick="showMoreCheckboxGrid(this)">Show All</button></div>` : ''}
     </div>   `
 }
+
+function changeCheckBoxesGridValue(obj) {
+    obj.parentElement.parentElement.parentElement.parentElement.parentElement.querySelector('.clearButton').style.display = 'block';
+    applyFilters();
+}
+
 // search through the options and show the ones that match for Checkbox Grid questions
 function filterOptions(object) {
     const options = object.parentElement.querySelectorAll('.containOption');
@@ -221,11 +263,6 @@ function filterCheckBoxesOptions(obj) {
     }
 }
 
-function changeCheckBoxesGridValue(obj) {
-    obj.parentElement.parentElement.parentElement.parentElement.parentElement.querySelector('.clearButton').style.display = 'block';
-    applyFilters();
-}
-
 function changeCheckBoxesValue(obj) {
     var whatSign = obj.getAttribute('whatSign');
     var i = obj.querySelector('i');
@@ -248,37 +285,6 @@ function changeCheckBoxesValue(obj) {
     applyFilters();
 }
 
-function generateFiltersHTML(data, selector) {
-    var htmlArry = [];
-    for (var question of data) {
-
-        if (question.type == 'text' || question.type == 'textarea') {
-            //htmlArry.push(genreateTextFilterHTML(question));
-            continue;
-        }
-
-        if (question.type == 'options') {
-            //htmlArry.push(generateOptionsHTML(question));
-            continue;
-        }
-
-        if (question.type == 'checkBoxes') {
-            htmlArry.push(generateCheckBoxesOptionsHTML(question));
-            continue;
-        }
-
-        if (question.type == 'checkBoxesGrid') {
-            htmlArry.push(makeCheckboxGridQuestions(question));
-            continue;
-        }
-        /*
-        htmlArry.push(
-          `<div>${question.name}</div>`
-       );
-       */
-    }
-    document.querySelector(selector).innerHTML = htmlArry.join('');
-}
 
 function showMoreCheckboxGrid(object) {
     const options = object.parentElement.parentElement.querySelectorAll('.containOption');
@@ -432,6 +438,7 @@ function changeOptionValue(obj) {
 
 }
 
+// this makes the user profile on the sidebar
 function generateUsersHTML(users) {
     var htmLArry = [];
     // use "/image/${user.form.formId}" to get the image but now use base 64 image/url image
