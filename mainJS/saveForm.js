@@ -42,8 +42,16 @@ async function saveForm(req, res){
     // if user is finished with the form mark it as done and send an email
     if (finishedWithForm == true) {
         user.finishedWithForm = true;
-        makePDF(user);
-        mailFunctions.mailLink(user.email, messages[0] + process.env.WEBSITELINK + 'form/' + user.form.formId);
+        makePDF(user.form.formId).then(pdf => {
+            // make pdf to base64 pdf string so we can send it as an attachment
+            var pdfString = pdf.toString('base64');
+            // send email with the pdf attached
+            mailFunctions.mailLink(user.email, messages[0] + process.env.WEBSITELINK + 'form/' + user.form.formId, [{
+                filename: 'organizedForm.pdf',
+                content: pdfString,
+                encoding: 'base64'
+            }], "Scholarship Form submitted");
+        })
     }
 
     user.markModified('form');

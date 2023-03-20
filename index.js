@@ -49,6 +49,12 @@ app.post('/search/:password', filterData);
 // user page for teachers to see more info about them
 app.get('/admin/:password/:formId', pathFunctions.userPage);
 
+// pdf page for sending it to the user, needs password so no one can else access it
+app.get('/pdf/:password/:formId', pathFunctions.pdfPage);
+
+// download the pdf
+app.get('/download/pdf/:password/:formId', pathFunctions.downloadPDF);
+
 app.listen(PORT, () => {
     console.log("It's up bois!!")
 });

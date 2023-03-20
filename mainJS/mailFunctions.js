@@ -9,12 +9,13 @@ const transporter = nodeMailer.createTransport({
   }
 });
 
-function mailLink(emailToSend, linkMade) {
+function mailLink(emailToSend, linkMade, attachmentsGiven = [], subject = "") {
   let mailOptions = {
     from: process.env.EMAIL,
     to: emailToSend,
-    subject: 'Sending Email using Node.js',
-    text: linkMade
+    subject: subject,
+    text: linkMade,
+    attachments: attachmentsGiven
   }
 
   transporter.sendMail(mailOptions, (error, info) => {

@@ -254,18 +254,26 @@ function validateFieldSets(obj) {
     // get all children of the fieldset
     const children = obj.querySelectorAll('input');
     var selected = 0;
+    var ignoreSelections = false;
+
 
     for (var child of children) {
         // if child is none of above we don't care about it  
         if (child.getAttribute('type') == 'checkbox' && child.checked) {
             if (child.value == 'None of the above' || child.value == 'Undecided' || child.value == "Haven't yet") {
-                return false;
+                ignoreSelections = true;                
             }
         }
 
         if (child.checked) {
             selected++;
         }
+    }
+
+    if (ignoreSelections && selected > 1) {
+        return true;
+    } else if (ignoreSelections && selected == 1) {
+        return false;
     }
 
     if (maxSelections != 'none' && selected != maxSelections) {

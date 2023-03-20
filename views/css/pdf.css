@@ -1,0 +1,98 @@
+main {
+    padding: 30px 60px;
+    width: 8.27in;
+    margin: auto;
+}
+
+.pdf .pdfHeader {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pdf .pdfHeader .name {
+    font-size: 36pt;
+    margin: 0px;
+    font-family: 'Merriweather', serif;
+    font-weight: 700;
+}
+
+.corePartOfPdf {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.corePartOfPdf .writing {
+    width: 60%;
+    flex-direction: column;
+    display: flex;
+}
+
+.corePartOfPdf .quickInfo {
+    max-width: 1.81in;
+    flex-direction: column;
+    display: flex;
+    margin-left: 40pt;
+
+}
+
+
+.questions {
+    margin-top: 20px;
+}
+
+.corePartOfPdf .questions .question {
+    font-size: 11pt;
+    font-family: 'Open Sans', sans-serif;
+    color: #2079c7;
+    margin-top: 0px;
+}
+
+.corePartOfPdf .questions .answer {
+    font-size: 9pt;
+    margin-top: 1pt;
+    font-family: 'Merriweather', serif;
+    color: #666666;
+    font-weight: 400;
+}
+
+.schoolLogo {
+    width: 90px;
+}
+
+.userPhoto {
+    height: 3.65in;
+}
+
+.bigFontSize {
+    font-size: 13pt !important;
+    margin-top: 18pt !important;
+}
+
+.openResponse {
+    font-size: 10.5pt !important;
+    font-family: 'Open Sans', sans-serif !important;
+    text-align: justify;
+}
+
+.quickInfo .description {
+    font-size: 11pt;
+    font-family: 'Open Sans', sans-serif;
+    color: #2079c7;
+    font-weight: 700;
+}
+
+.quickInfo .answer {
+    font-size: 10pt;
+    font-family: 'Merriweather', serif;
+    color: #666666;
+    font-weight: 400;
+    margin: 10pt 0pt;
+}
+
+.quickInfo .fontSmaller {
+    font-size: 9pt;
+}
