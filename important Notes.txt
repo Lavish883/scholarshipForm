@@ -10,3 +10,6 @@ await user.save();
 // in a fieldset the name for all the input type raido has to be same
 
 // makeFormHTML.js is done don't touch
+
+
+// linked attribute links an text to checkBoxes fromOption to a option one that can be used to display the items in the form

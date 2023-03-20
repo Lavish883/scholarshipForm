@@ -697,26 +697,30 @@ const formOptions = [
         "type": "text",
         "required": true,
         "name": "communityServiceHours",
-        "isNumber": true
+        "isNumber": true,
+        "pdfName": "Community Service Hours"
     },
     {
         "question": "List where you have completed your community service.  (ex: CIT summer of 2019)",
         "type": "text",
         "required": true,
-        "name": "communityServiceList"
+        "name": "communityServiceList",
+        "pdfName": "Completed Community Service at:"
     },
     {
         "question": "Did you receive any of the listed honors/leadership awards? (Check all that apply)",
         "type": "checkBoxes",
         "options": allAwardsList,
         "required": false,
-        "name": "awardsList"
+        "name": "awardsList",
+        "pdfName": "Awards"
     }, 
     {
         "question": "List any other honors/awards you have received that are not listed above: (ex: Youth Banner Project Award)",
         "type": "text",
         "required": false,
-        "name": "otherAwards"
+        "name": "otherAwards",
+        "linkedTo": "awardsList"
     }, 
     {
         "question": "Click all sports (in and outside of school) that apply to you:",
@@ -731,19 +735,22 @@ const formOptions = [
             ]
         },
         "required": false,
-        "name": "sportsList"
+        "name": "sportsList",
+        "pdfName": "Sports"
     },
     {
         "question": "Please list any additional sports not included above.",
         "type": "text",
         "required": false,
-        "name": "otherSports"
+        "name": "otherSports",
+        "linkedTo": "sportsList"
     },
     {
         "question": "Sports-Related Leadership/Awards - (ex: team captain)",
         "type": "text",
         "required": false,
-        "name": "sportsAwards"
+        "name": "sportsAwards",
+        "pdfName": "Sports Awards"
     },
     {
         "question": "Click all extracurriculars (in and outside of school) that apply to you:",
@@ -758,25 +765,29 @@ const formOptions = [
             ]
         },
         "required": false,
-        "name": "clubsList"
+        "name": "clubsList",
+        "pdfName": "Extracurriculars"
     },
     {
         "question": "Please list additional extracurriculars not listed above.",
         "type": "text",
         "required": false,
-        "name": "otherClubs"
+        "name": "otherClubs",
+        "linkedTo": "clubsList"
     },
     {
         "question": "Extra Curricular Leadership/Awards - (ex: officer in a club)",
         "type": "text",
         "required": false,
-        "name": "clubsAwards"
+        "name": "clubsAwards",
+        "pdfName": "Extracurricular Awards"
     },
     {
         "question": "Please list other activities that you participate in: (only list if not in your application elsewhere)",
         "type": "text",
         "required": false,
-        "name": "otherActivities"
+        "name": "otherActivities",
+        "linkedTo": "clubsList"
     },
     {
         "question": "Employment Experience - Have you ever been employed?",
@@ -810,12 +821,14 @@ const formOptions = [
         "required": true,
         "name": "intendedCareer",
         "maxSelections": 3,
+        "pdfName": "Intended Career"
     },
     {
         "question": "If your intended career is not listed, please write it here.",
         "type": "text",
         "required": false,
-        "name": "otherIntendedCareer"
+        "name": "otherIntendedCareer",
+        "linkedTo": "intendedCareer"
     },
     {
         "question": "What is your intended major? (Check up to 3)",
@@ -824,12 +837,14 @@ const formOptions = [
         "required": true,
         "name": "intendedMajor",
         "maxSelections": 3,
+        "pdfName": "Intended Major"
     },
     {
         "question": "If your intended major is not listed, please write it here.",
         "type": "text",
         "required": false,
-        "name": "otherIntendedMajor"
+        "name": "otherIntendedMajor",
+        "linkedTo": "intendedMajor"
     },
     {
         "question": "What are your post-graduate plans?",
@@ -910,18 +925,21 @@ const formOptions = [
         "required": true,
         "name": "gpa",
         "isNumber": true,
+        "pdfName": "GPA"
     },
     {
         "question": "In 250 words or less, please share your future aspirations and goals.",
         "type": "textArea",
         "required": true,
-        "name": "futureAspirations"
+        "name": "futureAspirations",
+        "pdfName": "Future Aspirations and Goals"
     },
     {
-        "question": "What is your greatest weakness? And how did you overcome it?",
+        "question": "What was your greatest challenge? And how did you overcome it?",
         "type": "textArea",
         "required": true,
-        "name": "greatestWeakness"
+        "name": "greatestWeakness",
+        "pdfName": "Greatest Challenge"
     },
     {
         "question": "Is there any other information that you would like to share?",

@@ -1,9 +1,11 @@
 const crypto = require('crypto');
-const mailFunctions = require('../mainJS/mailFunctions.js')
+const mailFunctions = require('../mainJS/mailFunctions.js');
 const schemas = require('../schemas/schemas'); // schemas
 
 const formOptions = require('../mainJS/formOptions.js');
 const makeFormHTML = require('../mainJS/makeFormHTML.js');
+
+const makePDF = require('../mainJS/makePDF.js');
 
 function signUp(req, res) {
     return res.render('index')
@@ -43,14 +45,14 @@ async function generateVerficationLink(req, res) {
     } else if (user.verfied == false) {  // update verify link if not verfied
         user.verifyLink = token;
     } else if (user.verfied == true) {
-        mailFunctions.mailLink(email, process.env.WEBSITELINK + 'form/' + user.form.formId);
+        mailFunctions.mailLink(email, process.env.WEBSITELINK + 'form/' + user.form.formId, [], "Your Form Link");
         return res.status(200).send('Email already verfied! Form Link Sent to Mail');
     }
 
     await user.save();
 
     // send link email to the email provided
-    mailFunctions.mailLink(email, process.env.WEBSITELINK + 'verifyEmail/' + token);
+    mailFunctions.mailLink(email, process.env.WEBSITELINK + 'verifyEmail/' + token, [], "Verify Email");
     return res.send('Done!! Email sent');
 }
 
@@ -69,7 +71,7 @@ async function generateLink(email, token) {
 
     //console.log(token);
     // send link email to the email provided
-    mailFunctions.mailLink(email, process.env.WEBSITELINK + 'form/' + token);
+    mailFunctions.mailLink(email, process.env.WEBSITELINK + 'form/' + token, [], "Your Form Link");
 
     return token;
 }
@@ -94,7 +96,7 @@ async function verifyUserEmail(req, res) {
     // if a form id already exists for the user
     // send the link to the form
     if (user.form.formId != '') {
-        mailFunctions.mailLink(user.email, process.env.WEBSITELINK + 'form/' + user.form.formId);
+        mailFunctions.mailLink(user.email, process.env.WEBSITELINK + 'form/' + user.form.formId, [], "Your Form Link");
         return res.send('Form Link is sent to your email');
     }
 
@@ -152,6 +154,34 @@ async function userPage(req, res) {
     return res.json(user);
 }
 
+async function pdfPage(req, res) {
+    // check if the user is authorized or not
+    if (req.params.password != process.env.ACCESS_KEY) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
+
+    // check if that formId exists or not
+    var user = await schemas.users.findOne({'form.formId': req.params.formId });
+    if (user == null || user == undefined) return res.send('Form Id is not found');
+
+    // to reduce json size
+    user.form.image = '';
+    // after those checks you can render the pdf page
+    return res.render('pdf', { 'userForm': user.form, 'formOptions': formOptions });
+}
+
+async function downloadPDF (req, res) {
+    // check if the user is authorized or not
+    if (req.params.password != process.env.ACCESS_KEY) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
+
+    // check if that formId exists or not
+    var user = await schemas.users.findOne({'form.formId': req.params.formId });
+    if (user == null || user == undefined) return res.send('Form Id is not found');
+
+    makePDF(user.form.formId).then(pdf => {
+        res.set({ 'Content-Type': 'application/pdf', 'Content-Length': pdf.length })
+        res.send(pdf)
+    })
+}
+
 module.exports = {
     signUp,
     generateLink,
@@ -160,5 +190,7 @@ module.exports = {
     generateVerficationLink,
     serveImage,
     filterDataPage,
-    userPage
+    userPage,
+    pdfPage,
+    downloadPDF
 }

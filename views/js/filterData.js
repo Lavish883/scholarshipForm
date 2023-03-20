@@ -5,7 +5,7 @@ function generateFiltersHTML(data, selector) {
     var htmlArry = [];
     for (var question of data) {
 
-        if (question.type == 'text' || question.type == 'textarea') {
+        if (question.type == 'text' || question.type == 'textArea') {
             htmlArry.push(genreateTextFilterHTML(question));
             continue;
         }
@@ -32,8 +32,6 @@ function generateFiltersHTML(data, selector) {
     }
     document.querySelector(selector).innerHTML = htmlArry.join('');
 }
-
-
 
 
 // genreate HTML for the filtering data
@@ -453,7 +451,7 @@ function generateUsersHTML(users) {
 
         htmLArry.push(
             `
-            <a title="Click on for more Info" target="_blank" href="/admin/${adminPassword}/${user.form.formId}">
+            <a title="Click on for more Info" target="_blank" href="/pdf/${adminPassword}/${user.form.formId}">
                 <div class="card">
                     <div class="imgContainer">
                         <img src=${image} alt="Photo of ${user.form.firstName + ' ' + user.form.lastName}">

@@ -1,8 +1,6 @@
-
-*{
-    box-sizing: border-box !important;
+* {
+    box-sizing: border-box;
 }
-
 .containEmailForm {
     max-width: 600px;
     margin: auto;

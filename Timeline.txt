@@ -5,8 +5,12 @@ Part 2 of the project is almost done
     -
 
 
+// Done - For pdf genreation use puppter and css styling to take screenshots of the page and then make a pdf out of it
+        - https://www.npmjs.com/package/puppeteer
+        
+
 Other Miscellaneous things needed to do
-    - Make the pdf format to send through the email
+    - // Done Make the pdf format to send through the email
     - do a print option and save as pdf option for the teachers when they click on a student
     - they can get details of the student in a more oragnized format 
     - And if needed print it out
@@ -14,6 +18,6 @@ Other Miscellaneous things needed to do
     - Better UI/UX desgin specially the colors need feedback for that
     - Make Email being sent better, with a proper title and body
     - Save button on the form along the auto save feature
-    
+    - For the pdf I need to make it so teachers can edit what is on it and what isn't on it
 
     - Maybe get a lot of sample tests from this?? 
