@@ -182,6 +182,11 @@ async function downloadPDF (req, res) {
     })
 }
 
+// 404 page
+async function notFound(req, res) {
+    return res.status(404).send('Page Not Found');
+}
+
 module.exports = {
     signUp,
     generateLink,
@@ -192,5 +197,6 @@ module.exports = {
     filterDataPage,
     userPage,
     pdfPage,
-    downloadPDF
+    downloadPDF,
+    notFound
 }

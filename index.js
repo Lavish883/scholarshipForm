@@ -4,6 +4,7 @@ const filterData = require('./mainJS/filterThroughData');
 const app =  express();
 const PORT = process.env.PORT || 3030;
 const pathFunctions = require('./mainJS/pathFunctions');
+const createFormFuctions = require('./mainJS/creatingForms');
 const saveForm = require('./mainJS/saveForm');
 
 // conenct to the database
@@ -54,6 +55,15 @@ app.get('/pdf/:password/:formId', pathFunctions.pdfPage);
 
 // download the pdf
 app.get('/download/pdf/:password/:formId', pathFunctions.downloadPDF);
+
+// tempory setup for creating new form page
+app.post('/test/makeNewFormMakerUser', createFormFuctions.makeNewFormMakerUser);
+app.post('/test/makeNewForm', createFormFuctions.makeNewForm);
+app.delete('/test/deleteForm', createFormFuctions.deleteForm);
+app.post('/test/giveUserFormDeatils', createFormFuctions.giveUserFormDeatils);
+
+// serve as a 404 page
+app.get('*', pathFunctions.notFound);
 
 app.listen(PORT, () => {
     console.log("It's up bois!!")

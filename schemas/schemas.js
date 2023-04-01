@@ -37,7 +37,42 @@ const userSchema = new Schema({
 
 const users = mongoose.model('users', userSchema)
 
+const formSchema = new Schema({
+    "formOptions": {
+        type: Object,
+        required: true
+    },
+    "name": {
+        type: String,
+    },
+    "formAdminKey": {
+        type: String,
+        required: true
+    },
+}, {timestamps: true})
+
+const forms = mongoose.model('forms', formSchema)
+
+const formMakerSchema = new Schema({
+    "email": {
+        type: String,
+        required: true
+    },
+    "password": {
+        type: String,
+        required: true
+    },
+    "forms": {
+        type: Array,
+        required: true
+    }
+}, {timestamps: true})
+
+const formMakerUsers = mongoose.model('formMakerUsers', formMakerSchema)
+
 module.exports = {
-    users
+    users,
+    forms,
+    formMakerUsers
 }
 
