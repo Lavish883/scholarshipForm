@@ -1,6 +1,8 @@
 // Handles basiclly part 3, creates new form
 const schemas = require('../schemas/schemas');
 const crypto = require('crypto');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const bcrpyt = require('bcrypt');
 
@@ -36,13 +38,18 @@ async function makeNewForm(req, res){
         formId: formId,
         adminKeyForForm: adminKeyForForm,
         formName: req.body.formName,
-        form: {}
+        form: {},
     }
+    // make a new collection for the form
+    // make a new schma
 
+    const newCollection = mongoose.model(formId + '-' + adminKeyForForm.slice(10), schemas.userSchema, formId + '-' + adminKeyForForm.slice(10));
+    newCollection.createCollection();
+    
     // save the user 
     verfiedUser.forms.push(newForm);
     await verfiedUser.save();
-    return res.json(newForm);
+    return res.status(200).send(verfiedUser.forms);
 }
 // handles the user making for the new user
 async function makeNewFormMakerUser(req, res) {
@@ -60,7 +67,7 @@ async function makeNewFormMakerUser(req, res) {
     const newUser = new schemas.formMakerUsers({
         email: email,
         password: hashedPassword,
-        forms: []
+        forms: [],
     });
 
     await newUser.save();
@@ -87,18 +94,21 @@ async function deleteForm(req, res) {
         if (userAlreadyMadeForms[i].formId == req.body.formId) {
             userAlreadyMadeForms.splice(i, 1);
             await verfiedUser.save();
-            return res.status(200).send('Form deleted');
+            return res.status(200).send(userAlreadyMadeForms);
         }
     }
 
     return res.status(400).send('Form does not exist');
 }
 
-
+async function formMakerLogin(req, res) {
+    return res.render('formMakerLogin');
+}
 
 module.exports = {
     makeNewForm,
     makeNewFormMakerUser,
     deleteForm,
-    giveUserFormDeatils
+    giveUserFormDeatils,
+    formMakerLogin
 }

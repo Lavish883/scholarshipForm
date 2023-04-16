@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer')
 
 // runs puppeteer and then returns the pdf of the page
-async function makePDF(formId) {
+async function makePDF(formName, formId, userId) {
   const browser = await puppeteer.launch({ 
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--single-process', '--no-zygote'],
     headless: true,  
@@ -9,8 +9,8 @@ async function makePDF(formId) {
   });
   const page = await browser.newPage();
 
-  await page.goto(process.env.WEBSITELINK + `pdf/d20248a3e30e22982eed0de6eb0a9152/${formId}`, {waitUntil: 'networkidle0'});
-  const pdf = await page.pdf({ format: 'A4'});
+  await page.goto(process.env.WEBSITELINK + `pdf/${formName}/${process.env.ACCESS_KEY}/${formId}/${userId}`, {waitUntil: 'networkidle0'});
+  const pdf = await page.pdf({ format: 'A4', margin: { top: '30px', bottom: '30px', left: '60px', right: '60px' }});
   
   await browser.close();
   return pdf

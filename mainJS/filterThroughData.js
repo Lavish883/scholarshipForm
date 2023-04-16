@@ -1,7 +1,18 @@
+const mongoose = require('mongoose');
 const schemas = require('../schemas/schemas'); // schemas
+
+
+async function accessCollectionOfUsers(collectionName) {
+    const newCollection = mongoose.model(collectionName, schemas.userSchema, collectionName);
+    var allItems = await newCollection.find({});
+
+    return allItems;
+}
 
 function reduceJSONSize(users) {
     for (var i = 0; i < users.length; i++) {
+        // for some reason the user doesn't have a form
+        if (users[i].form == undefined || users[i].form == null) continue;
         if (users[i].form.bot != true) {
             users[i].form.image = '';
         }
@@ -16,7 +27,7 @@ function compareNumbers(userNumber, value) {
     if (parseFloat(userNumber) < parseFloat(value)) return false;
     return true;
 }
-
+//5478e4ed90-6d72881354848eb3ace579'
 function isTextInString(userText, string) {
     console.log(userText, string);
     if (userText.toLowerCase().includes(string.toLowerCase())) return true;
@@ -154,10 +165,15 @@ function filterCheckBoxesGrid(filterValues, remUsers) {
 
 async function filterData(req, res) {
     // check if the user is authorized or not
-    if (req.params.password != process.env.ACCESS_KEY) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
-    // get all users
-    console.log(req.body);
-    var users = await schemas.users.find({});
+    var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.params.formId, 'forms.formName': req.params.formName, 'forms.adminKeyForForm': req.params.adminKey });
+
+    if (formUser == null || formUser == undefined) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
+    // find the form from the database
+    
+    // get all users for that form
+    var users = await accessCollectionOfUsers(req.params.formId + '-' + req.params.adminKey.slice(10));
+
+    console.log(users.length, 'users length', req.params.formId + '-' + req.params.adminKey.slice(10));
     var remUsers = JSON.parse(JSON.stringify(users));
 
     // filter the users
@@ -165,6 +181,11 @@ async function filterData(req, res) {
         var item = req.body.filterValues[key];
 
         for (var i = remUsers.length - 1; i >= 0; i--) {
+            // if some reason the user does not have the form then just move on
+            if (remUsers[i].form == undefined || remUsers[i].form == null) {
+                remUsers.splice(i, 1);
+                continue;
+            }
             var userForm = remUsers[i].form;
             // if error with incoming datat then just move on
             if (item.value == undefined || item.value == null) continue;

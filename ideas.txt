@@ -1,3 +1,8 @@
+Important detais:
+    - When you switch the type on a question the user data is deleted
+
+
+
 - Have a system where people could access and edit there form until deadline
 
 - Filter options so forms can be easily read

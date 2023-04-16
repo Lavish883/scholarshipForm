@@ -30,8 +30,10 @@ const userSchema = new Schema({
     "form": {
         type: Object,
         required: true
+    },
+    "userId": {
+        type: String,
     }
-
 }, {timestamps: true})
 
 
@@ -73,6 +75,7 @@ const formMakerUsers = mongoose.model('formMakerUsers', formMakerSchema)
 module.exports = {
     users,
     forms,
-    formMakerUsers
+    formMakerUsers,
+    userSchema
 }
 

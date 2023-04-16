@@ -45,7 +45,10 @@ async function saveImageToServer() {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            "formId": window.location.href.split('/form/')[1],
+            "userId": window.location.href.split('/form/')[1].split('/')[3],
+            "formName": unescape(window.location.href.split('/form/')[1].split('/')[0]),
+            "formId": window.location.href.split('/form/')[1].split('/')[2],
+            "adminKey": window.location.href.split('/form/')[1].split('/')[1],
             "form": {
                 "image": cropper.getCroppedCanvas().toDataURL('image/jpeg'),
                 "imageHeight": cropper.getCroppedCanvas().height,
@@ -142,7 +145,10 @@ async function saveFormToServer(finishedWithForm = false) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            "formId": window.location.href.split('/form/')[1],
+            "userId": window.location.href.split('/form/')[1].split('/')[3],
+            "formName": unescape(window.location.href.split('/form/')[1].split('/')[0]),
+            "formId": window.location.href.split('/form/')[1].split('/')[2],
+            "adminKey": window.location.href.split('/form/')[1].split('/')[1],
             "form": {
                 "values": getAllFormValues()
             },

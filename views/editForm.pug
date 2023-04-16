@@ -1,0 +1,24 @@
+html  
+    head 
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        script(src="https://code.jquery.com/jquery-3.6.0.js")
+        script(src="https://code.jquery.com/ui/1.13.2/jquery-ui.js")
+        style 
+            include css/style.css
+        style
+            include css/editForm.css
+    body 
+        main
+            div#questions
+            div.saveFormToServerButton(onclick="saveFormToServer(this)")
+                span Save Form to Server
+                img(src="/publicImages/saving.svg", alt="saving")
+            div.formToolBar
+                i.fas.fa-plus-circle(onclick="addQuestion(this)", title="Add Question")
+                i.fas.fa-save(onclick="saveFormToServer(this, true)", title="Save Form to Server")
+        script 
+            include js/editForm.js
+        script. 
+            var formOptions = !{JSON.stringify(formOptions).replace(/<\//g, '<\\/')};
+            generateExistingQuestions(formOptions)  
+        script(src="https://kit.fontawesome.com/9c2fbbf0d7.js")

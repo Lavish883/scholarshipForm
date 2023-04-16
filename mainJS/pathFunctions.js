@@ -1,14 +1,45 @@
 const crypto = require('crypto');
+const mongoose = require('mongoose');
 const mailFunctions = require('../mainJS/mailFunctions.js');
 const schemas = require('../schemas/schemas'); // schemas
 
-const formOptions = require('../mainJS/formOptions.js');
+//const formOptions = require('../mainJS/formOptions.js');
 const makeFormHTML = require('../mainJS/makeFormHTML.js');
 
 const makePDF = require('../mainJS/makePDF.js');
 
-function signUp(req, res) {
-    return res.render('index')
+// if userId is given it will return one user, if not it will return all users
+async function accessCollectionOfUsers(collectionName, userId = null) {
+    var allItems;
+    const newCollection = mongoose.model(collectionName, schemas.userSchema, collectionName);
+    if (userId == null) {
+        allItems = await newCollection.find({});
+    } else {
+        allItems = await newCollection.findOne({ 'userId': userId });
+    }
+
+    return allItems;
+}
+
+function findForm(formUser, formId) {
+    var actualForm;
+    for (var form of formUser.forms) {
+        if (form.formId == formId) {
+            actualForm = form;
+            break;
+        }
+    }
+    return actualForm;
+}
+
+async function signUp(req, res) {
+    var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.params.formId, 'forms.formName': req.params.formName });
+    if (formUser == null || formUser == undefined) return res.status(404).send('Form not found');
+    var formOptions = findForm(formUser, req.params.formId);
+    // another check to verify it is allowed
+    if (formOptions.adminKeyForForm.slice(-5) != req.params.adminKey) return res.status(403).send('Not authorized');
+
+    return res.render('signUp')
 }
 
 // sees if its a valid spyponders email
@@ -20,39 +51,52 @@ function testIfValidEmail(email) {
 
 // genreate email verifaction link
 async function generateVerficationLink(req, res) {
-    const email = req.body.email;
+    // see if the form is valid or not
+    var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.body.formId, 'forms.formName': unescape(req.body.formName) });
+    if (formUser == null || formUser == undefined) return res.status(404).send('Form not found');
+
+    var formOptions = findForm(formUser, req.body.formId);
+    // another check to verify it is allowed
+    if (formOptions.adminKeyForForm.slice(-5) != req.body.adminKey) return res.status(403).send('Not authorized');
+
+    // get all the users who are signed up for this form
+    const collectionName = req.body.formId + '-' + formOptions.adminKeyForForm.slice(10);
+    const newCollection = mongoose.model(collectionName, schemas.userSchema, collectionName);
+
+    var user = await newCollection.findOne({ 'email': req.body.email });
     var token = crypto.randomBytes(16).toString('hex');
-    // verify email
-    if (!testIfValidEmail(email)) return res.status(400).send('not valid email');
-    // check if the verify link already exists or not
+    var email = req.body.email;
+    // does any other user have the same token
     var doesItExist = await schemas.users.findOne({ 'verifyLink': token });
 
-    while (doesItExist != null) {
-        token = crypto.randomBytes(16).toString('hex');
-        doesItExist = await schemas.users.findOne({ 'verifyLink': token });
-    }
-
-    // add the user to the database if it doesnt exist
-    var user = await schemas.users.findOne({ "email": email });
-
+    // do this if user doesnt exist for that form 
     if (user == null || user == undefined) {
+        // if (!testIfValidEmail(email)) return res.status(400).send('not valid email');
+        while (doesItExist != null) {
+            token = crypto.randomBytes(16).toString('hex');
+            doesItExist = await schemas.users.findOne({ 'verifyLink': token });
+        }
+
         user = new schemas.users({
             "email": email,
             "verfied": false,
             "verifyLink": token,
-            form: { 'formId': '', 'image': '' }
+            form: { 'image': '' }
         });
+        // add the form to the database
+        newCollection.insertMany(user);
+
     } else if (user.verfied == false) {  // update verify link if not verfied
         user.verifyLink = token;
     } else if (user.verfied == true) {
-        mailFunctions.mailLink(email, process.env.WEBSITELINK + 'form/' + user.form.formId, [], "Your Form Link");
+        mailFunctions.mailLink(user.email, process.env.WEBSITELINK + `form/${req.body.formName}/${req.body.adminKey}/${req.body.formId}/${user.userId}`), [], "Your Form Link";
         return res.status(200).send('Email already verfied! Form Link Sent to Mail');
     }
 
     await user.save();
 
     // send link email to the email provided
-    mailFunctions.mailLink(email, process.env.WEBSITELINK + 'verifyEmail/' + token, [], "Verify Email");
+    mailFunctions.mailLink(email, process.env.WEBSITELINK + `verifyEmail/${req.body.formName}/${req.body.adminKey}/${req.body.formId}/` + token, [], "Verify Email");
     return res.send('Done!! Email sent');
 }
 
@@ -77,26 +121,46 @@ async function generateLink(email, token) {
 }
 
 async function formPage(req, res) {
-    var user = await schemas.users.findOne({ 'form.formId': req.params.id });
-    // check if user exits with that formId
-    if (user == null || user == undefined) return res.send('Form Id is not found');
+    // find the form
+    var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.params.formId, 'forms.formName': req.params.formName });
+    if (formUser == null || formUser == undefined) return res.status(404).send('Form not found');
+    var formOptions = findForm(formUser, req.params.formId);
+    // another check to verify it is allowed
+    if (formOptions.adminKeyForForm.slice(-5) != req.params.adminKey) return res.status(403).send('Not authorized');
+    // find the user
+    var user = await accessCollectionOfUsers(req.params.formId + '-' + formOptions.adminKeyForForm.slice(10), req.params.userId);
+    if (user == null || user == undefined) return res.status(404).send('User not found');
     // form HTML
-    var formHTML = makeFormHTML(formOptions, user);
+    var formHTML = makeFormHTML(formOptions.form, user);
+    var image = `/image/${req.params.formName}/${req.params.adminKey}/${req.params.formId}/${req.params.userId}`
 
-    return res.render('form', { 'user': user, 'formHTML': formHTML });
+    return res.render('form', { 'user': user, 'formHTML': formHTML, 'image': image });
 }
 
 // verify email
 async function verifyUserEmail(req, res) {
-    var verifyLink = req.params.verifyLink;
-    var user = await schemas.users.findOne({ "verifyLink": verifyLink });
+    // see if the form is valid or not
+    var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.params.formId, 'forms.formName': req.params.formName });
+    if (formUser == null || formUser == undefined) return res.status(404).send('Form not found');
 
+    var formOptions = findForm(formUser, req.params.formId);
+
+    // another check to verify it is allowed
+    if (formOptions.adminKeyForForm.slice(-5) != req.params.adminKey) return res.status(403).send('Not authorized');
+
+    // get all the users who are signed up for this form
+    const collectionName = req.params.formId + '-' + formOptions.adminKeyForForm.slice(10);
+    const newCollection = mongoose.model(collectionName, schemas.userSchema, collectionName);
+    
+    // get the user from the database
+    var user = await newCollection.findOne({ "verifyLink": req.params.verifyLink });
     // if there are no user we dont need to do anything
-    if (user == null || user == undefined) return res.send('Verify Link not found');
+    if (user == null || user == undefined) return res.send('Verify Link not found or expired !!!');
+    
     // if a form id already exists for the user
     // send the link to the form
-    if (user.form.formId != '') {
-        mailFunctions.mailLink(user.email, process.env.WEBSITELINK + 'form/' + user.form.formId, [], "Your Form Link");
+    if (user.userId != undefined) {
+        mailFunctions.mailLink(user.email, encodeURI(process.env.WEBSITELINK + `form/${req.params.formName}/${req.params.adminKey}/${req.params.formId}/${user.userId}`), [], "Your Form Link");
         return res.send('Form Link is sent to your email');
     }
 
@@ -104,31 +168,41 @@ async function verifyUserEmail(req, res) {
     if (user.verfied == false) {
         user.verfied = true;
     }
-    // if there is a form already created for the user
-    // send the link to the form  
 
-    var formId = await generateLink(user.email, user.form.formId);
+    var userId = crypto.randomBytes(8).toString('hex');
+    var doesItExist = await newCollection.findOne({ "userId": userId });
+
+    while (doesItExist != null) {
+        userId = crypto.randomBytes(8).toString('hex');
+        doesItExist = await newCollection.findOne({ "userId": userId });
+    }
     // type object must be marked as modified to be saved in mongoDB
 
-    user.form.formId = formId;
+    user.userId = userId;
     user.markModified('form');
 
     await user.save();
-
-
+    mailFunctions.mailLink(user.email, encodeURI(process.env.WEBSITELINK + `form/${req.params.formName}/${req.params.adminKey}/${req.params.formId}/${user.userId}`), [], "Your Form Link");
     return res.send('Form Link is sent to your email');
 }
 
 // serve images from the database
 async function serveImage(req, res) {
-    const formId = req.params.id;
-    var user = await schemas.users.findOne({ 'form.formId': formId });
-    // check if user exits with that formId
-    if (user == null || user == undefined) return res.send('Image is not found');
+    // find the formId from the database
+    var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.params.formId, 'forms.formName': req.params.formName });
+
+    if (formUser == null || formUser == undefined) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
+    var formOptions = findForm(formUser, req.params.formId);
+    if (formOptions.adminKeyForForm.slice(-5) != req.params.adminKey) return res.status(403).send('Not authorized');
+
+    // find the user
+    var user = await accessCollectionOfUsers(req.params.formId + '-' + formOptions.adminKeyForForm.slice(10), req.params.userId);
+    if (user == null || user == undefined) return res.status(404).send('User not found');
+
 
     res.set('Content-Type', 'image/jpeg');
 
-    if (user.form.image == undefined || user.form.image == null){
+    if (user.form.image == undefined || user.form.image == null) {
         return res.send('');
     }
     var imageBuffer = Buffer.from(user.form.image.replace('data:image/jpeg;base64,', ''), 'base64');
@@ -138,16 +212,22 @@ async function serveImage(req, res) {
 
 async function filterDataPage(req, res) {
     // check if the user is authorized or not
-    if (req.params.password != process.env.ACCESS_KEY) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
+    // find the formId from the database
+    var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.params.formId, 'forms.formName': req.params.formName, 'forms.adminKeyForForm': req.params.adminKey });
 
-    return res.render('filterData', { 'formOptions': formOptions });
+    if (formUser == null || formUser == undefined) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
+    // find the form from the database
+    var formOptions = findForm(formUser, req.params.formId);
+
+
+    return res.render('filterData', { 'formOptions': formOptions.form });
 }
 
 async function userPage(req, res) {
     // check if the user is authorized or not
     if (req.params.password != process.env.ACCESS_KEY) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
 
-    var user = await schemas.users.findOne({'form.formId': req.params.formId });
+    var user = await schemas.users.findOne({ 'form.formId': req.params.formId });
 
     user.form.image = '';
 
@@ -155,37 +235,79 @@ async function userPage(req, res) {
 }
 
 async function pdfPage(req, res) {
-    // check if the user is authorized or not
-    if (req.params.password != process.env.ACCESS_KEY) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
+    // find the formId from the database
+    var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.params.formId, 'forms.formName': req.params.formName });
+    if (formUser == null || formUser == undefined) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
 
-    // check if that formId exists or not
-    var user = await schemas.users.findOne({'form.formId': req.params.formId });
-    if (user == null || user == undefined) return res.send('Form Id is not found');
+    var formOptions = findForm(formUser, req.params.formId);
+    if (process.env.ACCESS_KEY != req.params.adminKey) return res.status(403).send('Not authorized');
+
+    // find the user
+    var user = await accessCollectionOfUsers(req.params.formId + '-' + formOptions.adminKeyForForm.slice(10), req.params.userId);
+    if (user == null || user == undefined) return res.status(404).send('User not found');
 
     // to reduce json size
     user.form.image = '';
+    var imageURL = `/image/${req.params.formName}/${formOptions.adminKeyForForm.slice(-5)}/${req.params.formId}/${req.params.userId}`
     // after those checks you can render the pdf page
-    return res.render('pdf', { 'userForm': user.form, 'formOptions': formOptions });
+    return res.render('pdf', { 'userForm': user.form, 'formOptions': formOptions.form, 'imageURL': imageURL });
 }
 
-async function downloadPDF (req, res) {
-    // check if the user is authorized or not
-    if (req.params.password != process.env.ACCESS_KEY) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
+async function downloadPDF(req, res) {
+    // find the formId from the database
+    var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.params.formId, 'forms.formName': req.params.formName });
+    if (formUser == null || formUser == undefined) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
 
-    // check if that formId exists or not
-    var user = await schemas.users.findOne({'form.formId': req.params.formId });
-    if (user == null || user == undefined) return res.send('Form Id is not found');
+    var formOptions = findForm(formUser, req.params.formId);
+    if (req.params.adminKey != formOptions.adminKeyForForm.slice(-5)) return res.status(403).send('Not authorized');
 
-    makePDF(user.form.formId).then(pdf => {
+    // find the user
+    var user = await accessCollectionOfUsers(req.params.formId + '-' + formOptions.adminKeyForForm.slice(10), req.params.userId);
+    if (user == null || user == undefined) return res.status(404).send('User not found');
+
+
+    makePDF(req.params.formName, req.params.formId, user.userId).then(pdf => {
         res.set({ 'Content-Type': 'application/pdf', 'Content-Length': pdf.length })
         res.send(pdf)
     })
+}
+
+async function editFormPage(req, res){
+    // check if the user is authorized or not
+    // find the formId from the database
+    var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.params.formId, 'forms.formName': req.params.formName, 'forms.adminKeyForForm': req.params.adminKey });
+
+    if (formUser == null || formUser == undefined) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
+    // find the form from the database
+    var formOptions = findForm(formUser, req.params.formId);
+
+    return res.render('editForm', { 'formOptions': formOptions.form });
+}
+
+async function saveEditedForm(req, res){
+    // check if the user is authorized or not
+    var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.body.formId, 'forms.formName': unescape(req.body.formName), 'forms.adminKeyForForm': req.body.adminKey });
+    if (formUser == null || formUser == undefined) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
+    
+    console.log(req.body);
+    // find that spefic form of the user
+    for (var i = 0; i < formUser.forms.length; i++) {
+        if (formUser.forms[i].formId == req.body.formId) {
+            console.log('found');
+            formUser.forms[i].form = req.body.formOptions;
+        }
+    }
+    formUser.markModified('forms');
+    await formUser.save();
+
+    return res.status(200).send("Form Saved");
 }
 
 // 404 page
 async function notFound(req, res) {
     return res.status(404).send('Page Not Found');
 }
+
 
 module.exports = {
     signUp,
@@ -198,5 +320,7 @@ module.exports = {
     userPage,
     pdfPage,
     downloadPDF,
-    notFound
+    notFound,
+    editFormPage,
+    saveEditedForm
 }

@@ -5,14 +5,18 @@ async function postEmailLink(event) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            "email": document.getElementById('email').value
+            "email": document.getElementById('email').value,
+            "formName": window.location.href.split('/form/signup/')[1].split(`/`)[0],
+            "adminKey": window.location.href.split('/form/signup/')[1].split(`/`)[1],
+            "formId": window.location.href.split('/form/signup/')[1].split(`/`)[2],
         })
+
     }
     const request = await fetch('/createVerifyLink', options);
     const data = await request.text();
 
     // if error occurs while sending email
-    if (request.status == 400) {
+    if (request.status != 200) {
         const emailInput = document.getElementById('email');
         emailInput.style.animation = 'shake 0.8s';
         emailInput.style.color = 'white';
