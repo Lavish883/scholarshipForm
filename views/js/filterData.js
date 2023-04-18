@@ -1,4 +1,8 @@
 const adminPassword = window.location.href.split("/filterData/")[1];
+const formName = window.location.href.split("/filterData/")[1].split("/")[0];
+const formId = window.location.href.split("/filterData/")[1].split("/")[2];
+const adminKeyForForm = window.location.href.split("/filterData/")[1].split("/")[1];
+
 
 // run once in the beginng to generate the HTML for all the filters
 function generateFiltersHTML(data, selector) {
@@ -446,12 +450,13 @@ function generateUsersHTML(users) {
         if (user.email.includes('test')) {
             image = user.form.image;
         } else {
-            image = `/image/${user.form.formId}`;
+            image = `/image/${formName}/${adminKeyForForm.slice(-5)}/${formId}/${user.userId}`;
         }
-
+        // for some reason the user has no form don't show them
+        if (user.form == null || user.form == undefined) continue;
         htmLArry.push(
             `
-            <a title="Click on for more Info" target="_blank" href="/pdf/${adminPassword}/${user.form.formId}">
+            <a title="Click on for more Info" target="_blank" href="/pdf/${adminPassword}/${user.userId}">
                 <div class="card">
                     <div class="imgContainer">
                         <img src=${image} alt="Photo of ${user.form.firstName + ' ' + user.form.lastName}">

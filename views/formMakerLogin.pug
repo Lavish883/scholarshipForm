@@ -1,0 +1,54 @@
+html 
+    head 
+        title Form Maker Login
+        style 
+            include css/login.css
+    body
+        div#makeNewFormModal.modals.hide
+            div.loginContainer
+                div.header
+                    h2 Make New Form
+                    i.fas.fa-window-close(onclick="showOrHideNewFormModal()")
+                div.inputs
+                    input(type="text" placeholder="Form Name" id="newFormName")
+                button.submitLog(onclick="makeNewForm()") Create
+
+        div#loginModal.modals
+            div.loginContainer
+                div.header
+                    h1 Login
+                div.inputs
+                    input(type="text" placeholder="Email" id="email")
+                    input(type="password" placeholder="Password" id="password")
+                div.switch 
+                    span Don't have an account?&nbsp;
+                    span.switchSpan(onclick="changeBetweenLoginAndSignUp()") Sign Up
+                div.errorBox
+                div.goodNews
+                button.submitLog(onclick="login()") Login
+
+        div#signUpModal.modals(style="display: none")
+            div.loginContainer
+                div.header
+                    h1 Sign up
+                div.inputs
+                    input(type="text" placeholder="Email" id="newEmail")
+                    input(type="password" placeholder="Password" id="newPassword")
+                    input(type="password" placeholder="Confirm Password" id="newPasswordConfirm")
+                div.switch 
+                    span Have an account?&nbsp;
+                    span.switchSpan(onclick="changeBetweenLoginAndSignUp()") Log in
+                div.errorBox
+                div.goodNews
+                button.submitLog(onclick="signUpNewUser()") Sign Up
+
+
+        main(style="display:none")
+            div#userInfo
+                div.header
+                    h1 All of your forms
+                    i.fas.fa-plus-square(onclick="showOrHideNewFormModal()")      
+                div#cards      
+    script
+        include js/login.js
+    script(src="https://kit.fontawesome.com/9c2fbbf0d7.js")
