@@ -66,6 +66,7 @@ app.post('/test/makeNewFormMakerUser', createFormFuctions.makeNewFormMakerUser);
 app.post('/test/makeNewForm', createFormFuctions.makeNewForm);
 app.delete('/test/deleteForm', createFormFuctions.deleteForm);
 app.post('/test/giveUserFormDeatils', createFormFuctions.giveUserFormDeatils);
+app.get('/previewForm/:formName/:adminKey/:formId', pathFunctions.previewForm);
 
 // Making the form maker page
 app.get('/formMaker', createFormFuctions.formMakerLogin);

@@ -76,7 +76,7 @@ function formatUserFormData(data) {
             <div class="card">
                 <h2>${formName}</h2>
                 <div class="left">
-                    <div title="Preview Form" onclick="window.open('/preview/${formName}/${formId}')" class="iconContainer">
+                    <div title="Preview Form" onclick="window.open('/previewForm/${formName}/${adminKeyForForm}/${formId}')" class="iconContainer">
                         <i class="fas fa-eye"></i>
                     </div>
                     <div title="Edit" onclick="window.open('/editForm/${formName}/${adminKeyForForm}/${formId}')" class="iconContainer">

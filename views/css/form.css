@@ -1,3 +1,12 @@
+:root {
+    --main-formNameColor: white;
+    --main-formIntroColor: #ffffffbf;
+    --main-answerColor: black;
+    --main-questionBackgroundColor:rgb(75, 74, 77);
+    --main-formBackgroundColor: rgb(24, 20, 28);
+    --main-backgroundColor: #292929;
+}
+
 form {
     display: flex;
     flex-direction: column;
@@ -5,8 +14,8 @@ form {
     max-width: 700px;
     margin: 20px auto;
     padding: 24px;
-    background-color: rgb(24, 20, 28);
-    color: #ffffffbf;
+    background-color: var(--main-formBackgroundColor);
+    color: var(--main-formIntroColor);
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 1);
 }
@@ -21,7 +30,7 @@ form img {
 
 form h1 {
     font-size: 35px;
-    color: white;
+    color: var(--main-formNameColor);
     margin: 0px;
     margin-bottom: 50px;
 }
@@ -30,6 +39,8 @@ form p {
     font-size: 20px;
     margin: 0px;
     margin-bottom: 20px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
 .profilePictureContainer {
@@ -65,7 +76,7 @@ form .formQuestion {
     margin: 40px 0px;
     padding: 20px;
     border-radius: 10px;
-    background-color: rgb(75, 74, 77);
+    background-color: var(--main-questionBackgroundColor);
 }
 
 @media (max-width: 600px) {
@@ -86,6 +97,9 @@ input, textarea, select {
     border-radius: 4px;
     width: 100%;
     font-family: sans-serif;
+    color: var(--main-answerColor);
+    resize: vertical;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 textarea:focus{
@@ -213,7 +227,7 @@ input[type="checkbox"] {
 }
 
 th {
-    color: #ffffffbf;
+    color: var(--main-formIntroColor);
     padding: 8px;
 }
 
@@ -243,6 +257,12 @@ input:focus {
 .autoSaveIndicator p {
     margin: 0px 10px 0px 0px;
     padding: 0px;
+}
+
+body {
+    margin: 0px;
+    background-color: var(--main-backgroundColor);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 @keyframes shake {

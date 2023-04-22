@@ -96,3 +96,17 @@ main {
 .quickInfo .fontSmaller {
     font-size: 9pt;
 }
+
+.writing .questions .description {
+    font-family: 'Open Sans', sans-serif;
+    color: #2079c7;
+    font-size: 13pt !important;
+    margin-top: 18pt !important;
+}
+
+.writing .questions .answer {
+    font-family: 'Open Sans', serif;
+    color: #666666;
+    font-size: 10.5pt !important;
+    text-align: justify;
+}

@@ -1,3 +1,5 @@
+include includes/formSettingsContainer.pug
+
 html  
     head 
         meta(name="viewport" content="width=device-width, initial-scale=1.0")
@@ -9,12 +11,15 @@ html
             include css/editForm.css
     body 
         main
+            +formSettingsContainer(formSettings)
             div#questions
             div.saveFormToServerButton(onclick="saveFormToServer(this)")
                 span Save Form to Server
                 img(src="/publicImages/saving.svg", alt="saving")
             div.formToolBar
+                i.fas.fa-question(onclick=`window.open("/help")`, title="Add Question")
                 i.fas.fa-plus-circle(onclick="addQuestion(this)", title="Add Question")
+                i.fas.fa-cog(onclick=`document.querySelector(".settingsContainer").scrollIntoView({'behavior': "smooth"})`, title="Form Options")
                 i.fas.fa-save(onclick="saveFormToServer(this, true)", title="Save Form to Server")
         script 
             include js/editForm.js

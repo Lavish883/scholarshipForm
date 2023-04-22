@@ -24,6 +24,7 @@ function reduceJSONSize(users) {
 
 // when input is 4.33, 4 shows up
 function compareNumbers(userNumber, value) {
+    if (isNaN(parseFloat(userNumber))) return false;
     if (parseFloat(userNumber) < parseFloat(value)) return false;
     return true;
 }

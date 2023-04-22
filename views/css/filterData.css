@@ -9,9 +9,9 @@
     box-sizing: border-box;
     overflow-y: scroll;
     overflow-x: hidden;
-    color: white;
+    color: black;
     padding: 20px;
-    background-color: #a4a4a6;
+    background-color: #292929;
     position: relative;
 }
 
@@ -20,7 +20,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     padding: 5px;
-    background-color: #a4a4a6;
+    background-color: #292929;
     justify-content: space-around;
 }
 
@@ -59,7 +59,7 @@
 }
 
 .containFilter {
-    background-color:#2a3671;
+    background-color:#f5f5f5;
     padding: 5px 10px;
     margin: 15px;
     border-radius: 5px;
@@ -75,7 +75,6 @@
 }
 
 .containFilter:hover {
-    background-color:#2a3671;
     z-index: 100;
 }
 
@@ -106,9 +105,9 @@
     align-items: center;
     width: 100%;
     padding: 5px 8px;
-    border: 1px solid rgba(0,0,0, .5);
+    border: 1px solid rgba(0,0,0, .2);
     border-top: 0px;
-    transition: cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.5s;
+    transition: ease-in-out 0.2s;
     cursor: pointer;
     user-select: none;
 }
@@ -120,27 +119,26 @@
 }
 
 .filterItems .filterItem:first-child {
-    border-top: 1px solid rgba(0,0,0, .5);
+    border-top: 1px solid rgba(0,0,0, .2);
 }
 
 .filterItems .filterItem:hover {
-    background-color: rgba(0,0,0, .5);
+    background-color: #e0dfdf;
 }
 
 .openMoreOptions {
     background-color: #45a049;
-    
+    color: white;
 }
 
 .formQuestion{
-    background-color: #2a3671;
+    background-color: #f5f5f5;
     padding: 5px 10px;
     margin: 15px;
     border-radius: 5px;
 }
 
 .formQuestion:hover {
-    background-color:#2a3671;
     z-index: 100;
 }
 
@@ -148,7 +146,7 @@
     width: 100%;
     border: none;
     border-radius: 5px;
-    color: #ffffffbf;
+    color: black;
     margin: 10px 0px;
 }
 
@@ -189,7 +187,7 @@
     margin: 20px auto;
     padding: 10px;
     border-radius: 5px;
-    background-color:#c4c4c4;
+    background-color:#f5f5f5;
     color: black;
 }
 
@@ -268,4 +266,8 @@ a {
 /* The scrollbar tracks */
 ::-webkit-scrollbar-track {
     background-color: transparent;
+}
+
+th {
+    color: black;
 }

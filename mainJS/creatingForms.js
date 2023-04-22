@@ -39,6 +39,11 @@ async function makeNewForm(req, res){
         adminKeyForForm: adminKeyForForm,
         formName: req.body.formName,
         form: {},
+        formSettings: {
+            "theme": {
+                
+            }
+        }
     }
     // make a new collection for the form
     // make a new schma

@@ -2,16 +2,29 @@ Part 1 of the project is finished
 
 Part 2 of the project is finished
 
-Part 3 of the project- Almost done with project
-    - Make a a new collection in database holding form data
-    - Make a new route for the form data
-    - Make a new UI to make those questions
-    - make it so for each url contain that form ID for that form
+Part 3 of the project- Almost done with part 3
+    - Finished Make a a new collection in database holding form data
+    - Finished Make a new route for the form data
+    - Finished with this Make a new UI to make those questions
+    - Finished with this make it so for each url contain that form ID for that form
         - url prolly wil look like https://origin/formDataID/form/userID
         - finished with updating filterdata to work with the new architecture of the database
         - finished witht the filteringResluts
-    - need to add the other option for checkBoxes
-    
+    - Finished need to add the other option for checkBoxes
+    - For the pdf genreation add a logo based on what they prefer
+    - Finished fix pdf genreation, so it alings with the new database structure, also ask teachers for input on either they 
+      want to see that item on the left side or the right side
+
+// Do Some testing now before presenting it to the teachers
+
+Part 4 of the project - Final Touches and glow up
+    - Make a home screen page for all users, like a home page that shows what is this website about
+    - Make a page for FAQ for the teachers, and how to make new questions and so on
+    - Contact us form, for anything like a question, new features and so on
+    - Come up with a nice name 
+    - Make a logo for the website
+    - Add a used by section on the home page, such (as used by Arlington High School)
+
 
 
 // Done - For pdf genreation use puppter and css styling to take screenshots of the page and then make a pdf out of it

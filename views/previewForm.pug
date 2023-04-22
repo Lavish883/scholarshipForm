@@ -1,0 +1,26 @@
+html 
+    head 
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        style 
+            include css/style.css
+        style 
+            include css/form.css
+        style #{customCSS}
+    body 
+        form#form 
+            h1 #{formSettings.nameOfForm}
+            p #{formSettings.formIntroduction}
+
+            if formSettings.imageUploadWantedInForm
+                div.profilePictureContainer
+                    div#imagePreview
+                        img(src=image, width="200")
+                    div.infoContainer
+                        p #{formSettings.textNextToImage}
+                        input(style="border:none;padding:0px;" type="file" id="personImage" accept="image/*")
+
+            div !{formHTML}
+            button#sumbitFormBtn(class="showMoreBtn" value="Submit") Submit
+
+            div.autoSaveIndicator(style="display:flex;background-color:gray;")
+                p This is only a preview of what you form will look like to the user. You can't submit it. 

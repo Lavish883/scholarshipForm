@@ -29,4 +29,5 @@ html
             script. 
                 var userForm = !{JSON.stringify(userForm).replace(/<\//g, '<\\/')}
                 var formOptions = !{JSON.stringify(formOptions).replace(/<\//g, '<\\/')}
+                makeItemsToPutInPdf(formOptions)
                 generatePdfHTML(userForm, formOptions)

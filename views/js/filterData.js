@@ -194,7 +194,7 @@ function makeCheckboxGridQuestions(questionDetails) {
     return `
     <div class="formQuestion">
         <label for="${questionDetails.question}" class="questionPart">${questionDetails.question}</label>
-        ${tableHTML.length > 9 ? `<h4 style="color:#ffffffbf;">Search for a specific option</h4>` : ''}
+        ${tableHTML.length > 9 ? `<h4 style="color:black;">Search for a specific option</h4>` : ''}
         ${tableHTML.length > 9 ? `<input class="speficSearch" type="text" onKeyUp="filterOptions(this)" />` : ''}
         
         <button class="clearButton" onclick="clearOptions(this)">Clear options</button>
