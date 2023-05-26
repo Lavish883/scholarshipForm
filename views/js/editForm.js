@@ -1,5 +1,42 @@
 // this arry conatins the last 10 states of the form, so that the user can undo the last 10 changes
 var last10States = [];
+var cropper;
+
+function intializeCropper(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    var profileImage = document.getElementById('imagePreview');
+    // unhide the modal for cropping
+    document.getElementById('modal').style.visibility = 'visible';
+    document.querySelector('main').style.display = 'none';
+
+    reader.addEventListener("load", () => {
+        // convert image file to base64 string
+        profileImage.setAttribute('src', reader.result);
+        // try to destroy a cropper instance if it exists
+
+        cropper = new Cropper(profileImage, {
+            viewMode: 3,
+            aspectRatio: 1 / 1,
+        });
+
+        cropper.setDragMode("move");
+
+    }, false);
+
+    if (file) {
+        reader.readAsDataURL(file);
+    }
+}
+
+async function closeCropper(){
+    // save image
+    await saveUploadedLogoToServer();
+    cropper.destroy();
+    document.getElementById('modal').style.visibility = 'hidden';
+    document.querySelector('main').style.display = 'block';
+}
 
 // automatically resizes the height of the textarea
 function autoResize(obj) {
@@ -49,6 +86,7 @@ function changeQuestionInPDF(obj){
         pdfName.style.display = "block";
     } else {
         pdfName.style.display = "none";
+        pdfName.querySelector("input").value = "";
     }
 }
 
@@ -85,6 +123,11 @@ function generateQuestionFooter(question){
                 <input ${question.isNumber == true ? "checked": ""} type="checkbox" class="isQuestioNumberInput">
             </div>
 
+            <div class="isGeneratedQuestionOnRightSide">
+                <span>Left on pdf?</span>
+                <input ${question.onLeftSideOfPdfInput == true ? "checked": ""} type="checkbox" class="onLeftSideOfPdfInput">
+            </div>
+        
             <div onclick="deleteQuestion(this)" class="questionDelete">
                 <i class="fas fa-trash-alt"></i>
             </div>
@@ -152,7 +195,7 @@ function generateAllOptions(options, checkbox = false){
     for (var option of options){
         htmlArry.push(
             `
-                <div class="option">
+                <div draggable="true" class="option">
                     <i class="far fa-${checkbox == false ? "circle": "square"}"></i>
                     <div class="optionTitle">
                         <input value="${option}" ${option == "Other:" && checkbox == false ? "disabled": ""} oninput="this.setAttribute('value', this.value)" type="text" class="optionTitleInput" placeholder="Option"/>
@@ -319,6 +362,10 @@ function setUpCSS(){
         items: ".question",
         cursor: "move",
     });
+    $(".options").sortable({
+        items: ".option",
+        cursor: "move",
+    });
 }
 // this is what gets saved to the database, generates the form options jso
 function makeFormOptionsJSON(){
@@ -333,6 +380,11 @@ function makeFormOptionsJSON(){
             "required": question.querySelector(".questionRequiredInput").checked,
             "name": question.querySelector(".questionIDInput").value,
             "isNumber": question.querySelector(".isQuestioNumberInput").checked,
+            "onLeftSideOfPdfInput": question.querySelector(".onLeftSideOfPdfInput").checked,
+        }
+        // see if the user has filled in the form id, as that is required
+        if (jsonQuestion.name == ""){
+            return "";
         }
         // get options if there are any it depends on the question type
         if (jsonQuestion.type == "options" || jsonQuestion.type == "checkBoxes"){
@@ -384,29 +436,55 @@ function makeFormOptionsJSON(){
         if (pdfNameInput != null && pdfNameInput.style.display != "none" && pdfNameInput.value != ""){
             jsonQuestion.pdfName = pdfNameInput.value;
         }
+        
 
         formOptions.push(jsonQuestion);
     }
     return formOptions;
 }
+
+function getFormSettingsData(){
+    var settings = {
+        "nameOfForm": document.getElementById("nameOfTheFormInput").value,
+        "imageUploadWantedInForm": document.getElementById("imageUploadWantedInFormInput").checked,
+        "formIntroduction": document.getElementById("formIntroductionTextArea").value,
+        "textNextToImage": document.getElementById("textNextToImageInput").value,
+        "theme": {}
+    }
+    // go all find all the theme options and add them to the settings
+    var themeOptions = document.querySelectorAll(".themeOption");
+    for (var themeOption of themeOptions){
+        settings.theme[themeOption.classList[0]] = themeOption.querySelector("input").value;
+    }
+    return settings;
+}
+
 // getss all the data asscociated with the form, that is the form name, id, admin key and the form options
 function getFormData(){
     var formName = window.location.pathname.split("/")[2];
     var adminKey = window.location.pathname.split("/")[3];
     var formId = window.location.pathname.split("/")[4];
+    var formOptions = makeFormOptionsJSON();
     
+    if (formOptions == "") return "";
+
     var form = {
         "formName": formName,
         "formId": formId,
         "adminKey": adminKey,
-        "formOptions": makeFormOptionsJSON()
+        "formOptions": formOptions,
+        "formSettings": getFormSettingsData(),
     }
+
 
     return form;
 }
 
 // saves the form to the server
 async function saveFormToServer(obj, formToolBar = false){
+    var formData = getFormData();
+    if (formData == "") return     alert("Please fill in the form id for all questions");
+
     // adjust the css so that the usr knows its saving
     if (formToolBar == false) {
         obj.querySelector("img").style.display = "block";
@@ -418,13 +496,12 @@ async function saveFormToServer(obj, formToolBar = false){
         document.querySelector(".formToolBar").innerHTML += `<i class="fas fa-circle-notch fa-spinner fa-spin"></i>`;
     }
 
-
     var options = {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(getFormData())
+        body: JSON.stringify(formData)
     }
 
     var response = await fetch("/editForm/save", options);
@@ -533,6 +610,42 @@ async function autoSave(){
     setTimeout(autoSave, 10000); // 10 seconds
 }
 
-window.addEventListener("scroll", scrollToolBar);
+// hide/uhide the theme options
+function toggleThemeOptions(){
+    var themeOptions = document.querySelector(".themeOptions");
+    if (themeOptions.style.display == "none"){
+        themeOptions.style.display = "block";
+        document.querySelector(".themeDivider .fa-caret-down").classList.add("fa-caret-up");
+        document.querySelector(".themeDivider .fa-caret-down").classList.remove("fa-caret-down");
+    } else {
+        themeOptions.style.display = "none";
+        document.querySelector(".themeDivider .fa-caret-up").classList.add("fa-caret-down");
+        document.querySelector(".themeDivider .fa-caret-up").classList.remove("fa-caret-up");
+    }
+}
 
-//autoSave();
+// to save the pdf logo to the server
+async function saveUploadedLogoToServer(){
+    document.querySelector(".imageDisplayed img").setAttribute("src", cropper.getCroppedCanvas().toDataURL('image/png'));
+    const settings = {
+        'method': 'POST',
+        'headers': {
+            "Content-Type": "application/json"
+        },
+        'body': JSON.stringify({
+            'adminKey': window.location.pathname.split("/")[3] ,
+            'formId': window.location.pathname.split("/")[4],
+            'formName': window.location.pathname.split("/")[2],
+            'image': cropper.getCroppedCanvas().toDataURL('image/png')
+        })
+    }
+    const postNewLogo = await fetch('/test/saveLogoImage', settings);
+    const resp = await postNewLogo.text();
+
+    if (postNewLogo.status != 200){
+        alert('Logo was not able to save in the server');
+    }
+}
+
+document.getElementById("pdfImageInput").addEventListener("change", intializeCropper);
+window.addEventListener("scroll", scrollToolBar);

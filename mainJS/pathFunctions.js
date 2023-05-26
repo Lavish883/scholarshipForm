@@ -6,6 +6,7 @@ const schemas = require('../schemas/schemas'); // schemas
 //const formOptions = require('../mainJS/formOptions.js');
 const makeFormHTML = require('../mainJS/makeFormHTML.js');
 
+
 const makePDF = require('../mainJS/makePDF.js');
 
 // if userId is given it will return one user, if not it will return all users
@@ -120,6 +121,22 @@ async function generateLink(email, token) {
     return token;
 }
 
+function genreateFormCSS(theme){
+    // if no theme is given return empty string, deafult theme will be used
+    if (theme == undefined || theme == null) return '';
+    var css = `
+        :root {
+            --main-formNameColor: ${theme.formNameColor};
+            --main-formIntroColor: ${theme.formIntroductionColor};
+            --main-answerColor: ${theme.answerColor};
+            --main-questionBackgroundColor: ${theme.questionBackgroundColor};
+            --main-formBackgroundColor: ${theme.formBackgroundColor};
+            --main-backgroundColor: ${theme.backgroundColor};
+        }
+    `
+    return css;
+}
+
 async function formPage(req, res) {
     // find the form
     var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.params.formId, 'forms.formName': req.params.formName });
@@ -134,7 +151,7 @@ async function formPage(req, res) {
     var formHTML = makeFormHTML(formOptions.form, user);
     var image = `/image/${req.params.formName}/${req.params.adminKey}/${req.params.formId}/${req.params.userId}`
 
-    return res.render('form', { 'user': user, 'formHTML': formHTML, 'image': image });
+    return res.render('form', { 'user': user, 'formHTML': formHTML, 'image': image, 'formSettings': formOptions.formSettings, 'customCSS': genreateFormCSS(formOptions.formSettings.theme) });
 }
 
 // verify email
@@ -240,33 +257,36 @@ async function pdfPage(req, res) {
     if (formUser == null || formUser == undefined) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
 
     var formOptions = findForm(formUser, req.params.formId);
-    if (process.env.ACCESS_KEY != req.params.adminKey) return res.status(403).send('Not authorized');
+
+    if (formOptions.adminKeyForForm != req.params.adminKey) return res.status(403).send('Not authorized');
 
     // find the user
+    console.log(req.params.formId + '-' + formOptions.adminKeyForForm.slice(10), req.params.userId);
     var user = await accessCollectionOfUsers(req.params.formId + '-' + formOptions.adminKeyForForm.slice(10), req.params.userId);
     if (user == null || user == undefined) return res.status(404).send('User not found');
 
     // to reduce json size
     user.form.image = '';
     var imageURL = `/image/${req.params.formName}/${formOptions.adminKeyForForm.slice(-5)}/${req.params.formId}/${req.params.userId}`
+    var logoImageURL = `/test/serveLogoImage/${req.params.formName}/${req.params.formId}`
     // after those checks you can render the pdf page
-    return res.render('pdf', { 'userForm': user.form, 'formOptions': formOptions.form, 'imageURL': imageURL });
+    return res.render('pdf', { 'userForm': user.form, 'formOptions': formOptions.form, 'imageURL': imageURL, 'logoImageURL': logoImageURL });
 }
 
 async function downloadPDF(req, res) {
     // find the formId from the database
-    var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.params.formId, 'forms.formName': req.params.formName });
+    var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.params.formId, 'forms.formName': unescape(req.params.formName) });
     if (formUser == null || formUser == undefined) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
 
     var formOptions = findForm(formUser, req.params.formId);
-    if (req.params.adminKey != formOptions.adminKeyForForm.slice(-5)) return res.status(403).send('Not authorized');
+    if (req.params.adminKey != formOptions.adminKeyForForm) return res.status(403).send('Not authorized');
 
     // find the user
     var user = await accessCollectionOfUsers(req.params.formId + '-' + formOptions.adminKeyForForm.slice(10), req.params.userId);
     if (user == null || user == undefined) return res.status(404).send('User not found');
 
 
-    makePDF(req.params.formName, req.params.formId, user.userId).then(pdf => {
+    makePDF(formOptions, user.userId).then(pdf => {
         res.set({ 'Content-Type': 'application/pdf', 'Content-Length': pdf.length })
         res.send(pdf)
     })
@@ -281,7 +301,7 @@ async function editFormPage(req, res){
     // find the form from the database
     var formOptions = findForm(formUser, req.params.formId);
 
-    return res.render('editForm', { 'formOptions': formOptions.form });
+    return res.render('editForm', { 'formOptions': formOptions.form, 'formSettings': formOptions.formSettings, 'formId': req.params.formId, 'adminKey': req.params.adminKey, 'formName': req.params.formName });
 }
 
 async function saveEditedForm(req, res){
@@ -295,12 +315,29 @@ async function saveEditedForm(req, res){
         if (formUser.forms[i].formId == req.body.formId) {
             console.log('found');
             formUser.forms[i].form = req.body.formOptions;
+            formUser.forms[i].formSettings = req.body.formSettings;
         }
     }
     formUser.markModified('forms');
     await formUser.save();
 
     return res.status(200).send("Form Saved");
+}
+
+async function previewForm(req, res){
+    // check if the user is authorized or not
+    // find the formId from the database
+    var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.params.formId, 'forms.formName': req.params.formName, 'forms.adminKeyForForm': req.params.adminKey });
+
+    if (formUser == null || formUser == undefined) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
+    // find the form from the database
+    var formOptions = findForm(formUser, req.params.formId);
+
+    var formHTML = makeFormHTML(formOptions.form, {form: {}});
+    var customCSS = genreateFormCSS(formOptions.formSettings.theme);
+
+    return res.render('previewForm', {'customCSS': customCSS,'formHTML': formHTML, 'formOptions': formOptions.form, 'formSettings': formOptions.formSettings});
+
 }
 
 // 404 page
@@ -322,5 +359,6 @@ module.exports = {
     downloadPDF,
     notFound,
     editFormPage,
-    saveEditedForm
+    saveEditedForm,
+    previewForm
 }

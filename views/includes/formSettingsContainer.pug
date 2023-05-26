@@ -1,0 +1,41 @@
+mixin formSettingsContainer(formSettings, formName, formId)
+    div.settingsContainer
+        div.nameOfForm
+            input(type="text", id="nameOfTheFormInput", placeholder="Name of Form", value=formSettings.nameOfForm)
+            div 
+                span Image upload wanted in form ?
+                input(type="checkbox", checked=formSettings.imageUploadWantedInForm id="imageUploadWantedInFormInput")
+        div.formIntroduction
+            textarea(oninput="autoResize(this)" id="formIntroductionTextArea", placeholder="Form Introduction") #{formSettings.formIntroduction}
+        div.textNextToImage
+            input(id="textNextToImageInput", type="text", placeholder="Text next to image upload", value=formSettings.textNextToImage)
+        div.themeDivider
+            div.themeHeader(onclick="toggleThemeOptions()")
+                div(style="display: flex; align-items: center;")
+                    i.fas.fa-palette
+                    h4 Theme
+                i.fas.fa-caret-down
+            div.themeOptions(style="display: none;")
+                div.formNameColor.themeOption
+                    span Form Name Color:
+                    input(value=formSettings.theme.formNameColor, type="color")
+                div.formIntroductionColor.themeOption
+                    span Form Intro and Questions Color:
+                    input(type="color", value=formSettings.theme.formIntroductionColor)
+                div.answerColor.themeOption
+                    span Answer Color:
+                    input(type="color", value=formSettings.theme.answerColor)
+                div.questionBackgroundColor.themeOption
+                    span Question Background Color:
+                    input(type="color", value=formSettings.theme.questionBackgroundColor)
+                div.formBackgroundColor.themeOption
+                    span Form Background Color:
+                    input(type="color", value=formSettings.theme.formBackgroundColor)
+                div.backgroundColor.themeOption
+                    span Background Color:
+                    input(type="color", value=formSettings.theme.backgroundColor)
+        div.pdfImage
+            div Logo to display on PDF:
+            input(type="file", id="pdfImageInput" accept="image/*")
+            div.imageDisplayed
+                img(src=`/test/serveLogoImage/${formName}/${formId}`, alt="Logo to display on PDF")

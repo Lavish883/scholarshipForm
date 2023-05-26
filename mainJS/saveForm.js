@@ -68,11 +68,13 @@ async function saveForm(req, res){
         user.form.imageHeight = bodyForm.imageHeight;
         user.form.imageWidth = bodyForm.imageWidth;
     }
+
     
     // if user is finished with the form mark it as done and send an email
     if (finishedWithForm == true) {
         user.finishedWithForm = true;
-        makePDF(user.form.formId).then(pdf => {
+        // make pdf and send email
+        makePDF(formOptions, req.body.userId).then(pdf => {
             // make pdf to base64 pdf string so we can send it as an attachment
             var pdfString = pdf.toString('base64');
             // send email with the pdf attached
@@ -87,7 +89,7 @@ async function saveForm(req, res){
     user.markModified('form');
 
     await user.save();  
-    return res.send('Done!!' + req.params.userId);
+    return res.send('Done!!' + req.body.userId);
 }
 
 module.exports = saveForm;

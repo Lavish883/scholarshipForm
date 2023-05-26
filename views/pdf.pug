@@ -15,7 +15,7 @@ html
                 div.pdf
                     div.pdfHeader
                         h1.name #{userForm.firstName} #{userForm.lastName}
-                        img.schoolLogo(src="/publicImages/schoolLogo.png")
+                        img.schoolLogo(src=logoImageURL)
                     div.corePartOfPdf
                         div.writing
                             div.imageContainer
@@ -29,4 +29,5 @@ html
             script. 
                 var userForm = !{JSON.stringify(userForm).replace(/<\//g, '<\\/')}
                 var formOptions = !{JSON.stringify(formOptions).replace(/<\//g, '<\\/')}
+                makeItemsToPutInPdf(formOptions)
                 generatePdfHTML(userForm, formOptions)
