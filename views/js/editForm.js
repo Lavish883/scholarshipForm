@@ -1,5 +1,42 @@
 // this arry conatins the last 10 states of the form, so that the user can undo the last 10 changes
 var last10States = [];
+var cropper;
+
+function intializeCropper(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    var profileImage = document.getElementById('imagePreview');
+    // unhide the modal for cropping
+    document.getElementById('modal').style.visibility = 'visible';
+    document.querySelector('main').style.display = 'none';
+
+    reader.addEventListener("load", () => {
+        // convert image file to base64 string
+        profileImage.setAttribute('src', reader.result);
+        // try to destroy a cropper instance if it exists
+
+        cropper = new Cropper(profileImage, {
+            viewMode: 3,
+            aspectRatio: 1 / 1,
+        });
+
+        cropper.setDragMode("move");
+
+    }, false);
+
+    if (file) {
+        reader.readAsDataURL(file);
+    }
+}
+
+async function closeCropper(){
+    // save image
+    await saveUploadedLogoToServer();
+    cropper.destroy();
+    document.getElementById('modal').style.visibility = 'hidden';
+    document.querySelector('main').style.display = 'block';
+}
 
 // automatically resizes the height of the textarea
 function autoResize(obj) {
@@ -587,4 +624,28 @@ function toggleThemeOptions(){
     }
 }
 
+// to save the pdf logo to the server
+async function saveUploadedLogoToServer(){
+    document.querySelector(".imageDisplayed img").setAttribute("src", cropper.getCroppedCanvas().toDataURL('image/png'));
+    const settings = {
+        'method': 'POST',
+        'headers': {
+            "Content-Type": "application/json"
+        },
+        'body': JSON.stringify({
+            'adminKey': window.location.pathname.split("/")[3] ,
+            'formId': window.location.pathname.split("/")[4],
+            'formName': window.location.pathname.split("/")[2],
+            'image': cropper.getCroppedCanvas().toDataURL('image/png')
+        })
+    }
+    const postNewLogo = await fetch('/test/saveLogoImage', settings);
+    const resp = await postNewLogo.text();
+
+    if (postNewLogo.status != 200){
+        alert('Logo was not able to save in the server');
+    }
+}
+
+document.getElementById("pdfImageInput").addEventListener("change", intializeCropper);
 window.addEventListener("scroll", scrollToolBar);

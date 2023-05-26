@@ -327,3 +327,64 @@ input[type="color"]{
     border: none;
     background-color: #f8f9fa;
 }
+
+.pdfImage {
+    width: 100%;
+    margin: 20px 0px;
+    color: rgb(81, 81, 81);    
+    font-size: 18px;
+}
+
+.pdfImage input[type="file"] {
+    margin-top: 5px;
+}
+
+/* CSS for the cropper modal */
+
+.modal {
+    margin: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    visibility: hidden;
+    position: absolute;
+    width: 100%;
+    z-index: 99;
+}
+
+.modal-content {
+    padding: 20px;
+    background-color: rgb(24, 20, 28);
+    max-width: fit-content;
+    max-height: fit-content;
+}
+
+.modal-content h2 {
+    color: white;
+}
+
+#imagePreview {
+    max-height: 600px;
+}
+
+.modal-content input[type="button"] {
+    padding: 10px 15px;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    transition: cubic-bezier(0.39, 0.575, 0.565, 1) 0.4s;
+    margin: 15px 0px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    outline: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.imageDisplayed img{
+    max-width: 100px;
+    margin-top: 20px;
+}

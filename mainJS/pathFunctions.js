@@ -268,8 +268,9 @@ async function pdfPage(req, res) {
     // to reduce json size
     user.form.image = '';
     var imageURL = `/image/${req.params.formName}/${formOptions.adminKeyForForm.slice(-5)}/${req.params.formId}/${req.params.userId}`
+    var logoImageURL = `/test/serveLogoImage/${req.params.formName}/${req.params.formId}`
     // after those checks you can render the pdf page
-    return res.render('pdf', { 'userForm': user.form, 'formOptions': formOptions.form, 'imageURL': imageURL });
+    return res.render('pdf', { 'userForm': user.form, 'formOptions': formOptions.form, 'imageURL': imageURL, 'logoImageURL': logoImageURL });
 }
 
 async function downloadPDF(req, res) {
@@ -300,7 +301,7 @@ async function editFormPage(req, res){
     // find the form from the database
     var formOptions = findForm(formUser, req.params.formId);
 
-    return res.render('editForm', { 'formOptions': formOptions.form, 'formSettings': formOptions.formSettings});
+    return res.render('editForm', { 'formOptions': formOptions.form, 'formSettings': formOptions.formSettings, 'formId': req.params.formId, 'adminKey': req.params.adminKey, 'formName': req.params.formName });
 }
 
 async function saveEditedForm(req, res){

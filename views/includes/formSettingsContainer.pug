@@ -1,4 +1,4 @@
-mixin formSettingsContainer(formSettings)
+mixin formSettingsContainer(formSettings, formName, formId)
     div.settingsContainer
         div.nameOfForm
             input(type="text", id="nameOfTheFormInput", placeholder="Name of Form", value=formSettings.nameOfForm)
@@ -34,3 +34,8 @@ mixin formSettingsContainer(formSettings)
                 div.backgroundColor.themeOption
                     span Background Color:
                     input(type="color", value=formSettings.theme.backgroundColor)
+        div.pdfImage
+            div Logo to display on PDF:
+            input(type="file", id="pdfImageInput" accept="image/*")
+            div.imageDisplayed
+                img(src=`/test/serveLogoImage/${formName}/${formId}`, alt="Logo to display on PDF")

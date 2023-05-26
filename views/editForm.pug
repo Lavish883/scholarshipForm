@@ -2,6 +2,7 @@ include includes/formSettingsContainer.pug
 
 html  
     head 
+        link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" integrity="sha512-cyzxRvewl+FOKTtpBzYjW6x6IAYUCZy3sGP40hn+DQkqeluGRCax7qztK2ImL64SA+C7kVWdLI6wvdlStawhyw==" crossorigin="anonymous" referrerpolicy="no-referrer")
         meta(name="viewport" content="width=device-width, initial-scale=1.0")
         script(src="https://code.jquery.com/jquery-3.6.0.js")
         script(src="https://code.jquery.com/ui/1.13.2/jquery-ui.js")
@@ -10,8 +11,14 @@ html
         style
             include css/editForm.css
     body 
+        div.modal#modal
+            div.modal-content
+                h2 Crop Logo
+                div.imgContainer 
+                    img#imagePreview(src="", alt="")
+                input(type="button" value="Crop Image" onclick="closeCropper()")
         main
-            +formSettingsContainer(formSettings)
+            +formSettingsContainer(formSettings, formName, formId)
             div#questions
             div.saveFormToServerButton(onclick="saveFormToServer(this)")
                 span Save Form to Server
@@ -27,3 +34,4 @@ html
             var formOptions = !{JSON.stringify(formOptions).replace(/<\//g, '<\\/')};
             generateExistingQuestions(formOptions)  
         script(src="https://kit.fontawesome.com/9c2fbbf0d7.js")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" integrity="sha512-6lplKUSl86rUVprDIjiW8DuOniNX8UDoRATqZSds/7t6zCQZfaCe3e5zcGaQwxa8Kpn5RTM9Fvl3X2lLV4grPQ==" crossorigin="anonymous" referrerpolicy="no-referrer") 

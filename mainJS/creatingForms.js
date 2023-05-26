@@ -42,7 +42,8 @@ async function makeNewForm(req, res){
         formSettings: {
             "theme": {
                 
-            }
+            },
+            "logoOnPdfImage": "",
         }
     }
     // make a new collection for the form
@@ -110,10 +111,55 @@ async function formMakerLogin(req, res) {
     return res.render('formMakerLogin');
 }
 
+async function serveLogoImage(req, res){
+    // find the user with that form 
+    var formUser = await schemas.formMakerUsers.findOne({'forms.formId': req.params.formId, 'forms.formName': unescape(req.params.formName)});
+    if (!formUser) return res.status(400).send('Form does not exist');
+
+    // get the form from the user
+    var form;
+    for (var eachForm of formUser.forms) {
+        if (eachForm.formId == req.params.formId) {
+            form =  eachForm;
+        }
+    }
+    // now see if the logoOnPdfImage is empty or not
+    if (form.formSettings.logoOnPdfImage == '' || form.formSettings.logoOnPdfImage == undefined) return res.send('');
+
+    // now serve the image
+    res.set('Content-Type', 'image/png');
+    console.log(form.formSettings.logoOnPdfImage);
+    var imageBuffer = Buffer.from(form.formSettings.logoOnPdfImage.replace('data:image/png;base64,', ''), 'base64');
+
+    return res.send(imageBuffer)
+}
+
+async function saveLogoImage(req, res){
+    // find the user with that form
+    var formUser = await schemas.formMakerUsers.findOne({'forms.formId': req.body.formId, 'forms.formName': unescape(req.body.formName)});
+    if (!formUser) return res.status(400).send('Form does not exist');
+    
+    // get the form from the user
+    var form;
+    for (var eachForm of formUser.forms) {
+        if (eachForm.formId == req.body.formId) {
+            form =  eachForm;
+        }
+    }
+
+    // now save the image
+    form.formSettings.logoOnPdfImage = req.body.image;
+    formUser.markModified('forms');
+    await formUser.save();
+    return res.status(200).send('Image saved');
+}
+
 module.exports = {
     makeNewForm,
     makeNewFormMakerUser,
     deleteForm,
     giveUserFormDeatils,
-    formMakerLogin
+    formMakerLogin,
+    serveLogoImage,
+    saveLogoImage
 }
