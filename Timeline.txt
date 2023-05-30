@@ -45,4 +45,4 @@ Other Miscellaneous things needed to do
     - Maybe get a lot of sample tests from this?? 
 
 // What to work on next 
-    - Basically just make a frontenend model in the editForm so you can change the logo Image
+    - // done Basically just make a frontenend model in the editForm so you can change the logo Image
