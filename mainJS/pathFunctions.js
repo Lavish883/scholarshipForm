@@ -314,8 +314,12 @@ async function saveEditedForm(req, res){
     for (var i = 0; i < formUser.forms.length; i++) {
         if (formUser.forms[i].formId == req.body.formId) {
             console.log('found');
+            var temp = formUser.forms[i].formSettings.logoOnPdfImage;
+
             formUser.forms[i].form = req.body.formOptions;
             formUser.forms[i].formSettings = req.body.formSettings;
+
+            formUser.forms[i].formSettings.logoOnPdfImage = temp;
         }
     }
     formUser.markModified('forms');
