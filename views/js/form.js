@@ -334,7 +334,7 @@ async function validateForm(event) {
     }
     if (finishedGoingOver){
         await saveFormToServer(true);
-        document.body.innerHTML = '<h1 style="text-align: center; margin-top: 30vh;color:white;">Thank you for filling out the form. You can always come back and edit it before deadline.</h1>';
+        document.body.innerHTML = `<h1 class="formEndTextColor" style="text-align: center; margin-top: 30vh;">${formEndText}</h1>`;
     } else {
         alert('Please go over the form again and make sure everything is correct');
         finishedGoingOver = true;
@@ -371,8 +371,22 @@ async function autoSave() {
 }
 
 // add event listeners
-document.getElementById('personImage').addEventListener('change', intializeCropper);
-document.getElementById('doneWithImage').addEventListener('click', closeCropper);
-document.getElementById('sumbitFormBtn').addEventListener('click', validateForm);
+try {
+    document.getElementById('personImage').addEventListener('change', intializeCropper);
+} catch (error){
+    console.log(error);
+}
+
+try {
+    document.getElementById('doneWithImage').addEventListener('click', closeCropper);
+} catch (error){
+    console.log(error);
+}
+
+try {
+    document.getElementById('sumbitFormBtn').addEventListener('click', validateForm);
+} catch (error){
+    console.log(error);
+}
 
 setTimeout(autoSave, 20 * 1000);

@@ -132,6 +132,7 @@ function genreateFormCSS(theme){
             --main-questionBackgroundColor: ${theme.questionBackgroundColor};
             --main-formBackgroundColor: ${theme.formBackgroundColor};
             --main-backgroundColor: ${theme.backgroundColor};
+            --main-formEndTextColor: ${theme.formEndTextColor};
         }
     `
     return css;
