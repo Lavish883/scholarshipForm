@@ -449,6 +449,7 @@ function getFormSettingsData(){
         "imageUploadWantedInForm": document.getElementById("imageUploadWantedInFormInput").checked,
         "formIntroduction": document.getElementById("formIntroductionTextArea").value,
         "textNextToImage": document.getElementById("textNextToImageInput").value,
+        "formEndText": document.getElementById("formEndTextInput").value,
         "theme": {}
     }
     // go all find all the theme options and add them to the settings

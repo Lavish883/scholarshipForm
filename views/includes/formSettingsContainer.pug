@@ -9,6 +9,8 @@ mixin formSettingsContainer(formSettings, formName, formId)
             textarea(oninput="autoResize(this)" id="formIntroductionTextArea", placeholder="Form Introduction") #{formSettings.formIntroduction}
         div.textNextToImage
             input(id="textNextToImageInput", type="text", placeholder="Text next to image upload", value=formSettings.textNextToImage)
+        div.formEndText
+            input(id="formEndTextInput", type="text", placeholder="Form End Text", value=formSettings.formEndText)
         div.themeDivider
             div.themeHeader(onclick="toggleThemeOptions()")
                 div(style="display: flex; align-items: center;")
@@ -34,6 +36,9 @@ mixin formSettingsContainer(formSettings, formName, formId)
                 div.backgroundColor.themeOption
                     span Background Color:
                     input(type="color", value=formSettings.theme.backgroundColor)
+                div.formEndTextColor.themeOption
+                    span Form End Text Color:
+                    input(type="color", value=formSettings.theme.formEndTextColor)
         div.pdfImage
             div Logo to display on PDF:
             input(type="file", id="pdfImageInput" accept="image/*")
