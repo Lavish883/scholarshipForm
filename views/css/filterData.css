@@ -3,7 +3,7 @@
     height: 100%;
 }
 
-.dividePage #applyFilters, .dividePage #results {
+.dividePage #applyFilters, .dividePage .separateCont {
     width: 50%;
     height: 100%;
     box-sizing: border-box;
@@ -13,6 +13,23 @@
     padding: 20px;
     background-color: #292929;
     position: relative;
+}
+
+.dividePage .separateCont .downloadOptions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.dividePage .separateCont .downloadOptions .downloadButton {
+    background-color: #45a049;
+    color: white;
+    padding: 5px;
+    margin: 10px 0px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
 }
 
 .dividePage #applyFilters {

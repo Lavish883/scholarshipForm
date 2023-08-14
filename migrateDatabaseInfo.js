@@ -9,6 +9,18 @@ const formOptions = require('./mainJS/formOptions.js'); // form options
 mongoose.set('strictQuery', false);
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true });
 
+async function accessCollectionOfUsers(collectionName) {
+    const newCollection = mongoose.model(collectionName, schemas.userSchema, collectionName);
+    var allItems = await newCollection.find({});
+
+    return allItems;
+}
+
+async function removeUser(collectionName, userId) {
+    const newCollection = mongoose.model(collectionName, schemas.userSchema, collectionName);
+    await newCollection.findOneAndRemove({'userId': userId});
+}
+
 async function moveData() {
     /*
     // This wors for getting the data from a collection
@@ -31,7 +43,7 @@ async function moveData() {
         }
     });
 
-    const newCollection = mongoose.model('310dd3e941-4017d5352c284ce6e32764', newSchema, '310dd3e941-4017d5352c284ce6e32764');
+    const newCollection = mongoose.model('310dd3e941-4017d5352c284ce6e32764'310dd3e941-4017d5352c284ce6e32764'310dd3e941-4017d5352c284ce6e32764', newSchema, '310dd3e941-4017d5352c284ce6e32764');
     var allItems = await newCollection.find({});
     */
     //
@@ -55,13 +67,37 @@ async function moveData() {
      }
      */
     //await newCollection.save();
-    
+    /*
     var user = await schemas.formMakerUsers.findOne({ 'email': 'lkumar2024@spyponders.com'});
 
     user.forms[0].form = formOptions;
     user.markModified('forms');
     await user.save();
     //*/
+     
+    var collection = await accessCollectionOfUsers('310dd3e941-4017d5352c284ce6e32764');
+    console.log(collection.length);
+    let removedCount = 0;
+    // Go through each user and see if they already exisits in that collection
+    for (var i = collection.length - 1; i >= 0; i--) {
+        console.log(collection[i].email)
+        for (var j = 0; j < i; j++) {
+            if (collection[i].email === collection[j].email) {
+                //await removeUser('310dd3e941-4017d5352c284ce6e32764', collection[i].userId);
+                collection.splice(i, 1);
+                removedCount++;
+                break;
+            }
+        }
+    }
+    console.log(collection.length, removedCount);
+
+    /*
+    for (var i = 0; i < collection.length; i++) {
+        await collection[i].save();
+    }
+    */
+    //await collection.save();
 }
 
 moveData();

@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-/* Don't touch scheams as it is very important 
+/* Don't touch schmeas as it is very important 
     And wrong step can cause a lot of issues
-    Overall databses are scary so pease be careful while using them
+    Overall databases are scary so pease be careful while using them
 */
 
 /*
@@ -72,10 +72,44 @@ const formMakerSchema = new Schema({
 
 const formMakerUsers = mongoose.model('formMakerUsers', formMakerSchema)
 
+const formAuthTokensSchema = new Schema({
+    "formName": {
+        type: String,
+        required: true
+    },
+    "formId": {
+        type: String,
+        required: true
+    },
+    "formAdminKey": {
+        type: String,
+        required: true
+    },
+    "userId": {
+        type: String,
+        required: true
+    },
+    "userEmail": {
+        type: String,
+        required: true
+    },
+    "token": {
+        type: String,
+        required: true
+    },
+    "code": {
+        type: String,
+        required: true
+    }
+}, {timestamps: true})
+
+const formAuthTokens = mongoose.model('formAuth', formAuthTokensSchema)
+
 module.exports = {
     users,
     forms,
     formMakerUsers,
-    userSchema
+    userSchema,
+    formAuthTokens
 }
 

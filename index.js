@@ -1,11 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const filterData = require('./mainJS/filterThroughData');
-const app =  express();
+const app = express();
 const PORT = process.env.PORT || 3030;
 const pathFunctions = require('./mainJS/pathFunctions');
 const createFormFuctions = require('./mainJS/creatingForms');
 const saveForm = require('./mainJS/saveForm');
+const downloadPDFisInBulk = require('./mainJS/downloadPDFisInBulk');
 
 // conenct to the database
 const dbURI = process.env.DB_URL;
@@ -34,8 +35,10 @@ app.post('/createVerifyLink', pathFunctions.generateVerficationLink);
 // verify email - updated to keep up with the database
 app.get('/verifyEmail/:formName/:adminKey/:formId/:verifyLink', pathFunctions.verifyUserEmail);
 
-// display the form to the user, adminKey only contains last five letter here - updated
+// display the form to the user, needs password so no one can else access it use jwt
+// ?jwt=token, if the token is valid then the user can access the form
 app.get('/form/:formName/:adminKey/:formId/:userId', pathFunctions.formPage);
+app.post('/form/verifyFormAccess', pathFunctions.verifyFormAccess)
 
 // serve all images - updated
 app.get('/image/:formName/:adminKey/:formId/:userId', pathFunctions.serveImage);
@@ -52,8 +55,10 @@ app.post('/search/:formName/:adminKey/:formId', filterData);
 // pdf page for sending it to the user, needs password so no one can else access it - updated
 app.get('/pdf/:formName/:adminKey/:formId/:userId', pathFunctions.pdfPage);
 
-// download the pdf- for the teachers - updated
+// download the pdf- for the teachers
 app.get('/download/pdf/:formName/:adminKey/:formId/:userId', pathFunctions.downloadPDF);
+// download all the pdfs that are requested 
+app.post('/downloadAllPDFs/:formName/:adminKey/:formId', downloadPDFisInBulk);
 
 // to edit the form 
 app.get('/editForm/:formName/:adminKey/:formId', pathFunctions.editFormPage);
@@ -79,5 +84,5 @@ app.get('*', pathFunctions.notFound);
 
 
 app.listen(PORT, () => {
-    console.log("It's up bois!!")
+  console.log("It's up bois!!")
 });

@@ -2,6 +2,7 @@ const schemas = require('../schemas/schemas'); // schemas
 const mailFunctions = require('../mainJS/mailFunctions.js');
 const makePDF = require('../mainJS/makePDF.js');
 const mongoose = require('mongoose');
+const checkFormAuthToken = require('../mainJS/pathFunctions.js').checkFormAuthToken;
 
 const messages = [
     'Thank you for submitting the form. You can always come back and edit it with this link: ',
@@ -36,9 +37,9 @@ function findForm(formUser, formId){
     return actualForm;
 }
 
+
 // save form to the database
 async function saveForm(req, res){
-
     // get the form from the database and verify it is allowed
     var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.body.formId, 'forms.formName': req.body.formName});
     if (formUser == null || formUser == undefined) return res.status(404).send('Form not found');
@@ -53,7 +54,8 @@ async function saveForm(req, res){
     const bodyForm = req.body.form;
     const finishedWithForm = req.body.finishedWithForm;
     
-
+    var authStatus = await checkFormAuthToken(req.body.jwt, req.body);
+    if (authStatus != true) return res.status(403).send('Your not authorized to access this form. This usually happens when your session has expired. Please refresh the page and try again. Don\'t worry your data has been auto saving. You only lose upto 20 seconds of work.')
     // console.log(bodyForm.values)
 
     // update the form

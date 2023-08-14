@@ -128,7 +128,7 @@ async function serveLogoImage(req, res){
 
     // now serve the image
     res.set('Content-Type', 'image/png');
-    console.log(form.formSettings.logoOnPdfImage);
+    //console.log(form.formSettings.logoOnPdfImage);
     var imageBuffer = Buffer.from(form.formSettings.logoOnPdfImage.replace('data:image/png;base64,', ''), 'base64');
 
     return res.send(imageBuffer)

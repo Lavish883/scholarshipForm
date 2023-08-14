@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const mailFunctions = require('../mainJS/mailFunctions.js');
+const jwt = require('jsonwebtoken');
 const schemas = require('../schemas/schemas'); // schemas
 
 //const formOptions = require('../mainJS/formOptions.js');
@@ -121,7 +122,7 @@ async function generateLink(email, token) {
     return token;
 }
 
-function genreateFormCSS(theme){
+function genreateFormCSS(theme) {
     // if no theme is given return empty string, deafult theme will be used
     if (theme == undefined || theme == null) return '';
     var css = `
@@ -138,6 +139,81 @@ function genreateFormCSS(theme){
     return css;
 }
 
+async function checkFormAuthToken(token, urlParams) {
+    if (token == undefined || token == null) return false;
+    console.log(token);
+    try {
+        let decoded = jwt.verify(token, process.env.JWT_SECERT);
+        // find the code from the database, and see if it matches
+        console.log(decoded);
+        console.log(urlParams);
+        let found = await schemas.formAuthTokens.findOne({
+            'formName': urlParams.formName,
+            'formId': urlParams.formId,
+            'formAdminKey': urlParams.adminKey,
+            'userId': urlParams.userId,
+            'code': decoded.code
+        })
+    
+        if (found != null || found != undefined) return true;
+
+    } catch (err) {
+        console.log(err);
+        return false;
+    }
+}
+
+async function verifyFormAccess(req, res) {
+    // find the code from the database, and see if it matches
+    let found = await schemas.formAuthTokens.findOne({
+        'formName': req.body.formName,
+        'formId': req.body.formId,
+        'formAdminKey': req.body.formAdminKey,
+        'userId': req.body.userId,
+        'code': req.body.code
+    })
+
+    if (found == null || found == undefined) return res.status(403).send('Code is not valid');
+
+    return res.status(200).send(found.token);
+}
+
+async function sendVerifyCode(urlParams, user) {
+    // generate a random code
+    var code = crypto.randomBytes(8).toString('hex');
+    var signJWT = jwt.sign({ 'formName': urlParams.formName, 'formId': urlParams.formId, 'adminKey': urlParams.adminKey, 'code': code }, process.env.JWT_SECERT, {
+        expiresIn: '1h'
+    });
+
+    // first find if the code already exists, then update it
+    var doesItExist = await schemas.formAuthTokens.findOne({
+        'formName': urlParams.formName,
+        'formId': urlParams.formId,
+        'formAdminKey': urlParams.adminKey,
+        'userId': user.userId
+    });
+
+    if (doesItExist != null) {
+        doesItExist.code = code;
+        doesItExist.token = signJWT;
+        await doesItExist.save();
+    } else {
+        var formAuthToken = new schemas.formAuthTokens({
+            "formName": urlParams.formName,
+            "formId": urlParams.formId,
+            "formAdminKey": urlParams.adminKey,
+            "token": signJWT,
+            "userId": user.userId,
+            "userEmail": user.email,
+            "code": code
+        });
+
+        await formAuthToken.save();
+    }
+    // send the code to the email
+    mailFunctions.mailLink(user.email, 'Input this code to access the form (Do not share with anyone): \n \n' + code, [], "Verify Code");
+}
+
 async function formPage(req, res) {
     // find the form
     var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.params.formId, 'forms.formName': req.params.formName });
@@ -145,9 +221,23 @@ async function formPage(req, res) {
     var formOptions = findForm(formUser, req.params.formId);
     // another check to verify it is allowed
     if (formOptions.adminKeyForForm.slice(-5) != req.params.adminKey) return res.status(403).send('Not authorized');
+    
+    if (formOptions.formSettings.isFormClosed){
+        return res.render('formClosed');
+    }
+    
     // find the user
     var user = await accessCollectionOfUsers(req.params.formId + '-' + formOptions.adminKeyForForm.slice(10), req.params.userId);
     if (user == null || user == undefined) return res.status(404).send('User not found');
+
+    // check if the user is authorized or not
+    let authStatus = await checkFormAuthToken(req.query.jwt, req.params);
+    console.log(authStatus);
+    if (!authStatus) {
+        await sendVerifyCode(req.params, user)
+        return res.render('verifyFormAccess');
+    }
+
     // form HTML
     var formHTML = makeFormHTML(formOptions.form, user);
     var image = `/image/${req.params.formName}/${req.params.adminKey}/${req.params.formId}/${req.params.userId}`
@@ -169,12 +259,12 @@ async function verifyUserEmail(req, res) {
     // get all the users who are signed up for this form
     const collectionName = req.params.formId + '-' + formOptions.adminKeyForForm.slice(10);
     const newCollection = mongoose.model(collectionName, schemas.userSchema, collectionName);
-    
+
     // get the user from the database
     var user = await newCollection.findOne({ "verifyLink": req.params.verifyLink });
     // if there are no user we dont need to do anything
     if (user == null || user == undefined) return res.send('Verify Link not found or expired !!!');
-    
+
     // if a form id already exists for the user
     // send the link to the form
     if (user.userId != undefined) {
@@ -293,7 +383,7 @@ async function downloadPDF(req, res) {
     })
 }
 
-async function editFormPage(req, res){
+async function editFormPage(req, res) {
     // check if the user is authorized or not
     // find the formId from the database
     var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.params.formId, 'forms.formName': req.params.formName, 'forms.adminKeyForForm': req.params.adminKey });
@@ -305,11 +395,11 @@ async function editFormPage(req, res){
     return res.render('editForm', { 'formOptions': formOptions.form, 'formSettings': formOptions.formSettings, 'formId': req.params.formId, 'adminKey': req.params.adminKey, 'formName': req.params.formName });
 }
 
-async function saveEditedForm(req, res){
+async function saveEditedForm(req, res) {
     // check if the user is authorized or not
     var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.body.formId, 'forms.formName': unescape(req.body.formName), 'forms.adminKeyForForm': req.body.adminKey });
     if (formUser == null || formUser == undefined) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
-    
+
     console.log(req.body);
     // find that spefic form of the user
     for (var i = 0; i < formUser.forms.length; i++) {
@@ -329,7 +419,7 @@ async function saveEditedForm(req, res){
     return res.status(200).send("Form Saved");
 }
 
-async function previewForm(req, res){
+async function previewForm(req, res) {
     // check if the user is authorized or not
     // find the formId from the database
     var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.params.formId, 'forms.formName': req.params.formName, 'forms.adminKeyForForm': req.params.adminKey });
@@ -338,10 +428,10 @@ async function previewForm(req, res){
     // find the form from the database
     var formOptions = findForm(formUser, req.params.formId);
 
-    var formHTML = makeFormHTML(formOptions.form, {form: {}});
+    var formHTML = makeFormHTML(formOptions.form, { form: {} });
     var customCSS = genreateFormCSS(formOptions.formSettings.theme);
 
-    return res.render('previewForm', {'customCSS': customCSS,'formHTML': formHTML, 'formOptions': formOptions.form, 'formSettings': formOptions.formSettings});
+    return res.render('previewForm', { 'customCSS': customCSS, 'formHTML': formHTML, 'formOptions': formOptions.form, 'formSettings': formOptions.formSettings });
 
 }
 
@@ -365,5 +455,8 @@ module.exports = {
     notFound,
     editFormPage,
     saveEditedForm,
-    previewForm
+    previewForm,
+    findForm,
+    verifyFormAccess,
+    checkFormAuthToken
 }

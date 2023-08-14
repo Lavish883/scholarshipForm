@@ -1,14 +1,25 @@
 mixin formSettingsContainer(formSettings, formName, formId)
     div.settingsContainer
+        div.title Form Name:
         div.nameOfForm
             input(type="text", id="nameOfTheFormInput", placeholder="Name of Form", value=formSettings.nameOfForm)
-            div 
-                span Image upload wanted in form ?
-                input(type="checkbox", checked=formSettings.imageUploadWantedInForm id="imageUploadWantedInFormInput")
+            div(style="display: flex; align-items: center; margin-left: 10px;flex-direction: column;")
+                div 
+                    span Image upload wanted in form ?
+                    input(type="checkbox", checked=formSettings.imageUploadWantedInForm id="imageUploadWantedInFormInput")
+                div
+                    if formSettings.isFormClosed
+                        span Form is closed&nbsp;
+                    else
+                        span Form is open&nbsp;
+                    input(type="checkbox",onchange="toggleCloseForm(this)", checked=formSettings.isFormClosed id="isFormClosedInput")
+        div.title Form Introduction:
         div.formIntroduction
             textarea(oninput="autoResize(this)" id="formIntroductionTextArea", placeholder="Form Introduction") #{formSettings.formIntroduction}
+        div.title Text next to image upload:
         div.textNextToImage
             input(id="textNextToImageInput", type="text", placeholder="Text next to image upload", value=formSettings.textNextToImage)
+        div.title Form End Text:
         div.formEndText
             input(id="formEndTextInput", type="text", placeholder="Form End Text", value=formSettings.formEndText)
         div.themeDivider

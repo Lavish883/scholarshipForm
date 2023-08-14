@@ -4,7 +4,7 @@ const puppeteer = require('puppeteer')
 async function makePDF(formOptions, userId) {
   const browser = await puppeteer.launch({ 
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--single-process', '--no-zygote'],
-    headless: true,  
+    headless: "new",  
     executablePath: process.env.PRODUCTION == true ? process.env.PUPPETEER_EXECUTABLE_PATH: puppeteer.executablePath(),
   });
   const page = await browser.newPage();
