@@ -20,7 +20,7 @@ html, body  {
     flex-direction: column;
     padding: 20px 20px;
     border-radius: 10px;
-    min-width: 285px;
+    min-width: 400px;
     background-color: whitesmoke;
 }
 
@@ -73,7 +73,12 @@ html, body  {
     font-family: sans-serif;
     background-color: #292929;
     color: white;
+    transition: ease-in 0.2s;
     cursor: pointer;
+}
+
+.submitLog:hover {
+    background-color: #000000;
 }
 
 .switchSpan {
@@ -189,4 +194,9 @@ html, body  {
 .left .iconContainer:hover{
     background-color: #000000;
     cursor: pointer;
+}
+
+.submitLog[disabled="true"]{
+    background-color: #292929e6;
+    cursor: not-allowed;
 }

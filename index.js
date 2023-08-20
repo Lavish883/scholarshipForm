@@ -74,6 +74,9 @@ app.post('/test/giveUserFormDeatils', createFormFuctions.giveUserFormDeatils);
 app.get('/previewForm/:formName/:adminKey/:formId', pathFunctions.previewForm);
 app.get('/test/serveLogoImage/:formName/:formId', createFormFuctions.serveLogoImage);
 app.post('/test/saveLogoImage', createFormFuctions.saveLogoImage);
+app.post('/formMaker/sendCodeEmail', createFormFuctions.sendCodeEmail);
+app.post('/formMaker/confirmEmailWithCode', createFormFuctions.confirmEmailWithCode);
+app.post('/formMaker/passwordReset', createFormFuctions.passwordReset);
 
 // Making the form maker page
 app.get('/formMaker', createFormFuctions.formMakerLogin);

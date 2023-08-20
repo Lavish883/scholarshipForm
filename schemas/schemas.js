@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-/* Don't touch schmeas as it is very important 
+/* 
+    Don't touch schmeas as it is very important 
     And wrong step can cause a lot of issues
     Overall databases are scary so pease be careful while using them
 */
@@ -10,9 +11,9 @@ const Schema = mongoose.Schema;
     {
       "email": "l@spyponderscom",
         "verfied": false,
-         // if one alreday prenst get rid of that one and instead add new one
+         // if one is already present get rid of that one and instead add new one
         "verifyLink": ""
-        }
+    }
 */ 
 const userSchema = new Schema({
     "email": {
@@ -62,11 +63,18 @@ const formMakerSchema = new Schema({
     },
     "password": {
         type: String,
-        required: true
     },
     "forms": {
         type: Array,
-        required: true
+    },
+    "verifyCode": {
+        type: String
+    },
+    "verified": {
+        type: Boolean,
+    },
+    "expireDate": {
+        type: String
     }
 }, {timestamps: true})
 
@@ -112,4 +120,3 @@ module.exports = {
     userSchema,
     formAuthTokens
 }
-
