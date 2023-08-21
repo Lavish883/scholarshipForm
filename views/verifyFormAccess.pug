@@ -10,11 +10,11 @@ html
             div.containEmailForm
                 div.centerIt
                     div.backgroundForEmail
-                        p Please put your email, so we can verify you are human and also generate you a form link.
+                        p A verification code has been sent to your email address. Please enter the code below to verify the right person is accessing this form.
                         div#isSuccess
-                        input#email(type="email")
+                        input#code(type="text" placeholder="Enter Code" name="code" required="required")
                         input(type="submit" id="submitForm",style="color:white !important;")
                         p
         
         script
-            include js/signUp.js
+            include js/verifyFormAccess.js 

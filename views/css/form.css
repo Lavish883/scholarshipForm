@@ -14,8 +14,8 @@ form {
     max-width: 700px;
     margin: 20px auto;
     padding: 24px;
-    background-color: var(--main-formBackgroundColor);
-    color: var(--main-formIntroColor);
+    background-color: var(--main-formBackgroundColor) !important;
+    color: var(--main-formIntroColor) !important;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 1);
 }
@@ -30,7 +30,7 @@ form img {
 
 form h1 {
     font-size: 35px;
-    color: var(--main-formNameColor);
+    color: var(--main-formNameColor) !important;
     margin: 0px;
     margin-bottom: 50px;
 }
@@ -76,7 +76,7 @@ form .formQuestion {
     margin: 40px 0px;
     padding: 20px;
     border-radius: 10px;
-    background-color: var(--main-questionBackgroundColor);
+    background-color: var(--main-questionBackgroundColor) !important;
 }
 
 @media (max-width: 600px) {
@@ -97,7 +97,7 @@ input, textarea, select {
     border-radius: 4px;
     width: 100%;
     font-family: sans-serif;
-    color: var(--main-answerColor);
+    color: var(--main-answerColor) !important;
     resize: vertical;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
@@ -227,7 +227,7 @@ input[type="checkbox"] {
 }
 
 th {
-    color: var(--main-formIntroColor);
+    color: var(--main-formIntroColor) !important;
     padding: 8px;
 }
 
@@ -261,7 +261,7 @@ input:focus {
 
 body {
     margin: 0px;
-    background-color: var(--main-backgroundColor);
+    background-color: var(--main-backgroundColor) !important;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
@@ -283,4 +283,10 @@ body {
     .modal {
         width: 95%;
     }
+}
+
+[whattype="textArea"] textarea {
+    overflow: hidden;
+    resize: vertical;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }

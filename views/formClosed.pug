@@ -1,0 +1,17 @@
+html 
+    head 
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        style 
+            include css/style.css
+        style
+            include css/form.css
+        style 
+            include css/editForm.css
+    body 
+        div.containEmailForm
+            div.centerIt
+                div.backgroundForEmail
+                    p Form is closed, you can't edit or submit a form.
+                    p If you are the owner of this form, you can open it in the settings.
+                    p Click here to go back and login and open the form.
+                    a.addOptionButton(style="text-decoration:none;",href="/formMaker") Login

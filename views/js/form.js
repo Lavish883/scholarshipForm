@@ -45,7 +45,7 @@ async function saveImageToServer() {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            "userId": window.location.href.split('/form/')[1].split('/')[3],
+            "userId": window.location.href.split('/form/')[1].split('/')[3].split('?jwt=')[0],
             "formName": unescape(window.location.href.split('/form/')[1].split('/')[0]),
             "formId": window.location.href.split('/form/')[1].split('/')[2],
             "adminKey": window.location.href.split('/form/')[1].split('/')[1],
@@ -145,18 +145,31 @@ async function saveFormToServer(finishedWithForm = false) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            "userId": window.location.href.split('/form/')[1].split('/')[3],
+            "userId": window.location.href.split('/form/')[1].split('/')[3].split('?jwt=')[0],
             "formName": unescape(window.location.href.split('/form/')[1].split('/')[0]),
             "formId": window.location.href.split('/form/')[1].split('/')[2],
             "adminKey": window.location.href.split('/form/')[1].split('/')[1],
             "form": {
                 "values": getAllFormValues()
             },
+            "jwt": window.location.href.split('/form/')[1].split('/')[3].split('?jwt=')[1],
             "finishedWithForm": finishedWithForm,
         })
     }
     const request = await fetch('/saveForm', options);
     const data = await request.text();
+
+    if (request.status == 403) {
+        alert(data);
+        // refresh the page
+        window.location.reload();
+        return;
+    }
+    
+    if (request.status != 200) { 
+        alert('Something went wrong server side. Please try again later. If this problem persists please contact the developer.');
+    }
+
     console.log('Saveddddd')
 }
 
@@ -334,7 +347,7 @@ async function validateForm(event) {
     }
     if (finishedGoingOver){
         await saveFormToServer(true);
-        document.body.innerHTML = `<h1 class="formEndTextColor" style="text-align: center; margin-top: 30vh;">${formEndText}</h1>`;
+        document.body.innerHTML = `<h1 class="formEndTextColor" style="color:var(--main-formEndTextColor);text-align: center; margin-top: 30vh;">${formEndText}</h1>`;
     } else {
         alert('Please go over the form again and make sure everything is correct');
         finishedGoingOver = true;
@@ -387,6 +400,18 @@ try {
     document.getElementById('sumbitFormBtn').addEventListener('click', validateForm);
 } catch (error){
     console.log(error);
+}
+
+// automatically resizes the height of the textarea
+function autoResize(obj) {
+    obj.style.height = 'auto';
+    obj.style.height = obj.scrollHeight + 'px';
+}
+
+// go through all the textareas and resize them
+const textAreas = document.querySelectorAll('textarea');
+for (var textArea of textAreas) {
+    autoResize(textArea);
 }
 
 setTimeout(autoSave, 20 * 1000);

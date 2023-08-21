@@ -50,7 +50,7 @@ function makecheckBoxesGrid(userInfo, question) {
     var answerHTMLArry = [];
 
     for (var i = 0; i < userInfo.length; i++) {
-        answerHTMLArry.push(`<h2 class="answer fontSmaller">${sanitizeHTML(userInfo[i].rowValue)}: ${sanitizeHTML(userInfo[i].columnValue)}</h2>`);
+        answerHTMLArry.push(`<h2 class="answer fontSmaller">${sanitizeHTML(userInfo[i].rowValue)}${sanitizeHTML(userInfo[i].rowValue).charAt(sanitizeHTML(userInfo[i].rowValue).length - 1) == ":" ? "" : ":"} ${sanitizeHTML(userInfo[i].columnValue)}</h2>`);
     }
 
     return `

@@ -13,10 +13,20 @@ html
                 div#applyFilters
                     // need to add options so the teachers can see all the pdfs at once
                     // with all the people who are filtered out
-                div#results
+                div.separateCont
+                    div.downloadOptions
+                        div.downloadButton
+                            | Download all PDFS
+                        div.downloadButton
+                            | Download as Excel Sheet
+                        div.downloadButton
+                            | Download as Multiple Excel Sheets
+                    div#results
+
         script 
             include js/filterData.js
         script(src="https://kit.fontawesome.com/9c2fbbf0d7.js")
+        script(lang="javascript" src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.min.js")
         script. 
             var formOptions = !{JSON.stringify(formOptions).replace(/<\//g, '<\\/')}
             generateFiltersHTML(formOptions, '#applyFilters') 

@@ -22,7 +22,10 @@ html
                     input(type="password" placeholder="Password" id="password")
                 div.switch 
                     span Don't have an account?&nbsp;
-                    span.switchSpan(onclick="changeBetweenLoginAndSignUp()") Sign Up
+                    span.switchSpan(onclick="changeBetweenLoginAndSignUp('signUpModal')") Sign Up
+                    div(style="margin-top: 10px")
+                        span Forgot Password?&nbsp;
+                        span.switchSpan(onclick="changeBetweenLoginAndSignUp('changePasswordModal')") Change Password
                 div.errorBox
                 div.goodNews
                 button.submitLog(onclick="login()") Login
@@ -33,14 +36,36 @@ html
                     h1 Sign up
                 div.inputs
                     input(type="text" placeholder="Email" id="newEmail")
-                    input(type="password" placeholder="Password" id="newPassword")
-                    input(type="password" placeholder="Confirm Password" id="newPasswordConfirm")
+                    div.passwordContainer.hide
+                        input(type="password" placeholder="Password" id="newPassword")
+                        input(type="password" placeholder="Confirm Password" id="newPasswordConfirm")
+                    div.codeContainer.hide
+                        input(type="text" placeholder="Enter code from email" id="newCode")
                 div.switch 
                     span Have an account?&nbsp;
-                    span.switchSpan(onclick="changeBetweenLoginAndSignUp()") Log in
+                    span.switchSpan(onclick="changeBetweenLoginAndSignUp('loginModal')") Log in
+                    div(style="margin-top: 10px")
+                        span Forgot Password?&nbsp;
+                        span.switchSpan(onclick="changeBetweenLoginAndSignUp('changePasswordModal')") Change Password
                 div.errorBox
                 div.goodNews
-                button.submitLog(onclick="signUpNewUser()") Sign Up
+                button.submitLog(onclick="sendCodeToEmail(this)") Send Verification Code
+
+        div#changePasswordModal.modals(style="display: none")
+            div.loginContainer
+                div.header
+                    h1 Reset Password
+                div.inputs
+                    input(type="text" placeholder="Email" id="resetEmail")
+                div.switch 
+                    span Have an account?&nbsp;
+                    span.switchSpan(onclick="changeBetweenLoginAndSignUp('loginModal')") Log in
+                    div(style="margin-top: 10px")
+                        span Don't have an account?&nbsp;
+                        span.switchSpan(onclick="changeBetweenLoginAndSignUp('signUpModal')") Sign Up
+                div.errorBox
+                div.goodNews
+                button.submitLog(onclick="resetPassword(this)") Reset Password
 
 
         main(style="display:none")

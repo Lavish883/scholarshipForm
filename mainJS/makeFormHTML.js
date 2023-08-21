@@ -101,7 +101,7 @@ function makeTextQuestions(questionDetails, user) {
         <label for="${questionDetails.question}" class="questionPart">${questionDetails.question}<span class="requiredDisplay">${questionDetails.required == true ? '*' : ''}</span></label>
         ${imageHTML}
         <div whatType=${questionDetails.type} class="answerHere">
-            <${htmlTag} ${filledInfo} ${questionDetails.required ? "required" : ''} type="${questionDetails.type}" ${minLength} ${maxLength} name="${questionDetails.name}">${fillTextArea}</${htmlTag}>
+            <${htmlTag} oninput="${htmlTag == 'textarea' ? "autoResize(this)" : ''}" ${filledInfo} ${questionDetails.required ? "required" : ''} type="${questionDetails.type}" ${minLength} ${maxLength} name="${questionDetails.name}">${fillTextArea}</${htmlTag}>
         </div>    
     </div>
     `

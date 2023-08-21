@@ -20,7 +20,7 @@ main {
 }
 
 .question {
-    display:flex;
+    display: flex;
     margin: 40px auto;
     background-color: white;
     padding: 20px;
@@ -70,6 +70,7 @@ main {
     flex-direction: row;
     justify-content: space-between;
     margin: 20px 0px 0px 0px;
+    flex-wrap: wrap;
 }
 
 input[type="checkbox"] {
@@ -79,12 +80,14 @@ input[type="checkbox"] {
 }
 
 
-input[type="text"], input[type="number"] {
+input[type="text"],
+input[type="number"] {
     border: none;
     border-bottom: solid 1px black;
 }
 
-input[type="text"]:focus, input[type="number"]:focus {
+input[type="text"]:focus,
+input[type="number"]:focus {
     outline: none;
 }
 
@@ -101,8 +104,8 @@ select {
 
 .questionDelete i:hover {
     cursor: pointer;
-    opacity: 0.8;  
-    transform: scale(1.3); 
+    opacity: 0.8;
+    transform: scale(1.3);
 }
 
 .option {
@@ -116,11 +119,12 @@ select {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .option input {
-  border: none;
-  margin: 0px 10px;
+    border: none;
+    margin: 0px 10px;
 }
 
 .option input:focus {
@@ -155,7 +159,7 @@ select {
     margin-right: 50px;
 }
 
-.fa-times{
+.fa-times {
     color: red;
     transition: cubic-bezier(0.39, 0.575, 0.565, 1) 0.2s;
 }
@@ -189,7 +193,7 @@ select {
     margin: 15px 0px;
     width: 100%;
     display: flex;
-    justify-content: center;    
+    justify-content: center;
 }
 
 .saveFormToServerButton:hover {
@@ -247,7 +251,8 @@ select {
     padding: 20px;
 }
 
-.settingsContainer [type="text"], .settingsContainer textarea {
+.settingsContainer [type="text"],
+.settingsContainer textarea {
     width: 100%;
     margin-bottom: 25px;
     margin-right: 10px;
@@ -278,7 +283,7 @@ select {
     margin-left: 10px;
 }
 
-.settingsContainer span{
+.settingsContainer span {
     font-size: 15px;
     color: rgb(118 105 105);
 }
@@ -323,7 +328,7 @@ select {
     margin-right: 10px;
 }
 
-input[type="color"]{
+input[type="color"] {
     border: none;
     background-color: #f8f9fa;
 }
@@ -331,7 +336,7 @@ input[type="color"]{
 .pdfImage {
     width: 100%;
     margin: 20px 0px;
-    color: rgb(81, 81, 81);    
+    color: rgb(81, 81, 81);
     font-size: 18px;
 }
 
@@ -384,7 +389,116 @@ input[type="color"]{
     cursor: pointer;
 }
 
-.imageDisplayed img{
+.imageDisplayed img {
     max-width: 100px;
     margin-top: 20px;
+}
+
+
+.editOptionSquareDiv {
+    float: right;
+    cursor: pointer;
+    font-size: 20px;
+    color: black;
+}
+
+.editOptionSquare {
+    transition: cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s;
+}
+
+.editOptionSquareDiv:hover .editOptionSquare {
+    color: #007bff;
+    transform: scale(1.3);
+}
+
+
+/* Tooltip container */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+    opacity: 0;
+    transition: cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+    opacity: 1;
+}
+
+.tooltip .tooltiptext {
+    width: 120px;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
+}
+
+.tooltip .tooltiptext::after {
+    content: " ";
+    position: absolute;
+    top: 100%;
+}
+
+.bottomTooltip {
+    /* At the bottom of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+}
+
+.optionsAsTextInput {
+    width: 100%;
+    margin-bottom: 25px;
+    margin-right: 10px;
+    background-color: #f8f9fa;
+    outline: none;
+    border: none;
+    border-bottom: solid 1px black;
+    border-radius: 5px;
+    font-size: 18px;
+    padding: 10px;
+    height: auto;
+    overflow: hidden;
+    resize: vertical;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.optionsAsTextInput:focus {
+    outline: none;
+}
+
+.saving {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    display: flex;
+    font-size: 50px;
+    color: white;
+    align-items: center;
+}
+
+.saving img {
+    width: 128px;
+}
+
+.title {
+    font-size: 20px;
+    margin: 0px;
+    font-weight: 500;
+    margin-bottom: 10px;
 }

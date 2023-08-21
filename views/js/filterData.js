@@ -3,6 +3,7 @@ const formName = window.location.href.split("/filterData/")[1].split("/")[0];
 const formId = window.location.href.split("/filterData/")[1].split("/")[2];
 const adminKeyForForm = window.location.href.split("/filterData/")[1].split("/")[1];
 
+var savedData;
 
 // run once in the beginng to generate the HTML for all the filters
 function generateFiltersHTML(data, selector) {
@@ -409,7 +410,7 @@ function getCheckBoxesGridFilterValues(filterValues) {
             filterValues[fieldset.getAttribute('whatName')] = { 'value': grid, 'type': fieldset.getAttribute('whatType') };
         }
     }
-    
+
 }
 
 // gets all the filter values that in a json format that we could pass to the server
@@ -523,5 +524,136 @@ async function applyFilters() {
     const request = await fetch('/search/' + window.location.pathname.split(`filterData/`)[1], options);
     const data = await request.json();
 
+    savedData = data;
+    //makeOneExcelSheet(savedData);
     document.getElementById('results').innerHTML = generateUsersHTML(data);
+}
+
+// formats all the json data in one sheet
+// add paramater of data so we can make it so each user has its own sheet
+// can be used for both, one sheet or multiple sheets just pass in the data
+function makeExcelWithOneSheet(workBook, data) {
+    // make the rows
+    let rows = [];
+    let headerRow = [
+        [], // for the header row
+        [], // just in case if we have checkboxes grid and then we have to make second row, for rowValue and ColumnValue
+        []
+    ];
+    let questionOrders = []; // this is the order of the questions and their types we need this so we can put the user data in correct order
+    let mergeCells = []; // this is for the checkboxes grid
+
+    for (var formQuestion of formOptions) {
+        if (formQuestion.type == "checkBoxesGrid") {
+            headerRow[0].push(formQuestion.name);
+            mergeCells.push({ s: { r: 0, c: headerRow[0].length - 1 }, e: { r: 0, c: headerRow[0].length } });
+            headerRow[0].push('');
+            headerRow[1].push('Column Value');
+            headerRow[1].push('Row Value');
+        } else {
+            headerRow[0].push(formQuestion.name);
+            headerRow[1].push('');
+        }
+        questionOrders.push({ 'key': formQuestion.name, 'type': formQuestion.type });
+    }
+
+    rows.push(...headerRow);
+
+    for (var user of data) {
+        var userRow = [];
+        var moreRows = []; // this is for the checkboxes grid
+        for (var question of questionOrders) {
+            // check the type of the question and then add it to the row
+            let type = question.type;
+
+            if (user.form[question.key] == undefined) { // if the user didn't answer the question
+                userRow.push('N/A');
+                continue;
+            }
+
+            if (type == "text" || type == "textArea" || type == "options") {
+                userRow.push(user.form[question.key]);
+                continue;
+            }
+
+            if (type == "checkBoxes") {
+                userRow.push(user.form[question.key].join(', '));
+                continue;
+            }
+
+            if (type == "checkBoxesGrid") {
+                for (var i = 0; i < user.form[question.key].length; i++) {
+                    // for the first one put it in the same row
+                    if (i == 0) {
+                        userRow.push(user.form[question.key][i].columnValue);
+                        userRow.push(user.form[question.key][i].rowValue);
+                        continue;
+                    }
+                    // if the moreRows[i] doesn't exist make it
+                    if (moreRows.length < user.form[question.key].length) moreRows.push([]);
+                    // now properly pad the moreRows[i]
+                    // i - 1 because we already added the first one to the userRow
+                    for (var j = moreRows[i - 1].length - 1; j < userRow.length - 3; j++) {
+                        moreRows[i - 1].push('');
+                    }
+                    // now add the value to the moreRows[i]
+                    moreRows[i - 1].push(user.form[question.key][i].columnValue);
+                    moreRows[i - 1].push(user.form[question.key][i].rowValue);
+                }
+            }
+        }
+        rows.push(userRow);
+        rows.push(...moreRows);
+        // make a blank row
+        rows.push([]);
+    }
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+
+    ws['!merges'] = mergeCells;
+    XLSX.utils.book_append_sheet(workBook, ws, data[0] == undefined ? 'Sheet 1': data[0].form.firstName + ' ' + data[0].form.lastName);
+}
+
+// makes it so all the data is in one sheet
+function makeOneExcelSheet() {
+    // make the workbook
+    const workBook = XLSX.utils.book_new();
+    makeExcelWithOneSheet(workBook, savedData);
+    XLSX.writeFile(workBook, 'resultsWithOneSheet.xlsx');
+}
+
+// makes it so each user has its own sheet
+function makeExcelWithDifferentSheets() {
+    const workBook = XLSX.utils.book_new();
+    for (var user of savedData) {
+        makeExcelWithOneSheet(workBook, [user]);
+    }
+    XLSX.writeFile(workBook, 'results_with_different_sheet.xlsx');
+}
+
+// ALl i got to do is to make the UI so the user can download the data in different formats
+
+// downloads all the data in pdf format as a zip file
+async function downloadAllDataPDFS(){
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            "savedData": savedData
+        })
+    }
+    
+    let urlInfo = window.location.pathname.split(`/`);
+    let request = await fetch('/downloadAllPDFs/' + urlInfo[2] + '/' + urlInfo[3] + '/' + urlInfo[4], options);
+    let data = await request.blob();
+        
+    let url = window.URL.createObjectURL(data);
+    var a = document.createElement('a');
+    document.body.appendChild(a);
+    a.style = 'display: none';
+    a.href = url;
+    a.download = 'results.zip';
+    a.click();
+    window.URL.revokeObjectURL(url);
 }
