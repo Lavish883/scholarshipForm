@@ -91,7 +91,6 @@ function filterCheckBoxesNegative(filterValues, remUsers) {
         if (filter.type == 'checkBoxes' && filter.value.length > 0) {
             var stringToCompare = makeComparingString(filter.value, 'negative');
 
-            console.log(filter.value, 'filter value')
             if (stringToCompare.replace(/\s/g, '').length == 0) continue;
 
             for (var i = remUsers.length - 1; i >= 0; i--) {
@@ -102,7 +101,6 @@ function filterCheckBoxesNegative(filterValues, remUsers) {
                     remUsers.splice(i, 1);
                     continue;
                 }
-                console.log(stringToCompare, 'string to compare');
 
                 // go through all the user checkboxes and see if they have all the values
                 var userCheckboxes = user.form[key];

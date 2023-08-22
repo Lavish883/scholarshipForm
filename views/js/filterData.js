@@ -463,10 +463,10 @@ function generateUsersHTML(users) {
                         <img src=${image} alt="Photo of ${user.form.firstName + ' ' + user.form.lastName}">
                     </div>
                     <div class="textContainer">
-                        <div><span class="bold">Name:</span> ${user.form.firstName + ' ' + user.form.lastName}</div>
-                        <div><span class="bold">Email:</span> ${user.email}</div>
-                        <div><span class="bold">GPA:</span> ${user.form.gpa}</div>
-                        <div><span class="bold">Major:</span> ${user.form.intendedMajor}</div>
+                        <div><span class="bold">Name:</span> <span>${user.form.firstName + ' ' + user.form.lastName}</span></div>
+                        <div><span class="bold">Email:</span> <span>${user.email}</span></div>
+                        <div><span class="bold">GPA:</span> <span>${user.form.gpa}</span></div>
+                        <div><span class="bold">Major:</span> <span>${user.form.intendedMajor}</span></div>
                     </div>
                 </div>
             </a>

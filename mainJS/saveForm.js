@@ -9,8 +9,8 @@ const messages = [
 ]
 
 // get user from the database
-async function getUser(formId){
-    return await schemas.users.findOne({'form.formId': formId});
+async function getUser(formId) {
+    return await schemas.users.findOne({ 'form.formId': formId });
 }
 
 // if userId is given it will return one user, if not it will return all users
@@ -20,13 +20,13 @@ async function accessCollectionOfUsers(collectionName, userId = null) {
     if (userId == null) {
         allItems = await newCollection.find({});
     } else {
-        allItems = await newCollection.findOne({'userId': userId});
+        allItems = await newCollection.findOne({ 'userId': { $eq: userId } });
     }
 
     return allItems;
 }
 
-function findForm(formUser, formId){
+function findForm(formUser, formId) {
     var actualForm;
     for (var form of formUser.forms) {
         if (form.formId == formId) {
@@ -39,27 +39,30 @@ function findForm(formUser, formId){
 
 
 // save form to the database
-async function saveForm(req, res){
+async function saveForm(req, res) {
     // get the form from the database and verify it is allowed
-    var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.body.formId, 'forms.formName': req.body.formName});
+    var formUser = await schemas.formMakerUsers.findOne({
+        'forms.formId': { $eq: req.body.formId },
+        'forms.formName': { $eq: req.body.formName }
+    });
     if (formUser == null || formUser == undefined) return res.status(404).send('Form not found');
     var formOptions = findForm(formUser, req.body.formId);
     // another check to verify it is allowed
     if (formOptions.adminKeyForForm.slice(-5) != req.body.adminKey) return res.status(403).send('Not authorized');
 
     // find the user
-    var user = await accessCollectionOfUsers(req.body.formId + '-' + formOptions.adminKeyForForm.slice(10), req.body.userId);  
+    var user = await accessCollectionOfUsers(req.body.formId + '-' + formOptions.adminKeyForForm.slice(10), req.body.userId);
     if (user == null || user == undefined) return res.status(404).send('User not found');
-    
+
     const bodyForm = req.body.form;
     const finishedWithForm = req.body.finishedWithForm;
-    
+
     var authStatus = await checkFormAuthToken(req.body.jwt, req.body);
     if (authStatus != true) return res.status(403).send('Your not authorized to access this form. This usually happens when your session has expired. Please refresh the page and try again. Don\'t worry your data has been auto saving. You only lose upto 20 seconds of work.')
     // console.log(bodyForm.values)
 
     // update the form
-    for (var key in bodyForm.values){
+    for (var key in bodyForm.values) {
         user.form[key] = bodyForm.values[key];
     }
     //user.form.image = bodyForm.image;
@@ -71,7 +74,7 @@ async function saveForm(req, res){
         user.form.imageWidth = bodyForm.imageWidth;
     }
 
-    
+
     // if user is finished with the form mark it as done and send an email
     if (finishedWithForm == true) {
         user.finishedWithForm = true;
@@ -90,8 +93,8 @@ async function saveForm(req, res){
 
     user.markModified('form');
 
-    await user.save();  
-    return res.send('Done!!' + req.body.userId);
+    await user.save();
+    return res.send('Done!!');
 }
 
 module.exports = saveForm;
