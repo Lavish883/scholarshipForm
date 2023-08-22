@@ -8,7 +8,9 @@ const mailFunctions = require('./mailFunctions');
 const bcrpyt = require('bcrypt');
 
 async function verifyUser(email, password) {
-    var user = await schemas.formMakerUsers.findOne({ 'email': email });
+    var user = await schemas.formMakerUsers.findOne({ 
+        'email': { $eq: email } 
+    });
 
     if (!user) return { 'send': 'User does not exist', 'status': 400 };
 
@@ -68,7 +70,9 @@ async function makeNewFormMakerUser(req, res) {
     if (email == '' || password == '') return res.status(400).send('Email or password cannot be empty');
 
     // find the user with that email, update the password
-    var user = await schemas.formMakerUsers.findOne({ 'email': email });
+    var user = await schemas.formMakerUsers.findOne({ 
+        'email': { $eq: email }
+    });
 
     // hash the password
     const hashedPassword = bcrpyt.hashSync(password, 10);
@@ -135,7 +139,10 @@ async function serveLogoImage(req, res) {
 
 async function saveLogoImage(req, res) {
     // find the user with that form
-    var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.body.formId, 'forms.formName': unescape(req.body.formName) });
+    var formUser = await schemas.formMakerUsers.findOne({
+        'forms.formId': { $eq: req.body.formId },
+        'forms.formName': { $eq: unescape(req.body.formName) }
+    });
     if (!formUser) return res.status(400).send('Form does not exist');
 
     // get the form from the user
@@ -158,12 +165,14 @@ async function confirmEmailWithCode(req, res) {
     if (req.body.code == undefined || req.body.code == '') return res.status(400).send('Code cannot be empty');
 
     // find the user with that email
-    var user = await schemas.formMakerUsers.findOne({ 'email': req.body.email });
+    var user = await schemas.formMakerUsers.findOne({
+        'email': { $eq: req.body.email }
+    });
     if (!user) return res.status(400).send('That is weird, user with that email does not exist. Refresh the page and try again');
 
     // check if the code is correct
     if (user.verifyCode != req.body.code) return res.status(400).send('Code is incorrect');
-    
+
     // check if the code has expired
     if (new Date() > user.expireDate) return res.status(400).send('Code has expired, please refresh the page and try to sign up again');
 
@@ -179,7 +188,9 @@ async function sendCodeEmail(req, res) {
     if (email == undefined || email == '') return res.status(400).send('Email cannot be empty');
 
     // check if the email is already in the database
-    var doesItExist = await schemas.formMakerUsers.findOne({ 'email': email });
+    var doesItExist = await schemas.formMakerUsers.findOne({
+        'email': { $eq: email }
+    });
 
     // if verified let the user know
     if (doesItExist.verified) return res.status(400).send('Account has already been made');
@@ -209,12 +220,14 @@ async function sendCodeEmail(req, res) {
     return res.status(200).send('Email sent');
 }
 
-async function passwordReset(req, res){
+async function passwordReset(req, res) {
     // the way we structured sign up, all we can do is set verified to false and then they can use sign up to change the password
     // find the user with that email
     if (req.body.email == undefined || req.body.email == '') return res.status(400).send('Email cannot be empty');
-    var user = await schemas.formMakerUsers.findOne({ 'email': req.body.email });
-    
+    var user = await schemas.formMakerUsers.findOne({
+        'email': { $eq: req.body.email }
+    });
+
     user.verified = false;
     await user.save();
     return res.status(200).send('Done');

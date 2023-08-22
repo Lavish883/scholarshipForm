@@ -23,7 +23,7 @@ async function downloadAllPDFs(req, res){
     var fetchURLS = [];
 
     for (var user of req.body.savedData){
-        fetchURLS.push(process.env.WEBSITELINK + `pdf/${req.params.formName}/${req.params.adminKey}/${req.params.formId}/` + user.userId);
+        fetchURLS.push(`pdf/${req.params.formName}/${req.params.adminKey}/${req.params.formId}/` + user.userId);
     }   
     // create a zip file
     const zip = new JSZip();
@@ -39,7 +39,7 @@ async function downloadAllPDFs(req, res){
     await page.setViewport({ width: 1280, height: 720 });
 
     for (var i = 0; i < fetchURLS.length; i++){
-        await page.goto(fetchURLS[i], {waitUntil: 'networkidle0'});
+        await page.goto(process.env.WEBSITELINK + fetchURLS[i], {waitUntil: 'networkidle0'});
         const pdf = await page.pdf({ format: 'A4', margin: { top: '30px', bottom: '30px', left: '60px', right: '60px' }});        
         await zip.file(req.body.savedData[i].form.firstName + req.body.savedData[i].form.lastName + '.pdf', pdf);
     }
