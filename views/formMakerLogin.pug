@@ -1,6 +1,7 @@
-html 
+html
     head 
         title Form Maker Login
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
         style 
             include css/login.css
     body
@@ -29,6 +30,7 @@ html
                 div.errorBox
                 div.goodNews
                 button.submitLog(onclick="login()") Login
+            include includes/footer.pug  
 
         div#signUpModal.modals(style="display: none")
             div.loginContainer
@@ -73,7 +75,8 @@ html
                 div.header
                     h1 All of your forms
                     i.fas.fa-plus-square(onclick="showOrHideNewFormModal()")      
-                div#cards      
+                div#cards    
+            include includes/footer.pug 
     script
         include js/login.js
     script(src="https://kit.fontawesome.com/9c2fbbf0d7.js")

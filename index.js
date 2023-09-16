@@ -86,8 +86,6 @@ app.get('/formMaker', createFormFuctions.formMakerLogin);
 // serve as a 404 page
 app.get('*', pathFunctions.notFound);
 
-
-
 app.listen(PORT, () => {
   console.log("It's up bois!!")
 });

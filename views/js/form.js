@@ -54,11 +54,13 @@ async function saveImageToServer() {
                 "imageHeight": cropper.getCroppedCanvas().height,
                 "imageWidth": cropper.getCroppedCanvas().width,
             },
+            "jwt": window.location.href.split('/form/')[1].split('/')[3].split('?jwt=')[1],
             "finishedWithForm": false
         })
     }
     const request = await fetch('/saveForm', options);
     const data = await request.text();
+    alert(data);
 }
 
 async function closeCropper() {

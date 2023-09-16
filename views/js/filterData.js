@@ -1,9 +1,5 @@
-const adminPassword = window.location.href.split("/filterData/")[1];
-const formName = window.location.href.split("/filterData/")[1].split("/")[0];
-const formId = window.location.href.split("/filterData/")[1].split("/")[2];
-const adminKeyForForm = window.location.href.split("/filterData/")[1].split("/")[1];
-
 var savedData;
+var applyingFilterTimeout;
 
 // run once in the beginng to generate the HTML for all the filters
 function generateFiltersHTML(data, selector) {
@@ -48,7 +44,7 @@ function genreateTextFilterHTML(question) {
                 <span>${question.isNumber ? ' (Higher will show)' : ''}</span>
                 <i class="fas fa-caret-down"></i>
             </div>
-            <input isNumber=${question.isNumber} onKeyUp="applyFilters()" whatType=${question.type} whatName=${question.name} type="text" class="filterInput" placeholder="Search" class=" class="searchForText" />
+            <input isNumber=${question.isNumber} onKeyUp="applyFilters(event)" whatType=${question.type} whatName=${question.name} type="text" class="filterInput" placeholder="Search" class=" class="searchForText" />
         </div>
     `
 }
@@ -501,7 +497,15 @@ function clearCheckBoxes(obj) {
     applyFilters();
 }
 
-async function applyFilters() {
+async function applyFilters(event) {
+    if (event != undefined && event.type == "keyup"){
+        clearTimeout(applyingFilterTimeout);
+        applyingFilterTimeout = setTimeout(() => {
+            applyFilters();
+        }, 250);
+        return;
+    }
+
     var filterValues = getAllFilterValues();
 
     if (Object.keys(filterValues).length == 0) {
@@ -522,10 +526,19 @@ async function applyFilters() {
     }
 
     const request = await fetch('/search/' + window.location.pathname.split(`filterData/`)[1], options);
+    if (request.status != 200){
+        let data = await request.text();
+        document.getElementById('results').innerHTML = `<div class="error">${data}</div>`;
+        return;
+    }
     const data = await request.json();
-
+    console.log(data.length);
     savedData = data;
     //makeOneExcelSheet(savedData);
+    if (data.length == 0) {
+        document.getElementById('results').innerHTML = `<div style="color:white;">No results found</div>`;
+        return;
+    }
     document.getElementById('results').innerHTML = generateUsersHTML(data);
 }
 
@@ -656,4 +669,20 @@ async function downloadAllDataPDFS(){
     a.download = 'results.zip';
     a.click();
     window.URL.revokeObjectURL(url);
+}
+
+/*
+    @params way: type String, can be either 'pdf' or 'excel' or 'excelWithDifferentSheets' 
+*/
+
+function downLoadData(way){
+    // check if the user has any data
+    if (savedData == undefined || savedData.length == 0) return;
+    if (way == 'pdf') {
+        if (confirm('Are you sure you want to download all the data in pdf format? This might take a while, depending on how many users there are. Please be patient and do not refresh the page.')){
+            return downloadAllDataPDFS();
+        }
+    }
+    if (way == 'excel') return makeOneExcelSheet();
+    if (way == 'excelWithDifferentSheets') return makeExcelWithDifferentSheets();
 }

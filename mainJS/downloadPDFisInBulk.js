@@ -41,7 +41,7 @@ async function downloadAllPDFs(req, res){
     for (var i = 0; i < fetchURLS.length; i++){
         await page.goto(process.env.WEBSITELINK + fetchURLS[i], {waitUntil: 'networkidle0'});
         const pdf = await page.pdf({ format: 'A4', margin: { top: '30px', bottom: '30px', left: '60px', right: '60px' }});        
-        await zip.file(req.body.savedData[i].form.firstName + req.body.savedData[i].form.lastName + '.pdf', pdf);
+        await zip.file(req.body.savedData[i].form.firstName + ' ' + req.body.savedData[i].form.lastName + '.pdf', pdf);
     }
 
     await browser.close();

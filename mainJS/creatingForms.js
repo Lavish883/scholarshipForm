@@ -44,7 +44,13 @@ async function makeNewForm(req, res) {
         form: {},
         formSettings: {
             "theme": {
-
+                "formNameColor": "#000000",
+                "formIntroductionColor": "#000000",
+                "answerColor": "#000000",
+                "questionBackgroundColor": "#ffffff",
+                "formBackgroundColor": "#f5f5f5",
+                "backgroundColor": "#292929",
+                "formEndTextColor": "#ffffff"
             },
             "logoOnPdfImage": "",
         }
