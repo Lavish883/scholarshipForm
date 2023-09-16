@@ -40,15 +40,19 @@ async function signUp(req, res) {
     var formOptions = findForm(formUser, req.params.formId);
     // another check to verify it is allowed
     if (formOptions.adminKeyForForm.slice(-5) != req.params.adminKey) return res.status(403).send('Not authorized');
+    
+    if (formOptions.formSettings.isFormClosed) {
+        return res.render('formClosed');
+    }
 
     return res.render('signUp')
 }
 
 // sees if its a valid spyponders email
-function testIfValidEmail(email) {
-    let regex = /\@spyponders\.com/;
-
-    return regex.test(email);
+function testIfValidEmail(email, address = 'spyponders.com') {
+    if (email == undefined || email == null) return false;
+    if (email.includes(address)) return true;
+    return false;
 }
 
 // genreate email verifaction link
@@ -63,6 +67,11 @@ async function generateVerficationLink(req, res) {
     var formOptions = findForm(formUser, req.body.formId);
     // another check to verify it is allowed
     if (formOptions.adminKeyForForm.slice(-5) != req.body.adminKey) return res.status(403).send('Not authorized');
+    
+    var emailAllowed = formOptions.formSettings.emailAllowed;
+    if (emailAllowed != '*' && emailAllowed != ' '){
+        if (!testIfValidEmail(req.body.email, emailAllowed)) return res.status(400).send(`Not valid email, must be a ${emailAllowed} email`);
+    }
 
     // get all the users who are signed up for this form
     const collectionName = req.body.formId + '-' + formOptions.adminKeyForForm.slice(10);
@@ -331,7 +340,7 @@ async function filterDataPage(req, res) {
     var formOptions = findForm(formUser, req.params.formId);
 
 
-    return res.render('filterData', { 'formOptions': formOptions.form });
+    return res.render('filterData', { 'formOptions': formOptions.form, 'formId': req.params.formId, 'adminKeyForForm': req.params.adminKey, 'formName': req.params.formName });
 }
 
 async function userPage(req, res) {

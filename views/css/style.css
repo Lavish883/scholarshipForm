@@ -31,8 +31,16 @@
     box-shadow: 0 2px 8px rgb(0 0 0);
 }
 
+.containEmailForm .centerIt .backgroundForEmail input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    height: 50px;
+    font-size: 20px;
+}
+
 body {
     margin: 0px;
     background-color:#000000d6;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
 }

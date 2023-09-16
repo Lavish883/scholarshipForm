@@ -487,6 +487,7 @@ function getFormSettingsData() {
         "textNextToImage": document.getElementById("textNextToImageInput").value,
         "formEndText": document.getElementById("formEndTextInput").value,
         "isFormClosed": document.getElementById("isFormClosedInput").checked,
+        "emailAllowed": document.getElementById("emailAllowedInput").value,
         "theme": {}
     }
     // go all find all the theme options and add them to the settings

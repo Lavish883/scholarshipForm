@@ -10,8 +10,15 @@ async function postEmailLink(event) {
             "adminKey": window.location.href.split('/form/signup/')[1].split(`/`)[1],
             "formId": window.location.href.split('/form/signup/')[1].split(`/`)[2],
         })
-
     }
+
+    if (document.getElementById('email').value == '') {
+        document.getElementById('isSuccess').innerText = 'Enter Email';
+        document.getElementById('isSuccess').style.color = '#c25050';
+        return;
+    }
+
+
     const request = await fetch('/createVerifyLink', options);
     const data = await request.text();
 
@@ -37,4 +44,3 @@ async function postEmailLink(event) {
 
 // add event listeners
 document.getElementById('submitForm').addEventListener('click', postEmailLink);
-

@@ -1,0 +1,22 @@
+body {
+    position: relative;
+}
+
+footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #353535;
+    color: white;
+    font-size: 20px;
+    padding: 25px 10px;
+    width: -webkit-fill-available;
+    position: absolute;
+    bottom: 0;
+}
+
+footer a {
+    color: white;
+    text-decoration: underline;
+}

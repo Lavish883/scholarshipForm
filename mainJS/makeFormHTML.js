@@ -125,7 +125,7 @@ function makeMultipleChoiceQuestions(questionDetails, user) {
         optionsHTML.push(
             `
             <div style="${i > 9 ? "display:none;" : ''}" class="containOption">
-                <input type="radio" name="${questionDetails.name}" ${isChosen} id=${option + questionDetails.question} value="${option}" />
+                <input type="radio" name="${questionDetails.name}" ${isChosen} id="${option + questionDetails.question}" value="${option}" />
                 <label for="${option + questionDetails.question}">${option}</label>
                 ${option == 'Other:' ? `<input type="text" class="withOther" name="${questionDetails.name}" value="${userText}" />` : ''}
             </div>
@@ -169,7 +169,7 @@ function makeCheckboxQuestions(questionDetails, user) {
         optionsHTML.push(
             `
             <div style="${i > 9 ? "display:none;" : ''}" class="containOption">
-                <input ${isOptionChecked} type="checkbox" name="${questionDetails.name}" id=${option + questionDetails.question} value="${option}" />
+                <input ${isOptionChecked} type="checkbox" name="${questionDetails.name}" id="${option + questionDetails.question}" value="${option}" />
                 <label for="${option + questionDetails.question}">${option}</label>
                 ${option == 'Other:' ? `<input type="text" class="withOther" name="${questionDetails.name}" value="${userText}" />` : ''}
             </div>
@@ -233,9 +233,11 @@ function makeCheckboxGridQuestions(questionDetails, user) {
         ${tableHTML.length > 9 ? `<h4>Search for a specific option</h4>` : ''}
         ${tableHTML.length > 9 ? `<input class="speficSearch" type="text" onKeyUp="filterOptions(this)" />` : ''}
         
-        <table whatType=${questionDetails.type} ${questionDetails.required ? "required" : ''} ${questionDetails.maxSelections != undefined ? "maxselections=" + questionDetails.maxSelections : ''} class="answerHere">
-            ${tableHTML.join('')}
-        </table>
+        <div class="tableCont">
+            <table whatType=${questionDetails.type} ${questionDetails.required ? "required" : ''} ${questionDetails.maxSelections != undefined ? "maxselections=" + questionDetails.maxSelections : ''} class="answerHere">
+                ${tableHTML.join('')}
+            </table>
+        </div>
 
         ${tableHTML.length > 9 ? `<div class="showMoreBtnCont noBorderNeeded"><button type="button" class="showMoreBtn" shownMore="true" onclick="showMoreOptions(this)">Show All</button></div>` : ''}
     </div>   `

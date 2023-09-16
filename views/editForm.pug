@@ -30,6 +30,7 @@ html
                 i.fas.fa-cog(onclick=`document.querySelector(".settingsContainer").scrollIntoView({'behavior': "smooth"})`, title="Form Options")
                 i.fas.fa-chevron-up(onclick="document.querySelector('html').scrollIntoView({'behavior': 'smooth'})", title="Scroll to Top")
                 i.fas.fa-save(onclick="saveFormToServer(this, true)", title="Save Form to Server")
+        include includes/footer.pug
         script 
             include js/editForm.js
         script. 

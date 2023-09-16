@@ -44,5 +44,10 @@ Other Miscellaneous things needed to do
 
     - Maybe get a lot of sample tests from this?? 
 
+Making pages responsive
+- did formMakerLogin.pug
+- did editForm.pug
+- 
+
 // What to work on next 
     - // done Basically just make a frontenend model in the editForm so you can change the logo Image

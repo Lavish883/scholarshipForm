@@ -22,6 +22,12 @@ mixin formSettingsContainer(formSettings, formName, formId)
         div.title Form End Text:
         div.formEndText
             input(id="formEndTextInput", type="text", placeholder="Form End Text", value=formSettings.formEndText)
+        div.emailAllowed
+            div.title Email Addresses Allowed: 
+                div(style="font-size:17px;") (for ex. @gmail.com), 
+                div(style="font-size:17px;") (* means all emails allowed)
+            div.emailAllowedInput
+                input(type="text", value=formSettings.emailAllowed id="emailAllowedInput")
         div.themeDivider
             div.themeHeader(onclick="toggleThemeOptions()")
                 div(style="display: flex; align-items: center;")
