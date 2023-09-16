@@ -49,7 +49,8 @@ async function signUp(req, res) {
 }
 
 // sees if its a valid spyponders email
-function testIfValidEmail(email, address = 'spyponders.com') {
+function testIfValidEmail(email, address) {
+    if (address == undefined || address == null) throw new Error('Address is not defined');
     if (email == undefined || email == null) return false;
     if (email.includes(address)) return true;
     return false;
