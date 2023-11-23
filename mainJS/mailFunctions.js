@@ -9,12 +9,16 @@ const transporter = nodeMailer.createTransport({
   }
 });
 
-function mailLink(emailToSend, linkMade, attachmentsGiven = [], subject = "") {
+function mailLink(emailToSend, linkMade, attachmentsGiven = [], subject = "", body = "") {
+  if (linkMade != false){
+    linkMade = "\nLink to edit: " + linkMade;
+  }
+  
   let mailOptions = {
     from: process.env.EMAIL,
     to: emailToSend,
     subject: subject,
-    text: linkMade,
+    text: body + linkMade,
     attachments: attachmentsGiven
   }
 

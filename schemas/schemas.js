@@ -34,6 +34,10 @@ const userSchema = new Schema({
     },
     "userId": {
         type: String,
+    },
+    "submittedForm": {
+        type: Boolean,
+        default: false
     }
 }, {timestamps: true})
 
@@ -108,7 +112,7 @@ const formAuthTokensSchema = new Schema({
     "code": {
         type: String,
         required: true
-    }
+    },
 }, {timestamps: true})
 
 const formAuthTokens = mongoose.model('formAuth', formAuthTokensSchema)
