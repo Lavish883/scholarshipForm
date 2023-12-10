@@ -45,6 +45,7 @@ async function saveForm(req, res) {
         'forms.formId': { $eq: req.body.formId },
         'forms.formName': { $eq: req.body.formName }
     });
+    
     if (formUser == null || formUser == undefined) return res.status(404).send('Form not found');
     var formOptions = findForm(formUser, req.body.formId);
     // another check to verify it is allowed
@@ -59,36 +60,43 @@ async function saveForm(req, res) {
 
     var authStatus = await checkFormAuthToken(req.body.jwt, req.body);
     if (authStatus != true) return res.status(403).send('Your not authorized to access this form. This usually happens when your session has expired. Please refresh the page and try again. Don\'t worry your data has been auto saving. You only lose upto 20 seconds of work.')
-    // console.log(bodyForm.values)
 
     // update the form
     for (var key in bodyForm.values) {
         user.form[key] = bodyForm.values[key];
     }
-    //user.form.image = bodyForm.image;
 
-    //console.log(bodyForm.image)
     if (typeof bodyForm.image != 'undefined') {
+        //console.log(bodyForm.image)
+        user.form.image = "";
+        user.markModified('form');
+        await user.save();
         user.form.image = bodyForm.image;
         user.form.imageHeight = bodyForm.imageHeight;
         user.form.imageWidth = bodyForm.imageWidth;
     }
-
+    console.log(user.form.image == bodyForm.image);
+    if (finishedWithForm) {
+        user.submittedForm = true;
+    }
 
     // if user is finished with the form mark it as done and send an email
-    if (finishedWithForm == true) {
-        user.finishedWithForm = true;
+    if (finishedWithForm == true && formOptions.formSettings.sendEmailToUserAfterSubmitting == true) {
         // make pdf and send email
-        makePDF(formOptions, req.body.userId).then(pdf => {
-            // make pdf to base64 pdf string so we can send it as an attachment
-            var pdfString = pdf.toString('base64');
-            // send email with the pdf attached
-            mailFunctions.mailLink(user.email, messages[0] + process.env.WEBSITELINK + 'form/' + user.form.formId, [{
-                filename: 'organizedForm.pdf',
-                content: pdfString,
-                encoding: 'base64'
-            }], "Scholarship Form submitted");
-        })
+        // tmrw edit this to make email moer customizable
+        let formSettings = formOptions.formSettings;
+        if (formSettings.sendPDFInEmail == true) {
+            makePDF(formOptions, req.body.userId).then(pdf => {
+                // make pdf to base64 pdf string so we can send it as an attachment
+                var pdfString = pdf.toString('base64');
+                // send email with the pdf attached
+                mailFunctions.mailLink(user.email, messages[0] + process.env.WEBSITELINK + 'form/' + user.form.formId, [{
+                    filename: 'organizedForm.pdf',
+                    content: pdfString,
+                    encoding: 'base64'
+                }], formSettings.titleOfEmail, formSettings.emailText);
+            })
+        }
     }
 
     user.markModified('form');

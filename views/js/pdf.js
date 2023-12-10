@@ -65,6 +65,8 @@ function makeCheckBoxes(userInfo, question) {
     if (userInfo.length == 0 || userInfo == undefined || userInfo == null) return "";
     var answerHTMLArry = [];
 
+    if (typeof userInfo == "string") userInfo = [userInfo];
+
     for (var i = 0; i < userInfo.length; i++) {
         answerHTMLArry.push(`<h2 class="answer">${sanitizeHTML(userInfo[i])}</h2>`);
     }
@@ -100,7 +102,6 @@ function sanitizeHTML(str) {
 }
 
 function generatePdfHTML(userForm, formOptions) {
-    // always have this on the pdf, communtiy service list one
     var writingQuestions = document.querySelector(".writing .questions");
     var quickInfo = document.querySelector(".quickInfo");
 
@@ -116,8 +117,6 @@ function generatePdfHTML(userForm, formOptions) {
             `
             continue;
         }
-
-
 
         if (option.type == "checkBoxesGrid" && itemsToPutInPdf.indexOf(option.name) != -1) {
             if (option.onLeftSideOfPdfInput == true){
@@ -140,7 +139,7 @@ function generatePdfHTML(userForm, formOptions) {
                 quickInfo.innerHTML += makeQuickInfoTextQuestions(userForm[option.name], option);
             }
         }
-        if (option.type == "checkBoxes" && itemsToPutInPdf.indexOf(option.name) != -1) {
+        if ((option.type == "checkBoxes" || option.type == "options" )&& itemsToPutInPdf.indexOf(option.name) != -1) {
             if (option.onLeftSideOfPdfInput == true) {
                 writingQuestions.innerHTML += makeCheckBoxes(userForm[option.name], option);
             } else {

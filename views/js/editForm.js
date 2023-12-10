@@ -342,6 +342,8 @@ function generateCheckBoxGridQuestionHTML(question) {
 // creates all the existing questions that are already in the database
 function generateExistingQuestions(formOptions) {
     var htmlArry = [];
+    
+    if (!Array.isArray(formOptions)) return;
 
     for (var question of formOptions) {
         if (question.type == "text" || question.type == "textArea") {
@@ -488,6 +490,12 @@ function getFormSettingsData() {
         "formEndText": document.getElementById("formEndTextInput").value,
         "isFormClosed": document.getElementById("isFormClosedInput").checked,
         "emailAllowed": document.getElementById("emailAllowedInput").value,
+        "allowToChangeResponsesAfterSubmitting": document.getElementById("allowToChangeResponsesAfterSubmittingInput").checked,
+        "sendEmailToUserAfterSubmitting": document.getElementById("sendEmailToUserAfterSubmittingInput").checked,
+        "sendPDFInEmail": document.getElementById("sendPDFInEmailInput").checked,
+        "titleOfEmail": document.getElementById("titleOfEmailInput").value,
+        "emailText": document.getElementById("emailTextInput").value,
+        "pdfHeader": document.getElementById("pdfHeaderInput").value,
         "theme": {}
     }
     // go all find all the theme options and add them to the settings
@@ -505,7 +513,9 @@ function getFormData() {
     var formId = window.location.pathname.split("/")[4];
     var formOptions = makeFormOptionsJSON();
 
-    if (formOptions == "") return "";
+    if (!Array.isArray(formOptions)) {
+        if (formOptions == "") return "";
+    }
 
     var form = {
         "formName": formName,

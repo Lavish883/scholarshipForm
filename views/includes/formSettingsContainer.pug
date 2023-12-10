@@ -13,6 +13,15 @@ mixin formSettingsContainer(formSettings, formName, formId)
                     else
                         span Form is open&nbsp;
                     input(type="checkbox",onchange="toggleCloseForm(this)", checked=formSettings.isFormClosed id="isFormClosedInput")
+                div 
+                    span Send email to user after submitting ? 
+                    input(type="checkbox", checked=formSettings.sendEmailToUserAfterSubmitting id="sendEmailToUserAfterSubmittingInput")
+                div 
+                    span Attach PDF to email ? 
+                    input(type="checkbox", checked=formSettings.sendPDFInEmail id="sendPDFInEmailInput")
+                div
+                    span Allow to change responses after submitting ? 
+                    input(type="checkbox", checked=formSettings.allowToChangeResponsesAfterSubmitting id="allowToChangeResponsesAfterSubmittingInput")
         div.title Form Introduction:
         div.formIntroduction
             textarea(oninput="autoResize(this)" id="formIntroductionTextArea", placeholder="Form Introduction") #{formSettings.formIntroduction}
@@ -22,12 +31,25 @@ mixin formSettingsContainer(formSettings, formName, formId)
         div.title Form End Text:
         div.formEndText
             input(id="formEndTextInput", type="text", placeholder="Form End Text", value=formSettings.formEndText)
+        div.title PDF Header: (put quotes around the text if it is not a id of an question, separate by typing " + ")
+            div
+                span For ex. "Name:" + " " + firstName + " " + lastName
+        div.pdfHeader
+                input(type="text", value=formSettings.pdfHeader id="pdfHeaderInput")
         div.emailAllowed
             div.title Email Addresses Allowed: 
                 div(style="font-size:17px;") (for ex. @gmail.com), 
                 div(style="font-size:17px;") (* means all emails allowed)
             div.emailAllowedInput
                 input(type="text", value=formSettings.emailAllowed id="emailAllowedInput")
+        div.titleOfEmail
+            div.title Title of Email (for ex. Thank you for submitting):
+            div.titleOfEmailInput
+                input(type="text", value=formSettings.titleOfEmail id="titleOfEmailInput")
+        div.emailText
+            div.title Email Text:
+            div.emailTextInput
+                textarea(oninput="autoResize(this)" id="emailTextInput", placeholder="Email Text") #{formSettings.emailText}
         div.themeDivider
             div.themeHeader(onclick="toggleThemeOptions()")
                 div(style="display: flex; align-items: center;")

@@ -58,6 +58,7 @@ async function saveImageToServer() {
             "finishedWithForm": false
         })
     }
+    console.log("heheheheh")
     const request = await fetch('/saveForm', options);
     const data = await request.text();
     alert(data);

@@ -154,12 +154,9 @@ function genreateFormCSS(theme) {
 
 async function checkFormAuthToken(token, urlParams) {
     if (token == undefined || token == null) return false;
-    console.log(token);
     try {
         let decoded = jwt.verify(token, process.env.JWT_SECERT);
         // find the code from the database, and see if it matches
-        console.log(decoded);
-        console.log(urlParams);
         let found = await schemas.formAuthTokens.findOne({
             'formName': { $eq: urlParams.formName },
             'formId': { $eq: urlParams.formId },
@@ -235,20 +232,38 @@ async function formPage(req, res) {
     // another check to verify it is allowed
     if (formOptions.adminKeyForForm.slice(-5) != req.params.adminKey) return res.status(403).send('Not authorized');
 
+    // check if the form is closed
     if (formOptions.formSettings.isFormClosed) {
-        return res.render('formClosed');
+        return res.render('formClosed', {
+            'errorTexts': [
+                "Form is closed, you can't edit or submit a form.",
+                "If you are the owner of this form, you can open it in the settings.",
+                "Click here to go back and login and open the form."
+            ]
+        });
     }
-
+    
     // find the user
     var user = await accessCollectionOfUsers(req.params.formId + '-' + formOptions.adminKeyForForm.slice(10), req.params.userId);
     if (user == null || user == undefined) return res.status(404).send('User not found');
 
     // check if the user is authorized or not
     let authStatus = await checkFormAuthToken(req.query.jwt, req.params);
-    console.log(authStatus);
+
     if (!authStatus) {
         await sendVerifyCode(req.params, user)
         return res.render('verifyFormAccess');
+    }
+
+    // check if the use already submitted the form and if the formMaker allows them to edit the form
+    if (user.submittedForm && !formOptions.formSettings.allowToChangeResponsesAfterSubmitting) {
+        return res.render('formClosed', {
+            'errorTexts': [
+                "You have already submitted the form and the form maker doesn't allow you to edit the form.",
+                "If you are the owner of this form, you can change this in the settings.",
+                "Click here to go back and login and open the form."
+            ]
+        });
     }
 
     // form HTML
@@ -355,6 +370,20 @@ async function userPage(req, res) {
     return res.json(user);
 }
 
+function processPdfPageHeader(userInfo, headerString){
+    var headerArry = headerString.split(" + ")
+    // "Name:" + " " + firstName + " " + lastName
+    var header = "";
+    for (var i = 0; i < headerArry.length; i++){
+        if (headerArry[i][0] == '"' && headerArry[i][headerArry[i].length - 1] == '"'){
+            header += headerArry[i].slice(1, -1);
+        } else {
+            header += userInfo[headerArry[i]];
+        }
+    }
+    return header;
+}
+
 async function pdfPage(req, res) {
     // find the formId from the database
     var formUser = await schemas.formMakerUsers.findOne({ 'forms.formId': req.params.formId, 'forms.formName': req.params.formName });
@@ -366,6 +395,7 @@ async function pdfPage(req, res) {
 
     // find the user
     console.log('showing pdf page');
+    console.log(req.url);
     var user = await accessCollectionOfUsers(req.params.formId + '-' + formOptions.adminKeyForForm.slice(10), req.params.userId);
     if (user == null || user == undefined) return res.status(404).send('User not found');
 
@@ -373,8 +403,10 @@ async function pdfPage(req, res) {
     user.form.image = '';
     var imageURL = `/image/${req.params.formName}/${formOptions.adminKeyForForm.slice(-5)}/${req.params.formId}/${req.params.userId}`
     var logoImageURL = `/test/serveLogoImage/${req.params.formName}/${req.params.formId}`
+
+    formOptions.formSettings.pdfHeader = processPdfPageHeader(user.form, formOptions.formSettings.pdfHeader);
     // after those checks you can render the pdf page
-    return res.render('pdf', { 'userForm': user.form, 'formOptions': formOptions.form, 'imageURL': imageURL, 'logoImageURL': logoImageURL });
+    return res.render('pdf', { 'userForm': user.form, 'formOptions': formOptions.form, 'imageURL': imageURL, 'logoImageURL': logoImageURL, 'formSettings': formOptions.formSettings });
 }
 
 async function downloadPDF(req, res) {
@@ -418,7 +450,6 @@ async function saveEditedForm(req, res) {
 
     if (formUser == null || formUser == undefined) return res.status(403).send('Not Authorized !!! Check the password or contact the admin');
 
-    console.log(req.body);
     // find that spefic form of the user
     for (var i = 0; i < formUser.forms.length; i++) {
         if (formUser.forms[i].formId == req.body.formId) {

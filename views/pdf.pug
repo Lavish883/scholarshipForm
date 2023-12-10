@@ -14,12 +14,13 @@ html
             main
                 div.pdf
                     div.pdfHeader
-                        h1.name #{userForm.firstName} #{userForm.lastName}
+                        h1.name #{formSettings.pdfHeader}
                         img.schoolLogo(src=logoImageURL)
                     div.corePartOfPdf
                         div.writing
-                            div.imageContainer
-                                img.userPhoto(src=imageURL)
+                            if formSettings.imageUploadWantedInForm
+                                div.imageContainer
+                                    img.userPhoto(src=imageURL)
                             div.questions
                                 
                         div.quickInfo

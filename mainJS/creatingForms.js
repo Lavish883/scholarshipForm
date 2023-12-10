@@ -199,7 +199,7 @@ async function sendCodeEmail(req, res) {
     });
 
     // if verified let the user know
-    if (doesItExist.verified) return res.status(400).send('Account has already been made');
+    if (doesItExist != null && doesItExist.verified) return res.status(400).send('Account has already been made');
 
     var code = crypto.randomBytes(8).toString('hex');
     var expireDate = new Date();

@@ -11,8 +11,7 @@ html
         div.containEmailForm
             div.centerIt
                 div.backgroundForEmail
-                    p Form is closed, you can't edit or submit a form.
-                    p If you are the owner of this form, you can open it in the settings.
-                    p Click here to go back and login and open the form.
+                    each text in errorTexts 
+                        p #{text}
                     a.addOptionButton(style="text-decoration:none;",href="/formMaker") Login
         include includes/footer.pug
