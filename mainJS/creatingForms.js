@@ -204,6 +204,7 @@ async function sendCodeEmail(req, res) {
     var code = crypto.randomBytes(8).toString('hex');
     var expireDate = new Date();
     expireDate.setHours(expireDate.getHours() + 1);
+    
     if (doesItExist == undefined || doesItExist == null) {
         // make a new user and send the email
         const newUser = new schemas.formMakerUsers({

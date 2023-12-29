@@ -7,6 +7,7 @@ const pathFunctions = require('./mainJS/pathFunctions');
 const createFormFuctions = require('./mainJS/creatingForms');
 const saveForm = require('./mainJS/saveForm');
 const downloadPDFisInBulk = require('./mainJS/downloadPDFisInBulk');
+const apiFunctions = require('./mainJS/apiFunctions');
 const rateLimiter = require('./mainJS/rateLimiter.js').databaseAccessLimiter;
 const imageLimiter = require('./mainJS/rateLimiter.js').imageLimiter;
 
@@ -79,6 +80,10 @@ app.post('/test/saveLogoImage', rateLimiter, createFormFuctions.saveLogoImage);
 app.post('/formMaker/sendCodeEmail', rateLimiter ,createFormFuctions.sendCodeEmail);
 app.post('/formMaker/confirmEmailWithCode', rateLimiter, createFormFuctions.confirmEmailWithCode);
 app.post('/formMaker/passwordReset', rateLimiter, createFormFuctions.passwordReset);
+
+// api routes
+app.post('/api/addUsertoFormMaker', [rateLimiter, apiFunctions.checkAPI_KEY], apiFunctions.addUsertoFormMaker);
+app.post('/api/accessUserForms', [rateLimiter, apiFunctions.checkAPI_KEY], apiFunctions.accessUserForms);
 
 // Making the form maker page
 app.get('/formMaker', createFormFuctions.formMakerLogin);
