@@ -17,6 +17,9 @@ mongoose.set('strictQuery', false);
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 // set up the server 
+if (process.env.PRODUCTION){
+ app.set('trust proxy', 1);
+}
 app.set('view engine', 'pug');
 app.use(express.static('public'))
 // max size of the file is 5mb
@@ -80,6 +83,7 @@ app.post('/test/saveLogoImage', rateLimiter, createFormFuctions.saveLogoImage);
 app.post('/formMaker/sendCodeEmail', rateLimiter ,createFormFuctions.sendCodeEmail);
 app.post('/formMaker/confirmEmailWithCode', rateLimiter, createFormFuctions.confirmEmailWithCode);
 app.post('/formMaker/passwordReset', rateLimiter, createFormFuctions.passwordReset);
+app.get('/ip', (request, response) => response.send(request.ip))
 
 // api routes
 app.post('/api/addUsertoFormMaker', [rateLimiter, apiFunctions.checkAPI_KEY], apiFunctions.addUsertoFormMaker);
